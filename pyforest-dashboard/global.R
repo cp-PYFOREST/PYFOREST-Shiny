@@ -20,8 +20,8 @@ library(rsconnect)
 
 # read in data ----
 
-political_boundaries <- st_read("/Users/alexreed/Documents/MEDS/Capstone/pyforest-shiny/pyforest-dashboard/data/political_boundaries_dpt_dist.shp")
-compliance1 <- readRDS("/Users/alexreed/Documents/MEDS/Capstone/pyforest-shiny/pyforest-dashboard/data/compliance1.rds")
+political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
+compliance1 <- readRDS("data/compliance1.rds")
 
 # political_boundaries <- st_read(here::here("data", "political_boundaries_dpt_dist.shp"))
 # compliance1 <- readRDS(here::here("data", "compliance1.rds"))
