@@ -14,4 +14,4 @@ library(shiny.i18n)
 
 # read in data ----
 
-political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
+political_boundaries <- st_read("/..data/political_boundaries_dpt_dist.shp")
