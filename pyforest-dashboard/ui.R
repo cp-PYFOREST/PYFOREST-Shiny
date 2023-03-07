@@ -1,22 +1,22 @@
 #ui.R
 
-# # Create the theme
-# pytheme <- create_theme(
-#   adminlte_color(
-#     light_blue = "#4b5f43" #dark green
-#   ),
-#   adminlte_sidebar(
-#     width = "400px",
-#     dark_bg = "#EDF3ED", #light green
-#     dark_hover_bg = "#778570", #green from canva background
-#     dark_color = "#2E3440" #color not being used?
-#   ),
-#   adminlte_global(
-#     content_bg = "#FFF",
-#     box_bg = "#EDF3ED", #light green
-#     info_box_bg = "#EDF3ED" #light green
-#   )
-# )
+# Create the theme
+pytheme <- create_theme(
+  adminlte_color(
+    light_blue = "#4b5f43" #dark green
+  ),
+  adminlte_sidebar(
+    width = "400px",
+    dark_bg = "#EDF3ED", #light green
+    dark_hover_bg = "#778570", #green from canva background
+    dark_color = "#2E3440" #color not being used?
+  ),
+  adminlte_global(
+    content_bg = "#FFF",
+    box_bg = "#EDF3ED", #light green
+    info_box_bg = "#EDF3ED" #light green
+  )
+)
 
 
 # dashboard header -----------------------
@@ -48,7 +48,7 @@ sidebar <- dashboardSidebar(
 # dashboard body -----------------------
 body <- dashboardBody(
   
-  #use_theme(pytheme), # <-- use the pytheme 
+  use_theme(pytheme), # <-- use the pytheme
   
   # tabItems
   tabItems(
