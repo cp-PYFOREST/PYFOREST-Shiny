@@ -22,6 +22,7 @@ library(rsconnect)
 
 political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
 compliance1 <- readRDS("data/compliance1.rds")
+fl_00_05 <- st_read("data/00_05_forest_loss.shp")
 
-# political_boundaries <- st_read(here::here("data", "political_boundaries_dpt_dist.shp"))
-# compliance1 <- readRDS(here::here("data", "compliance1.rds"))
+
+

@@ -32,16 +32,10 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem(text = "Home", tabName = "home", icon = icon("house")),
     menuItem(text = "Land Use Plan Compliance", tabName = "compliance", icon = icon("clipboard-check")),
-    menuItem(text = "Land Cover Statistics", tabName = "land cover statistics", icon = icon("chart-line"), startExpanded = TRUE,
-             menuSubItem('Historic Deforestation',
-                         tabName = 'deforestation',
-                         icon = icon('tree')),
-             menuSubItem('Projections',
-                         tabName = 'projections',
-                         icon = icon('chart-simple')),
-             menuSubItem('Predictions',
-                         tabName = 'predictions',
-                         icon = icon('globe')))
+    menuItem(text = "Land Cover Statistics", tabName = "land_cover_statistics", icon = icon("chart-line")),
+    menuItem(text = "Land Cover Projections", tabName = 'projections', icon = icon('chart-simple')),
+    menuItem(text = "Land Cover Predictions", tabName = 'predictions', icon = icon('globe'))
+
   ) # END sidebarMenu
 ) # END dashbaordSidebar
 
@@ -136,38 +130,52 @@ body <- dashboardBody(
             
     ), # END compliance tabItem
     
-    #deforestation statistics tabItem ----
-    tabItem(tabName = "deforestation",
+    # land cover statistics tabItem ----
+    tabItem(tabName = "land_cover_statistics",
             
             # fluidRow ----
             fluidRow(
               
-              # input box ----
-              box(width = 4, 
-                  title = tags$strong("Political Boundaries:"),
-                  
-                  # selectInput for PB----
-                  selectInput("nom_dpto", "Select a department:", choices = unique(political_boundaries$nom_dpto)),
-                  selectInput("nom_dist", "Select a district:", choices = NULL)
-                  
-              ), # END input box
+              # # input box ----
+              # box(width = 4, 
+              #     title = tags$strong("FID:") ,
+              #     
+              #     select input 1----
+              #     pickerInput(inputId = "fid_input", label = ("FID:"),
+              #                  choices = unique(fl_00_05$FID))
+              # 
+              #    ), # END select input 1
               
-              # table box ----
+              # tmap box ----
               box(width = 8,
                   
                   title = tags$strong("Deforestation by Political Boundary:"),
                   
-                  # table output ----
-                  tableOutput(outputId = "table") |>
+                 # tmap output ----
+                  tmapOutput(outputId = "map_output") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43")
-                  
-              ), # END table box
+
+              ) # END tmap box
               
               
             ) # END fluidRow
             
-    ) # END deforestation statistics tabItem
+    ), # END land cover statistics tabItem
+    
+    # LC projections tabItem ----
+    tabItem(tabName = "projections",
+            
+            "Insert projections info here"
+            
+    ), # END  LC projections tabItem
+    
+    # LC predictions tabItem ----
+    tabItem(tabName = "predictions",
+            
+            "Insert predictions info here"
+            
+    ) # END LC predictions tabItem
     
     
   ) # END tabItems

@@ -10,4 +10,4 @@ National Cadastre Service
 
 National Forestry Institute (INFONA)
 
-This Shiny application was developed using the RStudio IDE by MEDS 2023 students; Atahualpa Ayala, Dalila Lara, Alexandria Reed, and Guillermo Romero. The source code can be found on GitHub.
+This [Shiny](https://shiny.rstudio.com/) application was developed using the [RStudio IDE](https://www.rstudio.com/products/rstudio/) by MEDS 2023 students; Atahualpa Ayala, Dalila Lara, Alexandria Reed, and Guillermo Romero. The source code can be found on [GitHub](https://github.com/cp-PYFOREST/capstone).
