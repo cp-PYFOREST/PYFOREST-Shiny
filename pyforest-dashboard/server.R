@@ -57,8 +57,8 @@ server <- function(input, output, session) {
   output$map_output <- renderTmap({
     tmap_mode("view")
     tm_shape(fl_00_05) +
-      tm_fill(col = "darkgreen") 
-    
+      tm_fill(col = "darkgreen")
+
   })
   
 }
