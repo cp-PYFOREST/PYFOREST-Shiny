@@ -15,7 +15,8 @@ library(sf)
 library(shiny.i18n) #language 
 library(fresh)
 library(rsconnect)
-
+library(tmap)
+library(raster)
 
 
 # read in data ----

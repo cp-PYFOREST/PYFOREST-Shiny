@@ -32,9 +32,9 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem(text = "Home", tabName = "home", icon = icon("house")),
     menuItem(text = "Land Use Plan Compliance", tabName = "compliance", icon = icon("clipboard-check")),
-    menuItem(text = "Land Cover Statistics", tabName = "land_cover_statistics", icon = icon("chart-line")),
-    menuItem(text = "Land Cover Projections", tabName = 'projections', icon = icon('chart-simple')),
-    menuItem(text = "Land Cover Predictions", tabName = 'predictions', icon = icon('globe'))
+    menuItem(text = "Deforestation Statistics", tabName = "deforestation_statistics", icon = icon("chart-line")),
+    menuItem(text = "Deforestation Projections", tabName = 'projections', icon = icon('chart-simple')),
+    menuItem(text = "Deforestation Predictions", tabName = 'predictions', icon = icon('globe'))
 
   ) # END sidebarMenu
 ) # END dashbaordSidebar
@@ -130,8 +130,8 @@ body <- dashboardBody(
             
     ), # END compliance tabItem
     
-    # land cover statistics tabItem ----
-    tabItem(tabName = "land_cover_statistics",
+    # deforestation statistics tabItem ----
+    tabItem(tabName = "deforestation_statistics",
             
             # fluidRow ----
             fluidRow(
@@ -151,31 +151,31 @@ body <- dashboardBody(
                   
                   title = tags$strong("Deforestation by Political Boundary:"),
                   
-                 # tmap output ----
-                  tmapOutput(outputId = "map_output") |>
-                    withSpinner(type = 1,
-                                color = "#4b5f43")
+                 #tmap output ----
+                 tmapOutput(outputId = "map_output") |>
+                   withSpinner(type = 1,
+                               color = "#4b5f43")
 
               ) # END tmap box
               
               
             ) # END fluidRow
             
-    ), # END land cover statistics tabItem
+    ), # END deforestation statistics tabItem
     
-    # LC projections tabItem ----
+    # deforestation projections tabItem ----
     tabItem(tabName = "projections",
             
-            "Insert projections info here"
+            "Insert deforestation projections info here"
             
-    ), # END  LC projections tabItem
+    ), # END  deforestation projections tabItem
     
-    # LC predictions tabItem ----
+    # deforestation predictions tabItem ----
     tabItem(tabName = "predictions",
             
-            "Insert predictions info here"
+            "Insert deforestation predictions info here"
             
-    ) # END LC predictions tabItem
+    ) # END deforestation predictions tabItem
     
     
   ) # END tabItems
