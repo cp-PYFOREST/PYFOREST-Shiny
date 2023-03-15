@@ -16,8 +16,6 @@ library(shiny.i18n) #language
 library(fresh)
 library(rsconnect)
 
-
-
 # read in data ----
 
 political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
