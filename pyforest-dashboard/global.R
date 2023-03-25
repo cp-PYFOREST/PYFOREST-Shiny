@@ -15,10 +15,17 @@ library(sf)
 library(shiny.i18n) #language 
 library(fresh)
 library(rsconnect)
+<<<<<<< HEAD
+=======
 library(tmap)
 library(readxl)
 library(raster)
+<<<<<<< HEAD
 library(kableExtra)
+=======
+
+>>>>>>> 514c9535b8855abe9a435e21d9cc7f4c6c33d9f5
+>>>>>>> ae1e2aedc9d15921c46d56fdef0abba9fe901a78
 
 # read in data ----
 
