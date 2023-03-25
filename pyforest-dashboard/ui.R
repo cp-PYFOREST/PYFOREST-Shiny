@@ -37,7 +37,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Deforestation Predictions", tabName = 'predictions', icon = icon('globe'))
 
   ) # END sidebarMenu
-) # END dashbaordSidebar
+) # END dashboardSidebar
 
 # dashboard body -----------------------
 body <- dashboardBody(
@@ -106,8 +106,8 @@ body <- dashboardBody(
                   title = tags$strong("Political Boundaries:"),
                   
                   # selectInput for PB----
-                  selectInput("nom_dpto", "Select a department:", choices = unique(political_boundaries$nom_dpto)),
-                  selectInput("nom_dist", "Select a district:", choices = NULL)
+                  selectInput("department_compliance", "Select a department:", choices = unique(compliance_fake$department)),
+                  selectInput("district_compliance", "Select a district:", choices = NULL)
                   
               ), # END input box
               
@@ -116,13 +116,19 @@ body <- dashboardBody(
                   
                   title = tags$strong("Compliance by Political Boundary:"),
                   
-                  # plot and table output ----
+                  # plot output ----
                   plotOutput(outputId = "compliance_output_plot") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43"),
-                  dataTableOutput(outputId = "dt_output") |>
+                  #Add a download button
+                  #downloadButton("downloadplot", "Download Plot"),
+
+                  # table output ____
+                  dataTableOutput(outputId = "compliance_dt_output") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43")
+                  # Add a download button
+                  #downloadButton("downloadTable", "Download Table")
                   
               ) # END plot and table box
               
@@ -136,15 +142,31 @@ body <- dashboardBody(
             # fluidRow ----
             fluidRow(
               
-              # # input box ----
-              # box(width = 4, 
-              #     title = tags$strong("FID:") ,
-              #     
-              #     select input 1----
-              #     pickerInput(inputId = "fid_input", label = ("FID:"),
-              #                  choices = unique(fl_00_05$FID))
-              # 
-              #    ), # END select input 1
+              # input box ----
+              box(width = 4,
+                  title = tags$strong("Deforestation by Political Boundary:"),
+
+                  # selectInput for PB----
+                  selectInput("department_deforestation", "Select a department:", choices = unique(deforestation_fake$department)),
+                  selectInput("district_deforestation", "Select a district:", choices = NULL)
+
+              ), # END input box
+
+
+              # deforestation plot box ----
+              box(width = 8,
+
+                  title = tags$strong("Deforestation by Political Boundary:"),
+
+                  # plot output ----
+                  plotOutput(outputId = "deforestation_output_plot") |>
+                    withSpinner(type = 1,
+                                color = "#4b5f43")
+                   # Add a download button
+                  #downloadButton("downloadplot", "Download Plot")
+
+              ), # END deforestation plot box
+              
               
               # tmap box ----
               box(width = 8,
