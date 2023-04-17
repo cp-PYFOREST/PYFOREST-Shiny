@@ -1,11 +1,3 @@
 This interactive data explorer was built to visualize the compliance of forest regulations and patterns of forest conservation in the Praguayan Chaco.
 
 The Paraguayan Chaco has emerged as a global hotspot of deforestation, losing approximately 1.6 million acres of forest between 2017 and 2020 due to increased cattle ranching and cropping. Paraguayan policymakers are in the process of assessing current forest regulations, but they lack the necessary tools to understand compliance with current regulations and the impacts that new requirements would have on the extent of forests and agricultural areas. This project aims to create an interactive tool for policymakers by analyzing multiple datasets to assess the potential impacts of different forest protection policies on the Chaco's forests. This project will also provide a tool for policymakers to predict future deforestation patterns using machine learning. We hope that through our partnership with Paraguay's National Forest Institute, these tools will have a significant impact on future land use policy.
-
-Map legend:
-
--   Black outline = Paraguay
-
--   Green = Paraguayan Chaco Region
-
--   Orange = Non-Paraguayan Chaco Region
