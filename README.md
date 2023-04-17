@@ -1,13 +1,13 @@
 # [PYFOREST-Shiny](https://reedalexandria.shinyapps.io/pyforest-dashboard/) - a shiny dashboard for exploring data involving the Paraguayan Chaco.
 
 ## Table of Contents
-Getting Started
-Usage
-Built With
-Contributing
-Authors
-License
-Acknowledgments
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Built With](#built-with)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
 
 ### Getting Started
 [Explain how users can get started with your dashboard, including any prerequisites or installation instructions they need to follow. This could include links to external resources, such as tutorials or documentation.]
