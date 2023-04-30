@@ -18,13 +18,13 @@ pytheme <- create_theme(
   )
 )
 
+# END pyforest theme 
 
 # dashboard header -----------------------
 header <- dashboardHeader(
-  title = "PYFOREST",
-  titleWidth = 250
+  title = span(img(src="pyforest_logo.png", width = 35),
+               span("PYFOREST", style = "font-size: 18px;"))
 ) # END dashboardHeader
-
 
 # dashboard sidebar -----------------------
 sidebar <- dashboardSidebar(
@@ -32,12 +32,13 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem(text = "Home", tabName = "home", icon = icon("house")),
     menuItem(text = "Land Use Plan Compliance", tabName = "compliance", icon = icon("clipboard-check")),
-    menuItem(text = "Land Cover Statistics", tabName = "land_cover_statistics", icon = icon("chart-line")),
-    menuItem(text = "Land Cover Projections", tabName = 'projections', icon = icon('chart-simple')),
-    menuItem(text = "Land Cover Predictions", tabName = 'predictions', icon = icon('globe'))
-
+    menuItem(text = "Deforestation Statistics", tabName = "deforestation_statistics", icon = icon("chart-line")),
+    menuItem(text = "Forest Cover Statistics", tabName = "fc_statistics", icon = icon("chart-line")),
+    menuItem(text = "Deforestation Projections", tabName = 'projections', icon = icon('chart-simple')),
+    menuItem(text = "Deforestation Predictions", tabName = 'predictions', icon = icon('globe'))
+    
   ) # END sidebarMenu
-) # END dashbaordSidebar
+) # END dashboardSidebar
 
 # dashboard body -----------------------
 body <- dashboardBody(
@@ -49,55 +50,48 @@ body <- dashboardBody(
     
     # home tabItem ----
     tabItem(tabName = "home",
+            tags$img(class = "banner", src = "river_trees.jpeg",
+                     alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."),
             
-            # left-hand column ----
-            column(width = 6,
-                   
-                   #input left-box ----
-                   box(width = NULL,
-                       
-                       title = tagList(icon("file"), tags$strong("Background")),
-                       includeMarkdown("text/intro.md"),
-                       tags$img(src = "image.jpeg", 
-                                alt = "A map of Paraguay, showing the Chaco ecoregion.",
-                                height = "350px", width = "auto") 
-                       
-                   ) # END left-box
-                   
-            ), # END left-hand column
+            # fluidRow with intro & getting data text boxes ----
+            fluidRow(
+              
+              # intro box ----
+              box(width = 6,
+                  title = tagList(icon("file"), tags$strong("Background")),
+                  includeMarkdown("text/intro.md")
+              ), # END intro box
+              
+              # database box ----
+              box(width = 6,
+                  title = tagList(icon("database"), tags$strong("About the data")),
+                  includeMarkdown("text/citation.md")
+              ), # END database box
+              
+            ), # END fluidRow
             
-            # right-hand column ----
-            column(width = 6,
-                   # top fluid row ----
-                   fluidRow(
-                     # input box
-                     box(width = NULL,
-                         
-                         title = tagList(icon("database"), tags$strong("About the data")),
-                         includeMarkdown("text/citation.md")
-                         
-                     ) # END box
-                     
-                   ), # END top fluid row
-                   
-                   # bottom fluidRow ----
-                   fluidRow(
-                     box(width = NULL,
-                         
-                         title = tagList(icon("triangle-exclamation"), tags$strong("Disclaimer")),
-                         includeMarkdown("text/disclaimer.md")
-                         
-                     ) # END box
-                     
-                   ) #END bottom fluidRow
-                   
-            ) # END right-column
+            # fluidRow with disclaimer box ----
+            fluidRow(
+              
+              box(width = 12,
+                  title = tagList(icon("triangle-exclamation"), tags$strong("Disclaimer")),
+                  includeMarkdown("text/disclaimer.md")
+              ) # END disclaimer box
+              
+            ), # END fluidRow
             
-    ), #END home tabItem
-    
+            # fluidRow with footer ----
+            fluidRow(
+              
+              includeMarkdown("text/home_page_footer.md")
+              
+            ) # END fluidRow
+            
+    ), # END home tabItem
+          
     #compliance tabItem ----
     tabItem(tabName = "compliance",
-            
+
             # fluidRow ----
             fluidRow(
               
@@ -106,8 +100,8 @@ body <- dashboardBody(
                   title = tags$strong("Political Boundaries:"),
                   
                   # selectInput for PB----
-                  selectInput("nom_dpto", "Select a department:", choices = unique(political_boundaries$nom_dpto)),
-                  selectInput("nom_dist", "Select a district:", choices = NULL)
+                  selectInput("department_compliance", "Select a department:", choices = unique(compliance_fake$department)),
+                  selectInput("district_compliance", "Select a district:", choices = NULL)
                   
               ), # END input box
               
@@ -116,13 +110,19 @@ body <- dashboardBody(
                   
                   title = tags$strong("Compliance by Political Boundary:"),
                   
-                  # plot and table output ----
+                  # plot output ----
                   plotOutput(outputId = "compliance_output_plot") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43"),
-                  dataTableOutput(outputId = "dt_output") |>
+                  #Add a download button
+                  #downloadButton("downloadplot", "Download Plot"),
+                  
+                  # table output ____
+                  dataTableOutput(outputId = "compliance_dt_output") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43")
+                  # Add a download button
+                  #downloadButton("downloadTable", "Download Table")
                   
               ) # END plot and table box
               
@@ -130,52 +130,116 @@ body <- dashboardBody(
             
     ), # END compliance tabItem
     
-    # land cover statistics tabItem ----
-    tabItem(tabName = "land_cover_statistics",
+    # deforestation statistics tabItem ----
+    tabItem(tabName = "deforestation_statistics",
             
             # fluidRow ----
             fluidRow(
               
-              # # input box ----
-              # box(width = 4, 
-              #     title = tags$strong("FID:") ,
-              #     
-              #     select input 1----
-              #     pickerInput(inputId = "fid_input", label = ("FID:"),
-              #                  choices = unique(fl_00_05$FID))
-              # 
-              #    ), # END select input 1
+              # input box ----
+              box(width = 4,
+                  title = tags$strong("Deforestation by Political Boundary:"),
+                  
+                  # selectInput for PB----
+                  selectInput("department_deforestation", "Select a department:", choices = unique(deforestation_fake$department)),
+                  selectInput("district_deforestation", "Select a district:", choices = NULL)
+                  
+              ), # END input box
+              
+              
+              # deforestation plot box ----
+              box(width = 8,
+                  
+                  title = tags$strong("Deforestation by Political Boundary:"),
+                  
+                  # plot output ----
+                  plotOutput(outputId = "deforestation_output_plot") |>
+                    withSpinner(type = 1,
+                                color = "#4b5f43")
+                  # Add a download button
+                  #downloadButton("downloadplot", "Download Plot")
+                  
+              ), # END deforestation plot box
+              
               
               # tmap box ----
               box(width = 8,
                   
                   title = tags$strong("Deforestation by Political Boundary:"),
                   
-                 # tmap output ----
+                  #tmap output ----
                   tmapOutput(outputId = "map_output") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43")
-
+                  
               ) # END tmap box
               
               
             ) # END fluidRow
             
-    ), # END land cover statistics tabItem
+    ), # END deforestation statistics tabItem
     
-    # LC projections tabItem ----
+    # fc_statistics tabItem ----
+    tabItem(tabName = "fc_statistics",
+            
+            # fluidRow ----
+            fluidRow(
+              
+              # input box ----
+              box(width = 4,
+                  title = tags$strong("Forest Cover by Political Boundary:")
+                  
+                  # # selectInput for PB----
+                  # selectInput("department_deforestation", "Select a department:", choices = unique(deforestation_fake$department)),
+                  # selectInput("district_deforestation", "Select a district:", choices = NULL)
+                  
+              ), # END input box
+              
+              
+              # fc_stats plot box ----
+              box(width = 8,
+                  
+                  title = tags$strong("Forest COver by Political Boundary:"),
+                  
+                  # plot output ----
+                  plotOutput(outputId = "fc_output_plot") |>
+                    withSpinner(type = 1,
+                                color = "#4b5f43")
+                  
+              ), # END fc_stats plot box
+              
+              
+              # tmap box ----
+              box(width = 8,
+                  
+                  title = tags$strong("Forest Cover by Political Boundary:")
+                  
+                  # #tmap output ----
+                  # tmapOutput(outputId = "map_output") |>
+                  #   withSpinner(type = 1,
+                  #               color = "#4b5f43")
+                  
+              ) # END tmap box
+              
+              
+            ) # END fluidRow
+            
+    ), # END fc_statistics tabItem
+    
+    
+    # deforestation projections tabItem ----
     tabItem(tabName = "projections",
             
-            "Insert projections info here"
+            "Insert deforestation projections info here"
             
-    ), # END  LC projections tabItem
+    ), # END  deforestation projections tabItem
     
-    # LC predictions tabItem ----
+    # deforestation predictions tabItem ----
     tabItem(tabName = "predictions",
             
-            "Insert predictions info here"
+            "Insert deforestation predictions info here"
             
-    ) # END LC predictions tabItem
+    ) # END deforestation predictions tabItem
     
     
   ) # END tabItems
