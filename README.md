@@ -1,4 +1,37 @@
-# [PYFOREST-Shiny](https://reedalexandria.shinyapps.io/pyforest-dashboard/) - a shiny dashboard for exploring data involving the Paraguayan Chaco.
+<h1 align="center">
+
+PYFOREST
+
+</h1>
+
+<h2 align="center">
+
+Informing Forest Conservation Regulations in Paraguay
+
+</h2>
+
+<h2 align="center">
+
+<img src="https://github.com/cp-PYFOREST/Land-Use-Plan-Simulation/blob/main/img/pyforest_hex_sticker.png" alt="Banner" width="200">
+
+</h2>
+
+# Land-Use-Plan-Simulation
+
+
+<h2 align="center">
+
+[Land-Use-Assesment](https://github.com/cp-PYFOREST/Land-Use-Assessment) | [Land-Use-Plan-Simulation](https://github.com/cp-PYFOREST/Land-Use-Plan-Simulation) | [PYFOREST-ML](https://github.com/cp-PYFOREST/PYFOREST-ML) | [PYFOREST-Shiny](https://github.com/cp-PYFOREST/PYFOREST-Shiny)
+
+</h2>
+
+# [PYFOREST-Shiny](https://reedalexandria.shinyapps.io/pyforest-dashboard/) - The Paraguayan Chaco Deforestation analyzer is an R Shiny app designed to help policymakers, researchers, and stakeholders explore deforestation patterns in the undeveloped region of the Paraguayan Chaco. 
+
+Features
+Visualize historical deforestation rates and LUP compliance statistics.
+Analyze the impact of current and alternative LUP laws on forest conservation.
+Examine Predictions of future deforestation patterns under various scenarios.
+Gain insights to support informed decision-making for sustainable land use and forest conservation policies.
 
 ## Table of Contents
 - [Getting Started](#getting-started)
@@ -10,25 +43,37 @@
 - [Acknowledgments](#acknowledgments)
 
 ### Getting Started
-[Explain how users can get started with your dashboard, including any prerequisites or installation instructions they need to follow. This could include links to external resources, such as tutorials or documentation.]
+To run the app locally, follow these steps:
+
+Clone the repository: git clone https://github.com/yourusername/PYFOREST-Shiny.git
+Navigate to the project folder: cd PYFOREST-Shiny
+Open the R project file in RStudio: PYFOREST-Shiny.Rproj
+Install the required R packages by running the following in the R console: install.packages(c("shiny", "leaflet", "ggplot2", "dplyr", "tidyr", "readr", "sf", "randomForest"))
+Run the app in RStudio: shiny::runApp()
 
 ### Usage
-[Provide a brief overview of how to use your dashboard, including any tips or tricks that will help users get the most out of it. This could include instructions on how to navigate between different views or how to filter data to focus on specific areas of interest.]
+Historical Deforestation: Explore historical deforestation rates and LUP compliance statistics in the Paraguayan Chaco.
+Impact of LUP Laws: Assess the effects of current and alternative LUP laws on forest conservation in the region.
+Predictive Deforestation Model: Examine Predictions of future deforestation patterns under various scenarios.
+: Gain valuable insights to support informed decision-making for sustainable land use and forest conservation policies.
 
 ### Built With
 [List the tools and technologies you used to build your dashboard, such as programming languages, frameworks, libraries, or data sources. This could include links to external resources or documentation.]
 
 ### Contributing
-[Explain how others can contribute to your dashboard, such as by reporting bugs, suggesting new features, or submitting pull requests. This could include guidelines for how to contribute, as well as any code of conduct or community standards that contributors should follow.]
+If you would like to contribute to the project, please follow these steps:
+
+Fork the repository.
+Create a new branch for your feature or bugfix.
+Commit your changes to the new branch.
+Submit a pull request to merge your changes into the main branch.
 
 ### Authors
-Atahualpa Ayala
-Dalila Lara
-Alexandria Reed
-Guillermo Romero
+[Atahualpa Ayala](Atahualpa-Ayala),  [Dalila Lara](https://github.com/dalilalara),  [Alexandria Reed](https://github.com/reedalexandria),  [Guillermo Romero](https://github.com/romero61)
+Any advise for common problems or issues.
 
 ### License
-[Specify the license under which your dashboard is released, such as an open-source license or a proprietary license.]
+This project is licensed under the Apache-2.0 License - see the LICENSE.md file for detail
 
 ### Acknowledgments
 [Thank anyone who helped you with your dashboard, such as colleagues, mentors, or contributors. You could also acknowledge any data sources, APIs, or external tools that you used to build your dashboard.]
