@@ -25,7 +25,9 @@ Informing Forest Conservation Regulations in Paraguay
 
 </h2>
 
-# [PYFOREST-Shiny](https://reedalexandria.shinyapps.io/pyforest-dashboard/) - The Paraguayan Chaco Deforestation analyzer is an R Shiny app designed to help policymakers, researchers, and stakeholders explore deforestation patterns in the undeveloped region of the Paraguayan Chaco. 
+# [PYFOREST-Shiny](https://reedalexandria.shinyapps.io/pyforest-dashboard/) 
+
+- The Paraguayan Chaco Deforestation analyzer is an R Shiny app designed to help policymakers, researchers, and stakeholders explore deforestation patterns in the undeveloped region of the Paraguayan Chaco. 
 
 Features
 Visualize historical deforestation rates and LUP compliance statistics.
