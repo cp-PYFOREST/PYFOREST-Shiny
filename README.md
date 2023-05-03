@@ -54,9 +54,12 @@ Run the app in RStudio: shiny::runApp()
 
 ### Usage
 Historical Deforestation: Explore historical deforestation rates and LUP compliance statistics in the Paraguayan Chaco.
+
 Impact of LUP Laws: Assess the effects of current and alternative LUP laws on forest conservation in the region.
+
 Predictive Deforestation Model: Examine Predictions of future deforestation patterns under various scenarios.
-: Gain valuable insights to support informed decision-making for sustainable land use and forest conservation policies.
+
+Gain valuable insights to support informed decision-making for sustainable land use and forest conservation policies.
 
 ### Built With
 [List the tools and technologies you used to build your dashboard, such as programming languages, frameworks, libraries, or data sources. This could include links to external resources or documentation.]
