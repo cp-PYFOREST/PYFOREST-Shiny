@@ -46,11 +46,11 @@ Features
 ### Getting Started
 To run the app locally, follow these steps:
 
-Clone the repository: git clone https://github.com/yourusername/PYFOREST-Shiny.git
-Navigate to the project folder: cd PYFOREST-Shiny
-Open the R project file in RStudio: PYFOREST-Shiny.Rproj
-Install the required R packages by running the following in the R console: install.packages(c("shiny", "leaflet", "ggplot2", "dplyr", "tidyr", "readr", "sf", "randomForest"))
-Run the app in RStudio: shiny::runApp()
+1. Clone the repository: git clone https://github.com/yourusername/PYFOREST-Shiny.git
+2. Navigate to the project folder: cd PYFOREST-Shiny 
+3. Open the R project file in RStudio: PYFOREST-Shiny.Rproj 
+4. Install the required R packages by running the following in the R console: install.packages(c("shiny", "leaflet", "ggplot2", "dplyr", "tidyr", "readr", "sf", "randomForest")) 
+5. Run the app in RStudio: shiny::runApp()
 
 ### Usage
 Historical Deforestation: Explore historical deforestation rates and LUP compliance statistics in the Paraguayan Chaco.
