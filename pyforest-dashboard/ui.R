@@ -1,29 +1,32 @@
 #ui.R
 
-# Create the theme
-pytheme <- create_theme(
-  adminlte_color(
-    light_blue = "#4b5f43" #dark green
-  ),
-  adminlte_sidebar(
-    width = "400px",
-    dark_bg = "#EDF3ED", #light green
-    dark_hover_bg = "#778570", #green from canva background
-    dark_color = "#2E3440" #color not being used?
-  ),
-  adminlte_global(
-    content_bg = "#FFF",
-    box_bg = "#EDF3ED", #light green
-    info_box_bg = "#EDF3ED" #light green
-  )
-)
+# # Create the theme
+# pytheme <- create_theme(
+#   adminlte_color(
+#     light_blue = "#4b5f43" #dark green
+#   ),
+#   adminlte_sidebar(
+#     width = "400px",
+#     dark_bg = "#EDF3ED", #light green
+#     dark_hover_bg = "#778570", #green from canva background
+#     dark_color = "#2E3440" #color not being used?
+#   ),
+#   adminlte_global(
+#     content_bg = "#FFF",
+#     box_bg = "#EDF3ED", #light green
+#     info_box_bg = "#EDF3ED" #light green
+#   )
+# )
+
 
 # END pyforest theme 
 
 # dashboard header -----------------------
 header <- dashboardHeader(
-  title = span(img(src="pyforest_logo.png", width = 35),
-               span("PYFOREST", style = "font-size: 18px;"))
+  title = span(img(src="infona_logo.png", width = 40,
+               href = "https://www.infona.gov.py/", target = "_blank"), # target = "_blank" opens link in new tab
+               span("PYFOREST Interactive Dashboard", style = "font-size: 18px;"))
+
 ) # END dashboardHeader
 
 # dashboard sidebar -----------------------
@@ -31,10 +34,10 @@ sidebar <- dashboardSidebar(
   # sidebarMenu ----
   sidebarMenu(
     menuItem(text = "Home", tabName = "home", icon = icon("house")),
-    menuItem(text = "Land Use Plan Compliance", tabName = "compliance", icon = icon("clipboard-check")),
+    menuItem(text = "Land Use Plan Assessment", tabName = "assessment", icon = icon("clipboard-check")),
     menuItem(text = "Deforestation Statistics", tabName = "deforestation_statistics", icon = icon("chart-line")),
     menuItem(text = "Forest Cover Statistics", tabName = "fc_statistics", icon = icon("chart-line")),
-    menuItem(text = "Deforestation Projections", tabName = 'projections', icon = icon('chart-simple')),
+    menuItem(text = "Land Use Simulations", tabName = 'simulations', icon = icon('chart-simple')),
     menuItem(text = "Deforestation Predictions", tabName = 'predictions', icon = icon('globe'))
     
   ) # END sidebarMenu
@@ -43,7 +46,7 @@ sidebar <- dashboardSidebar(
 # dashboard body -----------------------
 body <- dashboardBody(
   
-  use_theme(pytheme), # <-- use the pytheme
+  #use_theme(pytheme), # <-- use the pytheme
   
   # tabItems
   tabItems(
@@ -51,6 +54,7 @@ body <- dashboardBody(
     # home tabItem ----
     tabItem(tabName = "home",
             tags$img(class = "banner", src = "river_trees.jpeg",
+                     width = "100%",
                      alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."),
             
             # fluidRow with intro & getting data text boxes ----
@@ -89,8 +93,8 @@ body <- dashboardBody(
             
     ), # END home tabItem
           
-    #compliance tabItem ----
-    tabItem(tabName = "compliance",
+    #assessment tabItem ----
+    tabItem(tabName = "assessment",
 
             # fluidRow ----
             fluidRow(
@@ -100,35 +104,40 @@ body <- dashboardBody(
                   title = tags$strong("Political Boundaries:"),
                   
                   # selectInput for PB----
-                  selectInput("department_compliance", "Select a department:", choices = unique(compliance_fake$department)),
-                  selectInput("district_compliance", "Select a district:", choices = NULL)
+                  selectInput("department", "Select a department:", choices = unique(illegal_df$nom_dpto)),
+                  selectInput("district", "Select a district:", choices = NULL)
                   
               ), # END input box
               
               # plot and table box ----
               box(width = 8,
                   
-                  title = tags$strong("Compliance by Political Boundary:"),
+                  title = tags$strong("Illegal Deforestation by Political Boundary:"),
                   
-                  # plot output ----
-                  plotOutput(outputId = "compliance_output_plot") |>
+                  # map output ----
+                  leafletOutput(outputId = "illegal_df_map") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43"),
+                  
+                  # plot output ----
+                  # plotOutput(outputId = "illegal_df_output_plot") |>
+                  #   withSpinner(type = 1,
+                  #               color = "#4b5f43"),
                   #Add a download button
                   #downloadButton("downloadplot", "Download Plot"),
                   
                   # table output ____
-                  dataTableOutput(outputId = "compliance_dt_output") |>
+                  dataTableOutput(outputId = "illegal_df_output") |>
                     withSpinner(type = 1,
                                 color = "#4b5f43")
                   # Add a download button
                   #downloadButton("downloadTable", "Download Table")
                   
-              ) # END plot and table box
+              ) # END map, plot, and table box
               
             ), # END fluidRow
             
-    ), # END compliance tabItem
+    ), # END assessment tabItem
     
     # deforestation statistics tabItem ----
     tabItem(tabName = "deforestation_statistics",
@@ -227,12 +236,30 @@ body <- dashboardBody(
     ), # END fc_statistics tabItem
     
     
-    # deforestation projections tabItem ----
-    tabItem(tabName = "projections",
+    # land use simulation tabItem ----
+    tabItem(tabName = "simulations",
+   
+            fluidPage(
+              titlePanel("Land Use Stacked Bar Chart"),
+              
+              sidebarLayout(
+                sidebarPanel(
+                  selectInput("dataset",
+                              label = "Political Boundary:",
+                              choices = c("department", "district"),
+                              selected = "department"),
+                  
+                  uiOutput("name_selection")
+                ),
+                
+                mainPanel(
+                  plotlyOutput("landUsePlot")
+                )
+              )
+            )
             
-            "Insert deforestation projections info here"
-            
-    ), # END  deforestation projections tabItem
+    ), # END land use simulation tabItem
+    
     
     # deforestation predictions tabItem ----
     tabItem(tabName = "predictions",

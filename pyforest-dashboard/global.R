@@ -1,33 +1,145 @@
 #global.R
 
 # LOAD PACKAGES ----
+# Data wrangling and analysis
+library(tidyverse)
+library(sf)
+library(raster)
+library(terra)
+library(exactextractr)
+library(units)
+library(forcats)
+
+# Data visualization
+library(ggplot2)
+library(plotly)
+library(tmap)
+library(leaflet)
+library(kableExtra)
+library(ggiraph)
+library(ggiraphExtra)
+library(RColorBrewer)
+library(htmltools)
+library(maps)
+library(maptools)
+library(sp)
+library(ggthemr)
+library(flextable)
+
+# Interactive web apps
 library(shiny)
 library(shinydashboard)
-library(shinydashboardPlus) 
-library(tidyverse)
-library(shinycssloaders)
-library(leaflet)
-library(markdown)
-library(readxl)
-library(tidygeocoder)
+library(shinydashboardPlus)
 library(shinyWidgets)
-library(sf)
-library(shiny.i18n) #language 
-library(fresh)
+library(shiny.i18n)
+library(shinycssloaders)
+library(markdown)
 library(rsconnect)
-library(tmap)
-library(readxl)
-library(raster)
-library(kableExtra)
+library(fresh)
 
 
-# read in data ----
+# READ IN DATA ----
 
-political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
-compliance1 <- readRDS("data/compliance1.rds")
-fl_00_05 <- st_read("data/00_05_forest_loss.shp")
-compliance_fake <- read_excel("data/compliance_fake.xlsx")
-deforestation_fake <- read_excel("data/deforestation_fake.xlsx")
+##old -- delete
+# political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
+# compliance1 <- readRDS("data/compliance1.rds")
+# fl_00_05 <- st_read("data/00_05_forest_loss.shp")
+# compliance_fake <- read_excel("data/compliance_fake.xlsx")
+# deforestation_fake <- read_excel("data/deforestation_fake.xlsx")
 
-# Functions ----
+## land use assessment data
 
+pb_bosques_illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/pb_bosques_illegal_df.rds")
+illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df.rds")
+illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df_by_dist.rds")
+authorized_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/authorized_df_by_dist.rds")
+
+## land use simulation data
+area_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_department_land_use.rds")
+area_by_district_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_district_land_use.rds")
+area_pct_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_pct_by_department_land_use.rds")
+area_pct_by_district_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_pct_by_district_land_use.rds")
+  
+# FUNCTIONS?----
+plot_land_use_type_stackedh <- function(dataset, name) {
+  if (dataset == 'department') {
+    data_to_plot <- area_by_department_land_use %>%
+      filter(land_use_type != 'paddocks_area' & nom_dpto == name) %>%
+      group_by(simulation, nom_dpto, land_use_type) %>%
+      arrange(-total_area_lu) %>%
+      mutate(simulation = factor(
+        simulation,
+        levels = c(
+          "50% Forest Reserve",
+          "25% Forest Reserve",
+          "5% Forest Reserve",
+          "Hedgerow incl. 25% Forest Reserve"
+        )
+      )) %>%
+      ungroup()
+    
+    plot <-
+      ggplot(data_to_plot,
+             aes(x = total_area_lu, y = simulation, fill = land_use_type)) +
+      geom_bar(
+        stat = "identity",
+        position = 'stack',
+        orientation = 'y',
+        color = "black",
+        linewidth = 0.25
+      ) +
+      labs(
+        title = paste("Total Area Conserved by Department and Simulation"),
+        x = "Total Area",
+        y = "Forest Law Simlulation"
+      ) +
+      facet_wrap(~ nom_dpto,
+                 ncol = 1,
+                 scales = "free_y",
+                 dir = 'h')
+    
+  } else if (dataset == 'district') {
+    data_to_plot <- area_by_district_land_use %>%
+      filter(land_use_type != 'paddocks_area' & nom_dist == name) %>%
+      group_by(simulation, nom_dist, land_use_type) %>%
+      arrange(-total_area_lu) %>%
+      mutate(simulation = factor(
+        simulation,
+        levels = c(
+          "50% Forest Reserve",
+          "25% Forest Reserve",
+          "5% Forest Reserve",
+          "Hedgerow incl. 25% Forest Reserve"
+        )
+      )) %>%
+      ungroup()
+    
+    plot <- ggplot(data_to_plot, aes(x = total_area_lu, y = simulation, fill = land_use_type)) +
+      geom_bar(
+        stat = "identity",
+        position = 'stack',
+        orientation = 'y',
+        color = "black",
+        linewidth = 0.25
+      ) +
+      facet_wrap(~nom_dist, ncol = 5, scales = "free_x", dir = 'h') +
+      labs(title = paste("Total Area Conserved by District and Simulation"),
+           x = "Total Area",
+           y = "Forest Law Simlulation") +
+      theme(axis.text.x = element_blank())
+    
+    
+  }
+  ggthemr('camouflage', layout = "plain", type = 'outer')
+  
+  # Common theme, scale, and guides for both plots
+  
+  plotly::ggplotly(plot +
+                     theme(
+                       legend.position = "top",
+                       legend.direction = "horizontal",
+                       strip.background = element_blank(),
+                       strip.placement = "outside")) %>%
+    add_trace(showlegend = TRUE)
+  
+}
