@@ -21,7 +21,7 @@
 
 # END pyforest theme 
 
-# dashboard header -----------------------
+# ------------------------------------------ header ------------------------------------------
 header <- dashboardHeader(
   title = span(img(src="infona_logo.png", width = 40,
                href = "https://www.infona.gov.py/", target = "_blank"), # target = "_blank" opens link in new tab
@@ -29,11 +29,14 @@ header <- dashboardHeader(
 
 ) # END dashboardHeader
 
-# dashboard sidebar -----------------------
+# ------------------------------------------ sidebar ------------------------------------------
 sidebar <- dashboardSidebar(
   # sidebarMenu ----
   sidebarMenu(
-    menuItem(text = "Home", tabName = "home", icon = icon("house")),
+    menuItem(text = "Home", tabName = "home", icon = icon("house"), startExpanded = FALSE,
+             menuSubItem('About the app', tabName = 'about_the_app', icon = icon('circle-info')),
+             menuSubItem('Data Source', tabName = 'data_source', icon = icon('server')),
+             menuSubItem('Project Information',tabName = 'project_information',icon = icon('github'))),
     menuItem(text = "Land Use Plan Assessment", tabName = "assessment", icon = icon("clipboard-check")),
     menuItem(text = "Deforestation Statistics", tabName = "deforestation_statistics", icon = icon("chart-line")),
     menuItem(text = "Forest Cover Statistics", tabName = "fc_statistics", icon = icon("chart-line")),
@@ -43,7 +46,7 @@ sidebar <- dashboardSidebar(
   ) # END sidebarMenu
 ) # END dashboardSidebar
 
-# dashboard body -----------------------
+# ------------------------------------------ body ------------------------------------------
 body <- dashboardBody(
   
   #use_theme(pytheme), # <-- use the pytheme
@@ -51,47 +54,153 @@ body <- dashboardBody(
   # tabItems
   tabItems(
     
-    # home tabItem ----
-    tabItem(tabName = "home",
-            tags$img(class = "banner", src = "river_trees.jpeg",
-                     width = "100%",
-                     alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."),
+    # # home tabItem ----
+    # tabItem(tabName = "home",
+    #         tags$img(class = "banner", src = "river_trees.jpeg",
+    #                  width = "100%",
+    #                  alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."),
+    #         
+    #         # fluidRow with intro & getting data text boxes ----
+    #         fluidRow(
+    #           
+    #           # intro box ----
+    #           box(width = 6,
+    #               title = tagList(icon("file"), tags$strong("Background")),
+    #               includeMarkdown("text/intro.md")
+    #           ), # END intro box
+    #           
+    #           # database box ----
+    #           box(width = 6,
+    #               title = tagList(icon("database"), tags$strong("About the data")),
+    #               includeMarkdown("text/citation.md")
+    #           ), # END database box
+    #           
+    #         ), # END fluidRow
+    #         
+    #         # fluidRow with disclaimer box ----
+    #         fluidRow(
+    #           
+    #           box(width = 12,
+    #               title = tagList(icon("triangle-exclamation"), tags$strong("Disclaimer")),
+    #               includeMarkdown("text/disclaimer.md")
+    #           ) # END disclaimer box
+    #           
+    #         ), # END fluidRow
+    #         
+    #         # fluidRow with footer ----
+    #         fluidRow(
+    #           
+    #           includeMarkdown("text/home_page_footer.md")
+    #           
+    #         ) # END fluidRow
+    #         
+    # ), # END home tabItem
+    
+    # about the app tabItem ----
+    tabItem(tabName = "about_the_app",
             
-            # fluidRow with intro & getting data text boxes ----
-            fluidRow(
+            #fluidPage  ----
+            fluidPage(
+              titlePanel("Forest Conservation Interactive Dashboard"),
               
-              # intro box ----
-              box(width = 6,
-                  title = tagList(icon("file"), tags$strong("Background")),
-                  includeMarkdown("text/intro.md")
-              ), # END intro box
-              
-              # database box ----
-              box(width = 6,
-                  title = tagList(icon("database"), tags$strong("About the data")),
-                  includeMarkdown("text/citation.md")
-              ), # END database box
-              
-            ), # END fluidRow
+              # dashboard tabsetPanel ----
+              tabsetPanel(id = "dashboard_tabsetPanel",
+                          
+                          # Home tabPanel ----
+                          tabPanel(title = "Home",
+                                   
+                                   
+                                   # fluidRow with intro & getting data text boxes ----
+                                   fluidRow(
+                                     
+                                     # intro box ----
+                                     box(width = 4,
+                                         title = tags$strong("About the app"),
+                                         includeMarkdown("text/about_app.md")
+                                     ), # END intro box
+                                     
+                                     # intro box ----
+                                     box(width = 4,
+                                         title = tags$strong("Data Source"),
+                                         includeMarkdown("text/data_source.md")
+                                     ), # END intro box
+                                     
+                                     # intro box ----
+                                     box(width = 4,
+                                         title = tags$strong("Project Information"),
+                                         includeMarkdown("text/project_information.md")
+                                     ), # END intro box
+                                     
+                                   ), # END fluidRow 
+                                   
+                                   tags$img(class = "banner", src = "river_trees.jpeg",
+                                            width = "70%",
+                                            alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."),
+                                   
+                                   # fluidRow with footer ----
+                                   fluidRow(
+                                     
+                                     includeMarkdown("text/home_page_footer.md")
+                                     
+                                   ), # END fluidRow
+                                   
+                          ), # END Home tabPanel
+                          
+                          # Land Use Plan Assessment tabPanel ----
+                          tabPanel(title = "Land Use Plan Assessment",
+                                   
+                                   # fluidRow with footer ----
+                                   fluidRow(
+                                     
+                                     includeMarkdown("text/land.md")
+                                     
+                                   ), # END fluidRow
+                                   
+                          ), # END Land Use Plan Assessment tabPanel
+                          
+                          # Deforestation and Forest Cover Statistics tabPanel ----
+                          tabPanel(title = "Deforestation and Forest Cover Statistics",
+                                   
+                                   "df and fc info"
+                                   
+                          ), # END Deforestation and Forest Cover Statistics tabPanel
+                          
+                          # Land Use Plan Simulations tabPanel ----
+                          tabPanel(title = "Land Use Plan Simulations",
+                                   
+                                   "lup simulations info"
+                                   
+                          ), # END Land Use Plan Simulations tabPanel
+                          
+                          # Deforestation Predictions tabPanel ----
+                          tabPanel(title = "Deforestation Predictions",
+                                   
+                                   "df prediction info"
+                                   
+                          ), # END Deforestation Predictions tabPanel
+                          
+              ), # END about the app tabsetPanels
             
-            # fluidRow with disclaimer box ----
-            fluidRow(
-              
-              box(width = 12,
-                  title = tagList(icon("triangle-exclamation"), tags$strong("Disclaimer")),
-                  includeMarkdown("text/disclaimer.md")
-              ) # END disclaimer box
-              
-            ), # END fluidRow
+            ), # END fluidPage
             
-            # fluidRow with footer ----
-            fluidRow(
-              
-              includeMarkdown("text/home_page_footer.md")
-              
-            ) # END fluidRow
+    ), # END about the app tabItem
+    
+    
+    # data source tabItem ----
+    tabItem(tabName = "data_source",
             
-    ), # END home tabItem
+            "Insert INFONA info here"
+            
+    ), # END source tabItem
+    
+    
+    # project information tabItem ----
+    tabItem(tabName = "project_information",
+            
+            "Insert PYFOREST info here"
+            
+    ), # END project information tabItem
+    
           
     #assessment tabItem ----
     tabItem(tabName = "assessment",
@@ -269,9 +378,11 @@ body <- dashboardBody(
     ) # END deforestation predictions tabItem
     
     
-  ) # END tabItems
+  ), # END tabItems
   
 ) # END dashboardBody
 
 # combine all -----------------------
 dashboardPage(header, sidebar, body)
+
+
