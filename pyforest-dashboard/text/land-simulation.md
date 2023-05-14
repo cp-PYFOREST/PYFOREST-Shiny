@@ -1,0 +1,10 @@
+---
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+**Land Use Simulation**
+
+This page allows you to explore the effects of various land use plan configurations on forest conservation in the Paraguayan Chaco. Select a political boundary (department or district) from the dropdown menu to generate a stacked bar chart illustrating land use configurations under different conservation requirements.
+
