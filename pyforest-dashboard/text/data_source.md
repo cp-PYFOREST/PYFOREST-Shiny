@@ -1,1 +1,1 @@
-Information about the data source (INFONA).
+The data used in this app is sourced from the National Forestry Institute of Paraguay (INFONA). INFONA provides land use plan shapefiles and deforestation raster files, which serve as the foundation for our analysis. To access the data used in our study, please visit our Zenodo repository [insert Zenodo link]. For the most up-to-date data, we recommend visiting INFONA's official website [insert INFONA website link] and submitting a request for the desired information.

@@ -25,6 +25,7 @@ library(maptools)
 library(sp)
 library(ggthemr)
 library(flextable)
+library(leafdown)
 
 # Interactive web apps
 library(shiny)
@@ -49,10 +50,14 @@ library(fresh)
 
 ## land use assessment data
 
-pb_bosques_illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/pb_bosques_illegal_df.rds")
-illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df.rds")
-illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df_by_dist.rds")
-authorized_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/authorized_df_by_dist.rds")
+# pb_bosques_illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/pb_bosques_illegal_df.rds")
+# illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df.rds")
+# illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df_by_dist.rds")
+# authorized_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/authorized_df_by_dist.rds")
+combined_illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_illegal_df_by_dist.rds")
+combined_illegal_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_illegal_df_by_dpto.rds")
+combined_auth_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_auth_df_by_dist.rds")
+combined_auth_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_auth_df_by_dpto.rds")
 
 ## land use simulation data
 area_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_department_land_use.rds")

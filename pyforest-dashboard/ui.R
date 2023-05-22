@@ -101,37 +101,43 @@ body <- dashboardBody(
             
             #fluidPage  ----
             fluidPage(
-              titlePanel("Forest Conservation Interactive Dashboard"),
+              #titlePanel("Forest Conservation Interactive Dashboard"),
               
               # dashboard tabsetPanel ----
               tabsetPanel(id = "dashboard_tabsetPanel",
                           
                           # Home tabPanel ----
-                          tabPanel(title = "Home",
+                          tabPanel(title = "About the app",
                                    
                                    
-                                   # fluidRow with intro & getting data text boxes ----
-                                   fluidRow(
-                                     
-                                     # intro box ----
-                                     box(width = 4,
-                                         title = tags$strong("About the app"),
-                                         includeMarkdown("text/about_app.md")
-                                     ), # END intro box
-                                     
-                                     # intro box ----
-                                     box(width = 4,
-                                         title = tags$strong("Data Source"),
-                                         includeMarkdown("text/data_source.md")
-                                     ), # END intro box
-                                     
-                                     # intro box ----
-                                     box(width = 4,
-                                         title = tags$strong("Project Information"),
-                                         includeMarkdown("text/project_information.md")
-                                     ), # END intro box
-                                     
-                                   ), # END fluidRow 
+                                   # # fluidRow with intro & getting data text boxes ----
+                                    fluidRow(
+                                   
+                                      title = tags$strong("About the app"),
+                                             includeMarkdown("text/intro.md")
+                                      
+                                    ),
+                                   
+                                   #   
+                                   #   # about the app  box ----
+                                   #   box(width = 4,
+                                   #       title = tags$strong("About the app"),
+                                   #       includeMarkdown("text/about_app.md")
+                                   #   ), # END intro box
+                                   #   
+                                   #   # intro box ----
+                                   #   box(width = 4,
+                                   #       title = tags$strong("Data Source"),
+                                   #       includeMarkdown("text/data_source.md")
+                                   #   ), # END intro box
+                                   #   
+                                   #   # intro box ----
+                                   #   box(width = 4,
+                                   #       title = tags$strong("Project Information"),
+                                   #       includeMarkdown("text/project_information.md")
+                                   #   ), # END intro box
+                                   #   
+                                   # ), # END fluidRow 
                                    
                                    tags$img(class = "banner", src = "river_trees.jpeg",
                                             width = "70%",
@@ -189,7 +195,7 @@ body <- dashboardBody(
     # data source tabItem ----
     tabItem(tabName = "data_source",
             
-            "Insert INFONA info here"
+            includeMarkdown("text/data_source.md")
             
     ), # END source tabItem
     
@@ -201,52 +207,72 @@ body <- dashboardBody(
             
     ), # END project information tabItem
     
-          
+   ### Alex
+   
     #assessment tabItem ----
     tabItem(tabName = "assessment",
 
             # fluidRow ----
             fluidRow(
               
-              # input box ----
-              box(width = 4, 
-                  title = tags$strong("Political Boundaries:"),
-                  
-                  # selectInput for PB----
-                  selectInput("department", "Select a department:", choices = unique(illegal_df$nom_dpto)),
-                  selectInput("district", "Select a district:", choices = NULL)
-                  
-              ), # END input box
+              # # input box ----
+              box(width = , 
+
+              tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+              actionButton("drill_up", "View Departments"),
+              actionButton("drill_down", "View Districts"),
+              selectInput("year_range", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
+              leafletOutput("leafdown", height = "600px")
+              #     
+               ), # END input box
               
-              # plot and table box ----
-              box(width = 8,
-                  
-                  title = tags$strong("Illegal Deforestation by Political Boundary:"),
-                  
-                  # map output ----
-                  leafletOutput(outputId = "illegal_df_map") |>
-                    withSpinner(type = 1,
-                                color = "#4b5f43"),
-                  
-                  # plot output ----
-                  # plotOutput(outputId = "illegal_df_output_plot") |>
-                  #   withSpinner(type = 1,
-                  #               color = "#4b5f43"),
-                  #Add a download button
-                  #downloadButton("downloadplot", "Download Plot"),
-                  
-                  # table output ____
-                  dataTableOutput(outputId = "illegal_df_output") |>
-                    withSpinner(type = 1,
-                                color = "#4b5f43")
-                  # Add a download button
-                  #downloadButton("downloadTable", "Download Table")
-                  
-              ) # END map, plot, and table box
+              
+              # plot box ----
+              box(width = 6, 
+              plotlyOutput("illegalPlot")
+              ), # END plot box
+
+              # # input box ----
+              # box(width = 4, 
+              #     title = tags$strong("Political Boundaries:"),
+              #     
+              #     # selectInput for PB----
+              #     selectInput("department", "Select a department:", choices = unique(illegal_df$nom_dpto)),
+              #     selectInput("district", "Select a district:", choices = NULL)
+              #     
+              # ), # END input box
+              # 
+              # # plot and table box ----
+              # box(width = 8,
+              #     
+              #     title = tags$strong("Illegal Deforestation by Political Boundary:"),
+              #     
+              #     # map output ----
+              #     leafletOutput(outputId = "illegal_df_map") |>
+              #       withSpinner(type = 1,
+              #                   color = "#4b5f43"),
+              #     
+              #     #plot output ----
+              #     plotOutput(outputId = "illegal_df_output_plot") |>
+              #       withSpinner(type = 1,
+              #                   color = "#4b5f43"),
+              #     #Add a download button
+              #     #downloadButton("downloadplot", "Download Plot"),
+              #     
+              #     # table output ____
+              #     dataTableOutput(outputId = "illegal_df_output") |>
+              #       withSpinner(type = 1,
+              #                   color = "#4b5f43")
+              #     # Add a download button
+              #     #downloadButton("downloadTable", "Download Table")
+              #     
+              # ) # END map, plot, and table box
               
             ), # END fluidRow
             
     ), # END assessment tabItem
+    
+    ### Alex
     
     # deforestation statistics tabItem ----
     tabItem(tabName = "deforestation_statistics",
@@ -256,11 +282,11 @@ body <- dashboardBody(
               
               # input box ----
               box(width = 4,
-                  title = tags$strong("Deforestation by Political Boundary:"),
+                  title = tags$strong("Deforestation by Political Boundary:")
                   
-                  # selectInput for PB----
-                  selectInput("department_deforestation", "Select a department:", choices = unique(deforestation_fake$department)),
-                  selectInput("district_deforestation", "Select a district:", choices = NULL)
+                  # # selectInput for PB----
+                  # selectInput("department_deforestation", "Select a department:", choices = unique(deforestation_fake$department)),
+                  # selectInput("district_deforestation", "Select a district:", choices = NULL)
                   
               ), # END input box
               
