@@ -345,6 +345,70 @@ server <- function(input, output, session) {
   })
   
   
+  # PUT ID
+  
+  compliance_filter<- reactive({
+    if (!is.null(input$code) && input$code != "" && input$code != "0") {
+      compliance %>%
+        filter(put_id %in% input$code)
+    } else {
+      compliance
+    }
+  })
+  
+  observeEvent(input$reset_button, {
+    updatePickerInput(session, "code", selected = "0")
+  })
+  
+  
+  compliance_map <- reactive({
+    leaflet(data = compliance_filter()) %>%
+      addProviderTiles(providers$CartoDB.Positron) %>%
+      addPolygons(
+        color = ifelse(compliance_filter()$df_status == "no illegal df", "#4b5f43", "#F26419"),
+        weight = 1, smoothFactor = 0.5,
+        opacity = 1.0, fillOpacity = 1,
+        fill = TRUE,
+        fillColor = ifelse(compliance_filter()$df_status == "no illegal df", "#4b5f43", "#F26419"),
+        popup = ~paste(
+          "Put ID:", compliance_filter()$put_id, "<br>",
+          "Deforested Area (ha):", compliance_filter()$df_area_ha, "<br>",
+          "Status:", ifelse(compliance_filter()$df_status == "no illegal df", "Compliant", "Not Compliant")
+        )
+      )
+  })
+  # End of plot of map
+  
+  output$map <- renderLeaflet({ compliance_map() })
+  
+  
+  # Create reactive expression for the table
+  compliance_table <- reactive({
+    compliance_filter() %>%
+      st_drop_geometry() %>%
+      select("put_id", "grupo", "cell_count", "df_area_ha", "land_use_type_area", "df_status") %>%
+      datatable(options = list(pageLength = 10), rownames = FALSE) 
+  })
+  
+  output$table <- renderDataTable({
+    compliance_table()
+  })
+  
+  output$download_report <- downloadHandler(
+    filename = "report.html",
+    content = function(file) {
+      tempReport <- file.path(tempdir(), "report.Rmd")
+      file.copy("report.Rmd", tempReport, overwrite = TRUE)
+      
+      rmarkdown::render(tempReport, output_file = file,
+                        params = list(data = compliance_filter(),
+                                      map = compliance_map(),
+                                      table = compliance_table()))
+    }
+  ) # END PUT ID
+  
+  
+  
   # Create a dynamic UI element in the server.R file using renderUI
   output$name_selection <- renderUI({
     if (input$dataset == "department") {

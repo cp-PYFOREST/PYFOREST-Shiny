@@ -37,6 +37,7 @@ library(shinycssloaders)
 library(markdown)
 library(rsconnect)
 library(fresh)
+library(DT)
 
 
 # READ IN DATA ----
@@ -58,6 +59,11 @@ combined_illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessmen
 combined_illegal_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_illegal_df_by_dpto.rds")
 combined_auth_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_auth_df_by_dist.rds")
 combined_auth_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_auth_df_by_dpto.rds")
+
+## land use assessment sub tab
+compliance <- st_read("~/../../capstone/pyforest/shinydata/lup_assessment/compliance_updated.gpkg")
+compliance <- st_transform(compliance, 4326)
+
 
 ## land use simulation data
 area_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_department_land_use.rds")

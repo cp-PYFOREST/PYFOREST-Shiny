@@ -1,0 +1,44 @@
+---
+title: "Report"
+output: html_document
+params:
+  data: NA
+  map: NA
+  table: NA
+  
+---
+```{r, echo= FALSE}
+data <- params$data
+map <- params$map
+table <- params$table
+```
+
+## plot a map
+
+```{r, echo= FALSE, fig.dim = c(6, 4) }
+
+map
+# library(leaflet)
+# leaflet(data = data) %>%
+#   addTiles() %>%
+#   addPolygons(
+#     fillColor = ifelse(data$df_status == "no illegal df", "#4b5f43", "#F26419"),
+#     color = "#000000",
+#     fillOpacity = 0.7,
+#     weight = 1
+#   )
+```
+
+## plot a table
+
+```{r, echo= FALSE}
+table
+    # DT::datatable(data %>%
+    #                 select("cod_establ", "cat", "propietari","c_i", "ruc" ) %>%
+    #                 st_drop_geometry(), options = list(pagelength = 10), rownames = FALSE)
+
+    # DT::datatable(data, options = list(pageLength = 10), rownames = FALSE)
+
+```
+
+

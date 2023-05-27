@@ -1,0 +1,1 @@
+This page will provide deforestation predictions based on land use plans and their impact on forest conservation. Users will be able to explore potential deforestation rates under different policy scenarios and land use configurations

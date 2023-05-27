@@ -1,0 +1,1 @@
+This page shows deforestation and forest cover statistics by political boundary. The plot displays the deforestation and forest cover for each selected area. Data can be filtered by selecting a specific department or district from the dropdown menus.
