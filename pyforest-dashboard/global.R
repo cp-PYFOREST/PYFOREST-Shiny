@@ -39,22 +39,9 @@ library(rsconnect)
 library(fresh)
 library(DT)
 
-
 # READ IN DATA ----
 
-##old -- delete
-# political_boundaries <- st_read("data/political_boundaries_dpt_dist.shp")
-# compliance1 <- readRDS("data/compliance1.rds")
-# fl_00_05 <- st_read("data/00_05_forest_loss.shp")
-# compliance_fake <- read_excel("data/compliance_fake.xlsx")
-# deforestation_fake <- read_excel("data/deforestation_fake.xlsx")
-
 ## land use assessment data
-
-# pb_bosques_illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/pb_bosques_illegal_df.rds")
-# illegal_df <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df.rds")
-# illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/illegal_df_by_dist.rds")
-# authorized_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/authorized_df_by_dist.rds")
 combined_illegal_df_by_dist <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_illegal_df_by_dist.rds")
 combined_illegal_df_by_dist$normalized_value <- combined_illegal_df_by_dist$sum_df_ha / combined_illegal_df_by_dist$total_area_ha
 combined_illegal_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_illegal_df_by_dpto.rds")
@@ -66,7 +53,6 @@ combined_auth_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_d
 ## land use assessment sub tab
 compliance <- st_read("~/../../capstone/pyforest/shinydata/lup_assessment/compliance_updated.gpkg")
 compliance <- st_transform(compliance, 4326)
-
 
 ## land use simulation data
 area_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_department_land_use.rds")
