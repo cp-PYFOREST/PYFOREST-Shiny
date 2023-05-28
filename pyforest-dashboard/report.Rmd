@@ -13,10 +13,9 @@ map <- params$map
 table <- params$table
 ```
 
-## plot a map
+## Map
 
 ```{r, echo= FALSE, fig.dim = c(6, 4) }
-
 map
 # library(leaflet)
 # leaflet(data = data) %>%
@@ -29,7 +28,7 @@ map
 #   )
 ```
 
-## plot a table
+## Table
 
 ```{r, echo= FALSE}
 table

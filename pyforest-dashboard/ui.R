@@ -1,19 +1,20 @@
 # Create the theme
 pytheme <- create_theme(
   adminlte_color(
-    light_blue = "#3c4d36"
+    light_blue = "#2F4858" ##3c4d36
   ),
   adminlte_sidebar(
-    width = "350px",
-    dark_bg = "#3c4d36",
-    dark_hover_bg = "#586e4f"
+    width = "350px", # Set the width of the sidebar
+    dark_bg = "#3c4d36", # Set the dark background color of the sidebar #4d5c47
+    dark_hover_bg = "#868f82" # Set the dark hover background color of the sidebar
   ),
   adminlte_global(
-    box_bg = "white"
+    box_bg = "white" # Set the background color of the global elements
   )
 )
 
 # ------------------------------------------ header ------------------------------------------
+# Create the header section of the dashboard
 header <- dashboardHeader(
   title = HTML('<span style="color: white;">INFONA Policy Decision-Making Tool</span>'),
   disable = FALSE,
@@ -33,12 +34,14 @@ header <- dashboardHeader(
       message = "",
       icon = icon("linkedin"),
       href = "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny"
-    )
-  )
-)
+    ) # END messageItem
+  ) # END dropdownMenu
+) # END dashboardHeader
 
 # ------------------------------------------ sidebar ------------------------------------------
+# Create the sidebar section of the dashboard
 sidebar <- dashboardSidebar(
+  
   sidebarMenu(
     menuItem(
       text = "Home",
@@ -74,12 +77,15 @@ sidebar <- dashboardSidebar(
       tabName = 'predictions',
       icon = icon('globe')
     )
-  )
-)
+  ) # END sidebarMenu
+) # END dashboardSidebar
 
 # ------------------------------------------ body ------------------------------------------
+# Create the body section of the dashboard
 body <- dashboardBody(
+  
   use_theme(pytheme),
+  
   tabItems(
     # about the app tabItem
     tabItem(tabName = "about_the_app",
@@ -121,9 +127,10 @@ body <- dashboardBody(
                            includeMarkdown("text/df_prediction.md")
                          )
                 )
-              )
-            )
+              ) # END tabsetPanel
+            ) # END fluidPage
     ),
+    
     # data source tabItem
     tabItem(tabName = "data_source",
             includeMarkdown("text/data_source.md")
@@ -138,21 +145,29 @@ body <- dashboardBody(
     tabItem(tabName = "political_boundary",
             tabsetPanel(id = "deforestation_tabsetPanel",
                         tabPanel(title = "Unauthorized Deforestation",
+                                 
                                  fluidRow(
-                                   box(
-                                     width = 6,
-                                     tags$style(HTML(".leaflet-container {background: #ffffff;}")),
-                                     actionButton("drill_up", "View Departments"),
-                                     actionButton("drill_down", "View Districts"),
-                                     selectInput("year_range", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
-                                     leafletOutput("leafdown", height = "600px")
-                                   ),
-                                   box(
-                                     title = tagList(tags$strong("Illegal Deforestation Bar Plot")),
-                                     width = 6,
-                                     plotlyOutput("illegalPlot")
-                                   )
-                                 )
+                                   div(
+                                     style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+                                     fluidRow(
+                                       column(width = 12,
+                                              tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+                                              h4(tags$strong("Unauthorized Deforestation by Political Boundaries")),
+                                              actionButton("drill_up", "View Departments"),
+                                              actionButton("drill_down", "View Districts"),
+                                              selectInput("year_range", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
+                                              leafletOutput("leafdown", height = "350px")
+                                       ),
+                                       
+                                       box(title = tagList(tags$strong("Unauthorized Deforestation")),
+                                           width = 6,
+                                           plotlyOutput("illegalPlot", height = "400px")
+                                       ),
+                                       box(title = tagList(tags$strong("Change in Unauthorized Deforestation Over Time")),
+                                           width = 6,
+                                           plotlyOutput("areaPlot", height = "400px")
+                                       )
+                                     )))
                         ),
                         tabPanel(title = "Authorized Deforestation",
                                  fluidRow(
@@ -231,26 +246,26 @@ body <- dashboardBody(
     # simulations tabItem
     tabItem(tabName = "simulations",
             fluidPage(
-                        titlePanel("Land Use Stacked Bar Chart"),
-
-                        sidebarLayout(
-                          sidebarPanel(
-                            selectInput("dataset",
-                                        label = "Political Boundary:",
-                                        choices = c("department", "district"),
-                                        selected = "department"),
-
-                            uiOutput("name_selection")
-                          ),
-
-                          mainPanel(
-                            plotlyOutput("landUsePlot")
-                          )
-                        )
-                      ) # END fluidPage
+              titlePanel("Land Use Stacked Bar Chart"),
+              
+              sidebarLayout(
+                sidebarPanel(
+                  selectInput("dataset",
+                              label = "Political Boundary:",
+                              choices = c("department", "district"),
+                              selected = "department"),
+                  
+                  uiOutput("name_selection")
+                ),
+                
+                mainPanel(
+                  plotlyOutput("landUsePlot")
+                )
+              )
+            ) # END fluidPage
     ), # END simulations tabItem
     
-  
+    
     # put_id tabItem
     tabItem(tabName = "predictions",
             # predictions content here
@@ -261,4 +276,5 @@ body <- dashboardBody(
 ) # END dashboardBody
 
 # ------------------------------------------ app ------------------------------------------
+# Create the dashboard page by combining the header, sidebar, and body sections
 dashboardPage(header, sidebar, body)

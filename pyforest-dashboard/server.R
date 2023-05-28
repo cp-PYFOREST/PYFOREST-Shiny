@@ -6,145 +6,29 @@ server <- function(input, output, session) {
 
   pyforest_palette <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")  
   
-  # # Create a reactive variable for filtered compliance_fake
-  # compliance_filtered_df <- eventReactive(input$district, {
-  #   compliance_fake |>
-  #     filter(department == input$department_compliance, district == input$district_compliance)
-  # })
-  # 
-  # Update district choices based on selected department
-  # observeEvent(input$department_compliance, {
-  #   updateSelectInput(session, "district",
-  #                     choices = unique(compliance_fake$district[compliance_fake$department == input$department]),
-  #                     selected = NULL)
-  # })
     
-    
-    # # update selectInput choices for district based on department
-    # observeEvent(input$department_compliance, {
-    #   updateSelectInput(session, "nom_dist", choices = unique(pb_bosques_illegal_df$nom_dist[pb_bosques_illegal_df$nom_dpto == input$nom_dpto]))
-    # })
-    
-    # observeEvent(input$department_deforestation, {
-    #   updateSelectInput(session, "district_deforestation", choices = unique(deforestation_fake$district[deforestation_fake$department == input$department_deforestation]))
-    # })  
-    
-  
-  # # filter for column desired
-  # compliance_filtered_df <- reactive({
-  #   compliance_fake |>
-  #     filter(department == input$department, district == input$district)
-  # })
-    
-    # 
-    # filtered_data <- reactive({
-    #   pb_bosques_illegal_df %>%
-    #     filter(nom_dpto == input$nom_dpto, nom_dist == input$nom_dist) %>%
-    #     group_by(nom_dpto, nom_dist) %>%
-    #     summarize(sum_df_ha = sum(df_area_ha),
-    #               avg_df_ha = mean(df_area_ha),
-    #               total_area_ha = mean(area_ha),
-    #               df_percent = (sum_df_ha / total_area_ha) * 100,
-    #               num_put_id = n_distinct(put_id))
-    # })
-    
-  # # Update district choices based on department selection
-  # observe({
-  #   departments <- input$department
-  #   if (departments != "Select a department") {
-  #     districts <- unique(illegal_df %>%
-  #                           filter(nom_dpto == departments) %>%
-  #                           pull(nom_dist))
-  #     updateSelectInput(session, "district", choices = c("Select a district", districts))
-  #   } else {
-  #     updateSelectInput(session, "district", choices = NULL)
-  #   }
-  # })
-  # 
-  # # Reactive object for the selected department
-  # selected_dept <- reactive({
-  #   if (input$department != "Select a department") {
-  #     illegal_df %>% filter(nom_dpto == input$department)
-  #   } else {
-  #     NULL
-  #   }
-  # })
-  # 
-  # # Filter the data based on user inputs
-  # filtered_data <- reactive({
-  #   if (!is.null(selected_dept()) && input$district != "Select a district") {
-  #     selected_dept() %>% filter(nom_dist == input$district)
-  #   } else {
-  #     NULL
-  #   }
-  # })
-  # 
-  # # Reactive object for the initial map with all departments
-  # all_departments_map <- reactive({
-  #   # Transform the data to WGS84 CRS
-  #   illegal_df_transformed <- st_transform(illegal_df, crs = "+proj=longlat +datum=WGS84")
-  #   
-  #   # Create leaflet map
-  #   leaflet(data = illegal_df_transformed) %>%
-  #     addProviderTiles(providers$CartoDB.Positron) %>%
-  #     addPolygons(fillColor = ~colorNumeric(palette = "YlGnBu", domain = illegal_df_transformed$sum_df_ha_dpto)(sum_df_ha_dpto),
-  #                 fillOpacity = 0.8,
-  #                 color = "#BDBDC3",
-  #                 weight = 1,
-  #                 opacity = 1,
-  #                 label = paste0("Department: ", illegal_df_transformed$nom_dpto,
-  #                                " Illegal Deforestation: ", round(illegal_df_transformed$sum_df_ha_dpto),
-  #                                " Number of properties: ", illegal_df_transformed$num_put_id_dpto))
-  # })
-  # 
-  # # Render the map
-  # output$illegal_df_map <- renderLeaflet({
-  #   # Display the map based on user input
-  #   if (input$department == "Select a department") {
-  #     all_departments_map()
-  #   } else {
-  #     if (is.null(filtered_data())) {
-  #       return(NULL)
-  #     }
-  #     # Transform the data to WGS84 CRS
-  #     filtered_data_transformed <- st_transform(filtered_data(), crs = "+proj=longlat +datum=WGS84")
-  #     
-  #     # Define color palette
-  #     my_palette <- colorNumeric(palette = "YlGnBu", domain = filtered_data_transformed$sum_df_ha_dist)
-  #     
-  #     # Create leaflet map
-  #     leaflet(data = filtered_data_transformed) %>%
-  #       addProviderTiles(providers$CartoDB.Positron) %>%
-  #       addPolygons(fillColor = ~my_palette(sum_df_ha_dist),
-  #                   fillOpacity = 0.8,
-  #                   color = "#BDBDC3",
-  #                   weight = 1,
-  #                   opacity = 1,
-  #                   highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
-  #                   label = paste0("District: ", filtered_data_transformed$nom_dist,
-  #                                  " Illegal Deforestation: ", round(filtered_data_transformed$sum_df_ha_dist),
-  #                                  " Number of properties: ", filtered_data_transformed$num_put_id_dist)) %>%
-  #       addLegend(pal = my_palette,
-  #                 values = filtered_data_transformed$sum_df_ha_dist,
-  #                 title = "Illegal Deforestation (hectares)",
-  #                 position = "bottomright")
-  #   }
-  # 
-  # })
-    
-  
+  # ------------------------------------------ LUP Assessment PB ------------------------------------------
   combined_illegal_df_by_dist <- st_transform(combined_illegal_df_by_dist, crs = "+proj=longlat +datum=WGS84")
   combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
   
+  current_view <- reactiveVal("department")  # Initialize as "department" by default
+  
+  observeEvent(input$drill_down, {
+    current_view("district")  # Set the current view to "district"
+  })
+  
+  observeEvent(input$drill_up, {
+    current_view("department")  # Set the current view to "department"
+  })
+  
   # Function to filter data by year range
   filter_data <- function(data) {
-    data %>% filter(year_range == input$year_range)
+    data %>% filter(year_range == input$year_range) %>%
+      mutate(normalized_value = normalized_value * 10000)  # Multiply by 10,000
   }
   
   data_reactive <- reactive({
-    if (input$drill_down == 0 && input$drill_up == 0) {
-      filter_data(combined_illegal_df_by_dpto)
-    } else if (input$drill_down > 0) {
+    if (current_view() == "district") {
       filter_data(combined_illegal_df_by_dist)
     } else {
       filter_data(combined_illegal_df_by_dpto)
@@ -153,12 +37,22 @@ server <- function(input, output, session) {
   
   output$leafdown <- renderLeaflet({
     data <- data_reactive()
-    my_palette_dpto <- colorNumeric(palette = pyforest_palette, domain = data$sum_df_ha)
+    max_sum_df_ha <- max(data$sum_df_ha)  # Get the maximum value of sum_df_ha
+    my_palette_dpto <- colorNumeric(palette = pyforest_palette,
+                                    domain = data$normalized_value,
+                                    na.color = "transparent")
+    
+    selected_range <- reactive({
+      data <- data_reactive()
+      range_text <- paste0("Approximately ", round(min(data$normalized_value)), "-", round(max(data$normalized_value)), " hectares")
+      range_text
+    })
+    
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
         data = data,
-        fillColor = ~my_palette_dpto(data$sum_df_ha),
+        fillColor = ~my_palette_dpto(data$normalized_value),
         fillOpacity = 0.8,
         color = "#BDBDC3",
         weight = 1,
@@ -168,24 +62,31 @@ server <- function(input, output, session) {
           "Department: ", nom_dpto,
           "<br>Illegal Deforestation: ", round(sum_df_ha), " ha",
           "<br>Number of properties: ", num_put_id,
-          "<br>Number of properties with illegal deforestation: ", num_illegal_props 
+          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
         ) %>% lapply(HTML)
       ) %>%
       addLegend(
         pal = my_palette_dpto,
-        values = data$sum_df_ha,
-        title = "Illegal Deforestation (ha)",
-        position = "bottomright"
+        values = data$normalized_value,
+        #values = c(0, max_sum_df_ha),
+        title = "Unauthorized Deforestation (per 10,000 ha)",
+        position = "bottomright",
+        labels = comma) %>%
+      addControl(
+        html = paste0('<div class="caption">', selected_range(), ' of unauthorized deforestation occurred per 10,000 hectares of total area</div>'),
+        position = "bottomleft"
       )
   })
   
   observeEvent(input$drill_down, {
     data <- data_reactive()
-    my_palette_dist <- colorNumeric(palette = pyforest_palette, domain = data$sum_df_ha)
+    my_palette_dist <- colorNumeric(palette = pyforest_palette,
+                                    domain = data$normalized_value)
+    
     leafletProxy("leafdown") %>% clearShapes() %>%
       addPolygons(
         data = data,
-        fillColor = ~my_palette_dist(data$sum_df_ha),
+        fillColor = ~my_palette_dist(data$normalized_value),
         fillOpacity = 0.8,
         color = "#BDBDC3",
         weight = 1,
@@ -193,20 +94,22 @@ server <- function(input, output, session) {
         highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
         label = ~paste0(
           "District: ", nom_dist,
-          "<br>Illegal Deforestation: ", round(sum_df_ha), " ha",
+          "<br>Illegal Deforestation: ", round(sum_df_ha * 10000), " ha",
           "<br>Number of properties: ", num_put_id,
-          "<br>Number of properties with illegal deforestation: ", num_illegal_props 
+          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
         ) %>% lapply(HTML)
       )
   })
   
   observeEvent(input$drill_up, {
     data <- data_reactive()
-    my_palette_dpto <- colorNumeric(palette = pyforest_palette, domain = data$sum_df_ha)
+    my_palette_dpto <- colorNumeric(palette = pyforest_palette,
+                                    domain = data$normalized_value)
+    
     leafletProxy("leafdown") %>% clearShapes() %>%
       addPolygons(
         data = data,
-        fillColor = ~my_palette_dpto(data$sum_df_ha),
+        fillColor = ~my_palette_dpto(data$normalized_value),
         fillOpacity = 0.8,
         color = "#BDBDC3",
         weight = 1,
@@ -214,45 +117,75 @@ server <- function(input, output, session) {
         highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
         label = ~paste0(
           "Department: ", nom_dpto,
-          "<br>Illegal Deforestation: ", round(sum_df_ha), " ha",
+          "<br>Illegal Deforestation: ", round(sum_df_ha * 10000), " ha",
           "<br>Number of properties: ", num_put_id,
-          "<br>Number of properties with illegal deforestation: ", num_illegal_props 
+          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
         ) %>% lapply(HTML)
       )
   })
-  
-  
+
   output$illegalPlot <- renderPlotly({
-    if (input$drill_down > 0) {
+    data <- data_reactive()
+    if (current_view() == "district") {
       data <- filter_data(combined_illegal_df_by_dist)
       p <- ggplot(data, aes(x = sum_df_ha, y = reorder(nom_dist, num_put_id), fill = sum_df_ha)) +
-        geom_bar(stat = "identity", aes(text = paste("Number of properties:", num_put_id, "<br>Illegal deforestation (ha):", round(sum_df_ha)))) +
+        geom_bar(stat = "identity", tooltip = "text", aes(text = paste("Number of properties:", num_put_id, "<br>Unauthorized deforestation (ha):", round(sum_df_ha)))) +
         scale_fill_gradientn(colors = pyforest_palette) +
-        ggtitle("Illegal Deforestation by District") +
+        #ggtitle("Unauthorized Deforestation by District") +
         xlab("Illegal Deforestation (hectares)") +
         ylab("District") +
         theme_bw() +
         theme(panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
               legend.position = "right") +
-        labs(fill = "Illegal Deforestation")
+        labs(fill = "Unauthorized Deforestation")
     } else {
       data <- filter_data(combined_illegal_df_by_dpto)
       p <- ggplot(data, aes(x = sum_df_ha, y = reorder(nom_dpto, num_put_id), fill = sum_df_ha)) +
-        geom_bar(stat = "identity", aes(text = paste("Number of properties:", num_put_id, "<br>Illegal deforestation (ha):", round(sum_df_ha)))) +
+        geom_bar(stat = "identity", aes(text = paste("Number of properties:", num_put_id, "<br>Unauthorized deforestation (ha):", round(sum_df_ha)))) +
         scale_fill_gradientn(colors = pyforest_palette) +
-        ggtitle("Illegal Deforestation by Department") +
-        xlab("Illegal Deforestation (hectares)") +
+        #ggtitle("Unauthorized Deforestation by Department") +
+        xlab("Illegal Deforestation (ha)") +
         ylab("Department") +
         theme_bw() +
         theme(panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
               legend.position = "right") +
-        labs(fill = "Illegal Deforestation")
+        labs(fill = "Unauthorized Deforestation")
     }
     p <- ggplotly(p, tooltip = "text")
-    p <- layout(p, hoverlabel = list(bgcolor = "white"))  # Add this line to set the tooltip background to white
+    p <- layout(p, hoverlabel = list(bgcolor = "white"))  #tooltip background to white
+    
+    
     return(p)
+  })
+  
+  output$areaPlot <- renderPlotly({
+    if (current_view() == "department")  {
+      combined_illegal_df_by_dpto$year_range <- factor(combined_illegal_df_by_dpto$year_range, levels = rev(unique(as.character(combined_illegal_df_by_dpto$year_range))))
+      p <- ggplot(combined_illegal_df_by_dpto, aes(x = as.character(year_range), y = sum_df_ha, group = nom_dpto)) +
+        geom_area(fill = "#33658A", alpha = 0.3) +
+        geom_point(color = "#33658A", size = 1) +
+        scale_x_discrete(limits = rev(levels(combined_illegal_df_by_dpto$year_range)), labels = rev(levels(combined_illegal_df_by_dpto$year_range))) +
+        labs(x = "Time Frame", y = "Unauthorized Deforestation (ha)") +
+        facet_wrap(~nom_dpto, ncol = 1, scales = "fixed") +
+        theme_minimal() +
+        theme(plot.margin = margin(t = 20, r = 20, b = 80, l = 20))
+    } else {
+      p <- ggplot(combined_illegal_df_by_dist, aes(x = year_range, y = sum_df_ha, group = 1)) +
+        geom_area(fill = "#33658A", alpha = 0.3) +
+        geom_point(color = "#33658A", size = 1) +
+        scale_x_discrete(limits = rev(levels(combined_illegal_df_by_dist$year_range)), labels = rev(levels(combined_illegal_df_by_dist$year_range))) +
+        labs(x = "Time Frame", y = "Unauthorized Deforestation (ha)") +
+        facet_wrap(~ nom_dist, ncol = 2, scales = "free") +
+        theme_minimal() +
+        theme(plot.margin = margin(t = 20, r = 20, b = 40, l = 20),
+              axis.text = element_text(size = 5),  # Adjust the font size of axis labels
+              panel.spacing = unit(0.5, "lines"),  # Adjust the spacing between facets
+              strip.text = element_text(size = 8))
+      
+    }
+    ggplotly(p)
   })
   
   
@@ -288,16 +221,16 @@ server <- function(input, output, session) {
   #     ggsave(file, plot = output$compliance_output_plot())
   #   })
   
-  # filter data table
-  illegal_filtered_df <- reactive({
-    illegal_df |>
-      filter(department == input$nom_dpto, district == input$nom_dist)
-  })
-
-  # Generate table based on selected dept and dist
-  output$illegal_df_output <- renderDataTable({
-    illegal_filtered_df()
-  })
+  # # filter data table
+  # illegal_filtered_df <- reactive({
+  #   illegal_df |>
+  #     filter(department == input$nom_dpto, district == input$nom_dist)
+  # })
+  # 
+  # # Generate table based on selected dept and dist
+  # output$illegal_df_output <- renderDataTable({
+  #   illegal_filtered_df()
+  # })
 
   # # Create a download button for table
   # output$downloadTable <- downloadHandler(
@@ -336,16 +269,16 @@ server <- function(input, output, session) {
   #
   
   
-  # Deforestation tmap output
-  output$map_output <- renderTmap({
-    tmap_mode("view")
-    tm_shape(fl_00_05) +
-      tm_fill(col = "darkgreen")
-    
-  })
+  # # Deforestation tmap output
+  # output$map_output <- renderTmap({
+  #   tmap_mode("view")
+  #   tm_shape(fl_00_05) +
+  #     tm_fill(col = "darkgreen")
+  #   
+  # })
   
   
-  # PUT ID
+  # ------------------------------------------ LUP Assessment by PUT ID ------------------------------------------
   
   compliance_filter<- reactive({
     if (!is.null(input$code) && input$code != "" && input$code != "0") {
@@ -407,7 +340,7 @@ server <- function(input, output, session) {
     }
   ) # END PUT ID
   
-  
+  # ------------------------------------------ LUP Simulations ------------------------------------------
   
   # Create a dynamic UI element in the server.R file using renderUI
   output$name_selection <- renderUI({
@@ -433,11 +366,10 @@ server <- function(input, output, session) {
     plot_land_use_type_stackedh(input$dataset, input$name)
   })
   
+  # ------------------------------------------ XXXX ------------------------------------------
   
   
-  
-  
-  
+
   
   
   
