@@ -32,12 +32,12 @@ library(shiny)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyWidgets)
-library(shiny.i18n)
 library(shinycssloaders)
 library(markdown)
 library(rsconnect)
 library(fresh)
 library(DT)
+library(shinythemes)
 
 # READ IN DATA ----
 

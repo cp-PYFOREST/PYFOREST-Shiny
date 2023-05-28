@@ -5,8 +5,8 @@ pytheme <- create_theme(
   ),
   adminlte_sidebar(
     width = "350px", # Set the width of the sidebar
-    dark_bg = "#3c4d36", # Set the dark background color of the sidebar #4d5c47
-    dark_hover_bg = "#868f82" # Set the dark hover background color of the sidebar
+    dark_bg = "#3c4d36", # Set the background color of the sidebar #4d5c47
+    dark_hover_bg = "#868f82" # Set the hover background color of the sidebar
   ),
   adminlte_global(
     box_bg = "white" # Set the background color of the global elements
@@ -16,26 +16,38 @@ pytheme <- create_theme(
 # ------------------------------------------ header ------------------------------------------
 # Create the header section of the dashboard
 header <- dashboardHeader(
-  title = HTML('<span style="color: white;">INFONA Policy Decision-Making Tool</span>'),
+  title = tags$a(
+    href = "https://www.infona.gov.py/",
+    class = "navbar-brand",
+    tags$img(src = "infona_logo.png", height = "30px", style = "float: left; margin-right: 5px;"),
+    "INFONA Interactive Tool"
+  ),
+  tags$li(
+    class = "dropdown",
+    dropdownMenu(
+      type = 'messages',
+      headerText = "Share it",
+      icon = icon("share-alt"),
+      messageItem(
+        from = 'Twitter',
+        message = "",
+        icon = icon("twitter"),
+        href = "https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&text=Check%20out%20the%20repository%20for%20the%20Paraguayan%20%20Chaco%20Interactive%20Tool%20https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&hashtags=TNC%20%23RShiny"
+      ),
+      messageItem(
+        from = 'LinkedIn',
+        message = "",
+        icon = icon("linkedin"),
+        href = "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny"
+      ) # END messageItem
+    ), # END dropdownMenu
+    tags$a(
+      href = "https://github.com/cp-PYFOREST", # Replace this with the website you want to redirect to
+      tags$img(src = "pyforest_hex_sticker.png", id = "right-logo", height = "30px", style = "float: right; margin-right: 15px; margin-top: 10px;"),
+    )
+  ), # END tags$li
   disable = FALSE,
-  titleWidth = 500,
-  dropdownMenu(
-    type = 'messages',
-    headerText = "Share it",
-    icon = icon("share-alt"),
-    messageItem(
-      from = 'Twitter',
-      message = "",
-      icon = icon("twitter"),
-      href = "https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&text=Check%20out%20the%20repository%20for%20the%20Paraguayan%20%20Chaco%20Interactive%20Tool%20https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&hashtags=TNC%20%23RShiny"
-    ),
-    messageItem(
-      from = 'LinkedIn',
-      message = "",
-      icon = icon("linkedin"),
-      href = "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny"
-    ) # END messageItem
-  ) # END dropdownMenu
+  titleWidth = 400
 ) # END dashboardHeader
 
 # ------------------------------------------ sidebar ------------------------------------------
@@ -84,6 +96,49 @@ sidebar <- dashboardSidebar(
 # Create the body section of the dashboard
 body <- dashboardBody(
   
+  #fluidPage(theme = shinytheme("simplex")),
+  #shinythemes::themeSelector(),
+  
+  tags$style(HTML("
+      /* Change color of active tab */
+      .nav-tabs > li.active > a,
+      .nav-tabs > li.active > a:focus,
+      .nav-tabs > li.active > a:hover {
+        background-color: #2F4858;
+        color: white;
+      }
+      
+      /* Change color of inactive tabs */
+      .nav-tabs > li > a,
+      .nav-tabs > li > a:focus,
+      .nav-tabs > li > a:hover {
+        background-color: #868f82;
+        color: white;
+      }
+      
+      /* Sticky footer */
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          position: relative;
+        }
+        
+        .content {
+          padding-bottom: 60px; /* Height of the footer */
+        }
+        
+        .footer {
+          position: fixed;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+          background-color: #f5f5f5;
+          padding: 10px;
+          text-align: center;
+        }
+    ")),
+  
   use_theme(pytheme),
   
   tabItems(
@@ -102,9 +157,6 @@ body <- dashboardBody(
                            ),
                            title = tags$strong("About the app"),
                            includeMarkdown("text/about_the_app.md")
-                         ),
-                         fluidRow(
-                           includeMarkdown("text/home_page_footer.md")
                          )
                 ),
                 tabPanel(title = "Land Use Plan Assessment",
@@ -262,16 +314,21 @@ body <- dashboardBody(
                   plotlyOutput("landUsePlot")
                 )
               )
+              
             ) # END fluidPage
     ), # END simulations tabItem
     
     
-    # put_id tabItem
+    # predictions tabItem
     tabItem(tabName = "predictions",
             # predictions content here
     ) # END predictions tabItem
     
   ), # END tabItems
+  
+  # Footer text
+  div(class = "footer",
+      includeMarkdown("text/home_page_footer.md"))
   
 ) # END dashboardBody
 

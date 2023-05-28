@@ -18,3 +18,36 @@ img.banner {
   font-weight: bold;
   font-size: 24px;
 }
+
+/* Change color of active tab */
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  background-color: #2F4858;
+  color: white;
+}
+
+/* Change color of inactive tabs */
+.nav-tabs > li > a,
+.nav-tabs > li > a:focus,
+.nav-tabs > li > a:hover {
+  background-color: #868f82;
+  color: white;
+}
+
+
+
+/* Update link colors */
+/*/.sidebar a {
+  color: red!important;
+}
+
+.sidebar a:hover {
+  color: blue!important;
+}*/
+
+/* Update hover over subMenu tab item 
+.sidebar .treeview-menu > li > a:hover {
+  background-color: #868f82!important;
+  color: black!important;
+}*/

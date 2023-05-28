@@ -7,7 +7,7 @@ server <- function(input, output, session) {
   pyforest_palette <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")  
   
     
-  # ------------------------------------------ LUP Assessment PB ------------------------------------------
+  # ------------------------------------------ LUP Assessment Unauthorized ------------------------------------------
   combined_illegal_df_by_dist <- st_transform(combined_illegal_df_by_dist, crs = "+proj=longlat +datum=WGS84")
   combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
   
@@ -35,12 +35,28 @@ server <- function(input, output, session) {
     }
   })
   
+  # Define the fixed range for departments
+  fixed_range_dpto <- c(0, 160)
+  # Define the fixed range for districts
+  fixed_range_dist <- c(0, 70)
+
   output$leafdown <- renderLeaflet({
     data <- data_reactive()
     max_sum_df_ha <- max(data$sum_df_ha)  # Get the maximum value of sum_df_ha
-    my_palette_dpto <- colorNumeric(palette = pyforest_palette,
-                                    domain = data$normalized_value,
-                                    na.color = "transparent")
+    
+    if(current_view() == "district") {
+      my_palette <- colorNumeric(palette = pyforest_palette,
+                                 domain = fixed_range_dist,
+                                 na.color = "transparent")
+      legend_values = fixed_range_dist
+      legend_layerId = "district-legend"
+    } else {
+      my_palette <- colorNumeric(palette = pyforest_palette,
+                                 domain = fixed_range_dpto,
+                                 na.color = "transparent")
+      legend_values = fixed_range_dpto
+      legend_layerId = "department-legend"
+    }
     
     selected_range <- reactive({
       data <- data_reactive()
@@ -52,7 +68,85 @@ server <- function(input, output, session) {
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
         data = data,
-        fillColor = ~my_palette_dpto(data$normalized_value),
+        fillColor = ~my_palette(data$normalized_value),
+        fillOpacity = 0.8,
+        color = "#BDBDC3",
+        weight = 1,
+        opacity = 1,
+        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+        label = ~paste0(
+          "Department: ", nom_dpto,
+          "<br>Illegal Deforestation: ", round(sum_df_ha), " ha",
+          "<br>Number of properties: ", num_put_id,
+          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
+        ) %>% lapply(HTML)
+      ) %>%
+      addControl(
+        html = paste0('<div class="caption">', selected_range(), ' of unauthorized deforestation occurred per 10,000 hectares of total area</div>'),
+        position = "bottomleft"
+      ) %>%
+      addLegend(
+        pal = my_palette,
+        values = legend_values,
+        title = "Unauthorized Deforestation (per 10,000 ha)",
+        position = "bottomright",
+        labels = comma,
+        layerId = legend_layerId
+      )
+  })
+  
+  observeEvent(input$drill_down, {
+    data <- data_reactive()
+    
+    my_palette <- colorNumeric(palette = pyforest_palette,
+                               domain = fixed_range_dist,
+                               na.color = "transparent")
+    legend_values = fixed_range_dist
+    legend_layerId = "district-legend"
+    
+    leafletProxy("leafdown") %>% 
+      clearShapes() %>%
+      removeControl("department-legend") %>%
+      addPolygons(
+        data = data,
+        fillColor = ~my_palette(data$normalized_value),
+        fillOpacity = 0.8,
+        color = "#BDBDC3",
+        weight = 1,
+        opacity = 1,
+        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+        label = ~paste0(
+          "District: ", nom_dist,
+          "<br>Illegal Deforestation: ", round(sum_df_ha), " ha",
+          "<br>Number of properties: ", num_put_id,
+          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
+        ) %>% lapply(HTML)
+      ) %>%
+      addLegend(
+        pal = my_palette,
+        values = legend_values,
+        title = "Unauthorized Deforestation (per 10,000 ha)",
+        position = "bottomright",
+        labels = comma,
+        layerId = legend_layerId
+      )
+  })
+  
+  observeEvent(input$drill_up, {
+    data <- data_reactive()
+    
+    my_palette <- colorNumeric(palette = pyforest_palette,
+                               domain = fixed_range_dpto,
+                               na.color = "transparent")
+    legend_values = fixed_range_dpto
+    legend_layerId = "department-legend"
+    
+    leafletProxy("leafdown") %>% 
+      clearShapes() %>%
+      removeControl("district-legend") %>%
+      addPolygons(
+        data = data,
+        fillColor = ~my_palette(data$normalized_value),
         fillOpacity = 0.8,
         color = "#BDBDC3",
         weight = 1,
@@ -66,61 +160,12 @@ server <- function(input, output, session) {
         ) %>% lapply(HTML)
       ) %>%
       addLegend(
-        pal = my_palette_dpto,
-        values = data$normalized_value,
-        #values = c(0, max_sum_df_ha),
+        pal = my_palette,
+        values = legend_values,
         title = "Unauthorized Deforestation (per 10,000 ha)",
         position = "bottomright",
-        labels = comma) %>%
-      addControl(
-        html = paste0('<div class="caption">', selected_range(), ' of unauthorized deforestation occurred per 10,000 hectares of total area</div>'),
-        position = "bottomleft"
-      )
-  })
-  
-  observeEvent(input$drill_down, {
-    data <- data_reactive()
-    my_palette_dist <- colorNumeric(palette = pyforest_palette,
-                                    domain = data$normalized_value)
-    
-    leafletProxy("leafdown") %>% clearShapes() %>%
-      addPolygons(
-        data = data,
-        fillColor = ~my_palette_dist(data$normalized_value),
-        fillOpacity = 0.8,
-        color = "#BDBDC3",
-        weight = 1,
-        opacity = 1,
-        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
-        label = ~paste0(
-          "District: ", nom_dist,
-          "<br>Illegal Deforestation: ", round(sum_df_ha * 10000), " ha",
-          "<br>Number of properties: ", num_put_id,
-          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
-        ) %>% lapply(HTML)
-      )
-  })
-  
-  observeEvent(input$drill_up, {
-    data <- data_reactive()
-    my_palette_dpto <- colorNumeric(palette = pyforest_palette,
-                                    domain = data$normalized_value)
-    
-    leafletProxy("leafdown") %>% clearShapes() %>%
-      addPolygons(
-        data = data,
-        fillColor = ~my_palette_dpto(data$normalized_value),
-        fillOpacity = 0.8,
-        color = "#BDBDC3",
-        weight = 1,
-        opacity = 1,
-        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
-        label = ~paste0(
-          "Department: ", nom_dpto,
-          "<br>Illegal Deforestation: ", round(sum_df_ha * 10000), " ha",
-          "<br>Number of properties: ", num_put_id,
-          "<br>Number of properties with unauthorized deforestation: ", num_illegal_props
-        ) %>% lapply(HTML)
+        labels = comma,
+        layerId = legend_layerId
       )
   })
 
@@ -179,16 +224,19 @@ server <- function(input, output, session) {
         labs(x = "Time Frame", y = "Unauthorized Deforestation (ha)") +
         facet_wrap(~ nom_dist, ncol = 2, scales = "free") +
         theme_minimal() +
-        theme(plot.margin = margin(t = 20, r = 20, b = 40, l = 20),
+        theme(plot.margin = margin(t = 10, r = 10, b = 30, l = 10),
               axis.text = element_text(size = 5),  # Adjust the font size of axis labels
-              panel.spacing = unit(0.5, "lines"),  # Adjust the spacing between facets
+              panel.spacing = unit(1, "lines"),  # Adjust the spacing between facets
               strip.text = element_text(size = 8))
       
     }
     ggplotly(p)
   })
   
+  # ------------------------------------------ LUP Assessment Authorized ------------------------------------------
   
+  
+
   
   
 
