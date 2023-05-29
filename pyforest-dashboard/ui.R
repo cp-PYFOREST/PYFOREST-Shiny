@@ -205,10 +205,10 @@ body <- dashboardBody(
                                        column(width = 12,
                                               tags$style(HTML(".leaflet-container {background: #ffffff;}")),
                                               h4(tags$strong("Unauthorized Deforestation by Political Boundaries")),
-                                              actionButton("drill_up", "View Departments"),
-                                              actionButton("drill_down", "View Districts"),
-                                              selectInput("year_range", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
-                                              leafletOutput("leafdown", height = "350px")
+                                              actionButton("drill_up_unauthorized", "View Departments"),
+                                              actionButton("drill_down_unauthorized", "View Districts"),
+                                              selectInput("year_range_unauthorized", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
+                                              leafletOutput("leafdown_unauthorized", height = "350px")
                                        ),
                                        
                                        box(title = tagList(tags$strong("Unauthorized Deforestation")),
@@ -223,24 +223,32 @@ body <- dashboardBody(
                         ),
                         tabPanel(title = "Authorized Deforestation",
                                  fluidRow(
-                                   # box(
-                                   #   width = 6,
-                                   #   tags$style(HTML(".leaflet-container {background: #ffffff;}")),
-                                   #   actionButton("drill_up", "View Departments"),
-                                   #   actionButton("drill_down", "View Districts"),
-                                   #   selectInput("year_range", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
-                                   #   leafletOutput("leafdown", height = "600px")
-                                   # ),
-                                   # box(
-                                   #   title = tagList(tags$strong("Illegal Deforestation Bar Plot")),
-                                   #   width = 6,
-                                   #   plotlyOutput("illegalPlot")
-                                   # )
-                                 )
+                                   div(
+                                     style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+                                     fluidRow(
+                                       column(width = 12,
+                                              tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+                                              h4(tags$strong("Authorized Deforestation by Political Boundaries")),
+                                              actionButton("drill_up_authorized", "View Departments"),
+                                              actionButton("drill_down_authorized", "View Districts"),
+                                              selectInput("year_range_authorized", "Select Year Range", unique(combined_auth_df_by_dpto$year_range)),
+                                              leafletOutput("leafdown_authorized", height = "350px")
+                                       ),
+                                       
+                                       box(title = tagList(tags$strong("Authorized Deforestation")),
+                                           width = 6,
+                                           plotlyOutput("authorizedPlot", height = "400px")
+                                       ),
+                                       box(title = tagList(tags$strong("Change in Authorized Deforestation Over Time")),
+                                           width = 6,
+                                           plotlyOutput("area_authorized_Plot", height = "400px")
+                                       )
+                                     )))
                         )
             )
     ),
-    # put_id tabItem
+    
+    # put_id tabItem ----
     tabItem(tabName = "put_id",
             fluidPage(
               #theme = bslib::bs_theme(bootswatch = "morph"),
@@ -285,7 +293,7 @@ body <- dashboardBody(
             )
     ),
     
-    # deforestation_stats tabItem
+    # deforestation_stats tabItem ----
     tabItem(tabName = "deforestation_stats",
             fluidRow(
               box(width = 12,
@@ -294,7 +302,7 @@ body <- dashboardBody(
               actionButton("drill_down", "View Districts"),),
               column(width = 2, selectInput("year_range", "Select a Year Range", unique(py_fl_dept$year_range)))
               ),
-              box(width = 12, 
+              box(width = 12,
                      #title = tags$strong("Deforestation by year & political boundary"),
                      leafletOutput("leafdown_forest_loss"),
                   tags$style(HTML(".leaflet-container {background: #ffffff;}"))),
@@ -307,15 +315,14 @@ body <- dashboardBody(
             )
             
             
-            
     ),
     
-    # forest_cover_statstabItem
+    # forest_cover_stats tabItem ----
     tabItem(tabName = "forest_cover_stats",
-            # put_id content here
+            # forest_cover_stats content here
     ),
     
-    # simulations tabItem
+    # simulations tabItem ----
     tabItem(tabName = "simulations",
             fluidPage(
               titlePanel("Land Use Stacked Bar Chart"),
@@ -339,14 +346,14 @@ body <- dashboardBody(
     ), # END simulations tabItem
     
     
-    # predictions tabItem
+    # predictions tabItem ----
     tabItem(tabName = "predictions",
             # predictions content here
     ) # END predictions tabItem
     
   ), # END tabItems
   
-  # Footer text
+  # Footer text ----
   div(class = "footer",
       includeMarkdown("text/home_page_footer.md"))
   
