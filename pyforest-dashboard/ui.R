@@ -287,7 +287,27 @@ body <- dashboardBody(
     
     # deforestation_stats tabItem
     tabItem(tabName = "deforestation_stats",
-            # put_id content here
+            fluidRow(
+              box(width = 12,
+                  title = tags$strong("Deforestation by Political Boundaries"),
+                  column( width = 12, actionButton("drill_up", "View Departments"),
+              actionButton("drill_down", "View Districts"),),
+              column(width = 2, selectInput("year_range", "Select a Year Range", unique(py_fl_dept$year_range)))
+              ),
+              box(width = 12, 
+                     #title = tags$strong("Deforestation by year & political boundary"),
+                     leafletOutput("leafdown_forest_loss"),
+                  tags$style(HTML(".leaflet-container {background: #ffffff;}"))),
+              box(width = 6,
+                  title = tags$strong("Deforestation Area (ha):"),
+                  plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot")),
+              box(width = 6,
+                  title = tags$strong("Deforestation Percent (%):"),
+                  plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot"))
+            )
+            
+            
+            
     ),
     
     # forest_cover_statstabItem

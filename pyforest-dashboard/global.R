@@ -26,6 +26,7 @@ library(sp)
 library(ggthemr)
 library(flextable)
 library(leafdown)
+library(leaflet.extras)
 
 # Interactive web apps
 library(shiny)
@@ -38,6 +39,7 @@ library(rsconnect)
 library(fresh)
 library(DT)
 library(shinythemes)
+
 
 # READ IN DATA ----
 
@@ -53,6 +55,13 @@ combined_auth_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_d
 ## land use assessment sub tab
 compliance <- st_read("~/../../capstone/pyforest/shinydata/lup_assessment/compliance_updated.gpkg")
 compliance <- st_transform(compliance, 4326)
+
+## deforestation and forest cover statistics data 
+datadir <- path.expand("~/../../capstone/pyforest")
+py_fl_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_loss.gpkg"))
+py_fl_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_loss.gpkg"))
+py_fc_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_cover.gpkg"))
+py_fc_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_cover.gpkg"))
 
 ## land use simulation data
 area_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_department_land_use.rds")
