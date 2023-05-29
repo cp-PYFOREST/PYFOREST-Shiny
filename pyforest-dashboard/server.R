@@ -4,7 +4,7 @@
 server <- function(input, output, session) {
   
 
-  pyforest_palette <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")  
+  pyforest_palette <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")
   
     
   # ------------------------------------------ LUP Assessment Unauthorized ------------------------------------------
@@ -615,7 +615,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
 
   py_fl_dept <- st_transform(py_fl_dept, crs = "+proj=longlat +datum=WGS84")
   py_fl_dist <- st_transform(py_fl_dist, crs = "+proj=longlat +datum=WGS84")
-  pyforest_palette <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
+  pyforest_palette_df <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
 
   filter_data <- function(data) {
     data %>% filter(year_range == input$year_range)
@@ -642,7 +642,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
 
   output$leafdown_forest_loss <- renderLeaflet({
     data <- data_dept()
-    my_palette_dpto <- colorNumeric(palette = pyforest_palette, domain = data$percent_forest_loss)
+    my_palette_dpto <- colorNumeric(palette = pyforest_palette_df, domain = data$percent_forest_loss)
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
@@ -670,7 +670,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
 
   observeEvent(input$drill_down, {
     data <- data_dist()
-    my_palette_dist <- colorNumeric(palette = pyforest_palette, domain = data$percent_forest_loss)
+    my_palette_dist <- colorNumeric(palette = pyforest_palette_df, domain = data$percent_forest_loss)
     leafletProxy("leafdown") %>% clearShapes() %>%
       addPolygons(
         data = data,
@@ -693,7 +693,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
 
   observeEvent(input$drill_up, {
     data <- data_dept()
-    my_palette_dept <- colorNumeric(palette = pyforest_palette, domain = data$percent_forest_loss)
+    my_palette_dept <- colorNumeric(palette = pyforest_palette_df, domain = data$percent_forest_loss)
     leafletProxy("leafdown") %>% clearShapes() %>%
       addPolygons(
         data = data,
