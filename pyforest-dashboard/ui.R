@@ -299,7 +299,8 @@ body <- dashboardBody(
               box(width = 12,
                   title = tags$strong("Deforestation by Political Boundaries"),
                   column( width = 12, actionButton("drill_up", "View Departments"),
-              actionButton("drill_down", "View Districts"),),
+              #actionButton("drill_down", "View Districts"),), #double comma?
+              actionButton("drill_down", "View Districts")),
               column(width = 2, selectInput("year_range", "Select a Year Range", unique(py_fl_dept$year_range)))
               ),
               box(width = 12,
@@ -319,7 +320,22 @@ body <- dashboardBody(
     
     # forest_cover_stats tabItem ----
     tabItem(tabName = "forest_cover_stats",
-            # forest_cover_stats content here
+            fluidRow(
+              box(width = 12,
+                  title = tags$strong("Forest Cover by Political Boundaries"),
+                  column(width = 12, actionButton("drill_upward", "View Departments"),
+                         actionButton("drill_downward", "View Districts")),
+                  column(width = 2, selectInput("years_selected_var", "Select a Year", unique(py_fc_dept$year)))),
+              box(width = 12,
+                  leafletOutput("leafdown_forest_cover"),
+                  tags$style(HTML(".leaflet-container {background: #ffffff;}"))),
+              box(width = 6,
+                  title = tags$strong("Forest Cover Area (ha):"),
+                  plotly::plotlyOutput(outputId = "forest_cover_area_ha_plot")),
+              box(width = 6,
+                  title = tags$strong("Forest Cover Percent (%):"),
+                  plotly::plotlyOutput(outputId = "forest_cover_area_percent_plot"))
+            )
     ),
     
     # simulations tabItem ----

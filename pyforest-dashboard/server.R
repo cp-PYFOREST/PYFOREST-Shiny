@@ -615,33 +615,34 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
 
   py_fl_dept <- st_transform(py_fl_dept, crs = "+proj=longlat +datum=WGS84")
   py_fl_dist <- st_transform(py_fl_dist, crs = "+proj=longlat +datum=WGS84")
-  pyforest_palette_df <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
-
-  filter_data <- function(data) {
+  #pyforest_palette_df <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
+  pyforest_palette_df <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")
+  
+  filter_data_deforestation <- function(data) {
     data %>% filter(year_range == input$year_range)
   }
 
 
-  data_dept <- reactive({
+  data_dept_deforestation <- reactive({
     if (input$drill_down == 0 && input$drill_up == 0) {
-      filter_data(py_fl_dept)
+      filter_data_deforestation(py_fl_dept)
     } else if (input$drill_up > 0) {
-      filter_data(py_fl_dept)
+      filter_data_deforestation(py_fl_dept)
     } else {
-      filter_data(py_fl_dept)
+      filter_data_deforestation(py_fl_dept)
     }
   })
 
-  data_dist <- reactive({
+  data_dist_deforestation <- reactive({
     if (input$drill_down > 0) {
-      filter(py_fl_dist)
+      filter_data_deforestation(py_fl_dist)
     }  else {
-      filter(py_fl_dept)
+      filter_data_deforestation(py_fl_dept)
     }
   })
 
   output$leafdown_forest_loss <- renderLeaflet({
-    data <- data_dept()
+    data <- data_dept_deforestation()
     my_palette_dpto <- colorNumeric(palette = pyforest_palette_df, domain = data$percent_forest_loss)
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
@@ -669,9 +670,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   })
 
   observeEvent(input$drill_down, {
-    data <- data_dist()
+    data <- data_dist_deforestation()
     my_palette_dist <- colorNumeric(palette = pyforest_palette_df, domain = data$percent_forest_loss)
-    leafletProxy("leafdown") %>% clearShapes() %>%
+    leafletProxy("leafdown_forest_loss") %>% clearShapes() %>%
       addPolygons(
         data = data,
         fillColor = ~my_palette_dist(data$percent_forest_loss),
@@ -692,9 +693,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
 
 
   observeEvent(input$drill_up, {
-    data <- data_dept()
+    data <- data_dept_deforestation()
     my_palette_dept <- colorNumeric(palette = pyforest_palette_df, domain = data$percent_forest_loss)
-    leafletProxy("leafdown") %>% clearShapes() %>%
+    leafletProxy("leafdown_forest_loss") %>% clearShapes() %>%
       addPolygons(
         data = data,
         fillColor = ~my_palette_dept(data$percent_forest_loss),
@@ -873,13 +874,261 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   
   
   # -----------------------------------------  Forest Cover Statistics -----------------------------------
+  py_fc_dept <- st_transform(py_fc_dept, crs = "+proj=longlat +datum=WGS84")
+  py_fc_dist <- st_transform(py_fc_dist, crs = "+proj=longlat +datum=WGS84")
+  pyforest_palette_fc <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
+  
+  
+
+  
+  filter_data <- function(data) { data %>% filter(year == input$years_selected_var) }
+  
+  
+  # Create reactive data for department and district levels
+  data_dept_forest_cover <- reactive({
+    if (input$drill_downward == 0 && input$drill_upward == 0) {
+      filter_data(py_fc_dept)
+    } else if (input$drill_upward > 0) {
+      filter_data(py_fc_dept)
+    } else {
+      filter_data(py_fc_dept)
+    }
+  })
+  
+  data_dist_forest_cover <- reactive({
+    if (input$drill_downward > 0) {
+      filter(py_fc_dist)
+    }  else {
+      filter(py_fc_dept)
+    }
+  })
+  
+  output$leafdown_forest_cover <- renderLeaflet({
+    data_filtered <- data_dept_forest_cover()
+    my_palette_dpto <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
+    leaflet() %>%
+      addProviderTiles("CartoDB.Positron") %>%
+      addPolygons(
+        data = data_filtered,
+        fillColor = ~my_palette_dpto(data_filtered$percent_fc),
+        fillOpacity = 0.8,
+        color = "#BDBDC3",
+        weight = 1,
+        opacity = 1,
+        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+        label = ~paste0(
+          "<b>Year: </b>", year,
+          "<br><b>Department: </b>", nom_dpto,
+          "<br><b>Percent Forest Cover: </b>", data_filtered$percent_fc, " %",
+          "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
+        ) %>% lapply(HTML)
+      ) %>%
+      addLegend(
+        pal = my_palette_dpto,
+        values = data_filtered$percent_fc,
+        title = "Percent Forest Cover ",
+        position = "bottomright"
+      )
+  })
+  
+  observeEvent(input$drill_downward, {
+    data_filtered <- data_dist_forest_cover()
+    my_palette_dist <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
+    leafletProxy("leafdown_forest_cover") %>% clearShapes() %>%
+      addPolygons(
+        data = data_filtered,
+        fillColor = ~my_palette_dist(data_filtered$percent_fc),
+        fillOpacity = 0.8,
+        color = "#BDBDC3",
+        weight = 1,
+        opacity = 1,
+        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+        label = ~paste0(
+          "<b>Year: </b>", year,
+          "<br><b>District: </b>", nom_dist,
+          "<br><b>Department: </b>", nom_dpto,
+          "<br><b>Percent Forest Cover: </b>", data_filtered$percent_fc, " %",
+          "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
+        ) %>% lapply(HTML)
+      )
+  })
+  
+  
+  observeEvent(input$drill_upward, {
+    data_filtered <- data_dept_forest_cover()
+    my_palette_dept <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
+    leafletProxy("leafdown_forest_cover") %>% clearShapes() %>%
+      addPolygons(
+        data = data_filtered,
+        fillColor = ~my_palette_dept(data_filtered$percent_fc),
+        fillOpacity = 0.8,
+        color = "#BDBDC3",
+        weight = 1,
+        opacity = 1,
+        highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
+        label = ~paste0(
+          "<b>Year: </b>", year, 
+          "<br><b>Department: </b>", nom_dpto,
+          "<br><b>Percent Forest Cover </b>", data_filtered$percent_fc, " %",
+          "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
+        ) %>% lapply(HTML)
+      )
+  })
+  
+  
+  output$forest_cover_area_ha_plot <- renderPlotly({ 
+    
+    if (input$drill_downward > 0) {
+      data_filtered <- py_fc_dist %>% st_drop_geometry()
+      data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
+      fc_district_plot <- 
+        ggplot(data = data_filtered, aes(x = year, y = fc_area_ha, group = nom_dist, color = nom_dpto)) +
+        geom_line(size = 1) +
+        geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
+                                    "<b>District: </b>", nom_dist, "<br>",
+                                    "<b>Department: </b>", nom_dpto, "<br>",
+                                    "<b>Forest Cover Area: </b>", fc_area_ha, "ha", "<br>",
+                                    "<b>Forest Cover Percent: </b>", percent_fc, "%")),color = "transparent") +
+        labs(#title = "Forest Cover Over the Years by Department",
+             x = "Year",
+             y = "Forest Cover Area (ha)",
+             color = "Department") +
+        theme_minimal() +
+        theme(legend.position = "bottom") +
+        scale_y_continuous(labels = scales::comma_format()) +
+        scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+        scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
+      fc_district_plot <- ggplotly(fc_district_plot, tooltip = "text")
+      fc_district_plot <- layout(fc_district_plot, hoverlabel = list(bgcolor = "white"))
+      
+      
+      
+    } else if (input$drill_upward > 0) {
+      data_filtered <- py_fc_dept %>% st_drop_geometry()
+      data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
+      fc_department_plot <- 
+        ggplot(data = data_filtered, aes(x = year, y = fc_area_ha, group = nom_dpto, color = nom_dpto)) +
+        geom_line(size = 1) +
+        geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
+                                    "<b>Department: </b>", nom_dpto, "<br>",
+                                    "<b>Forest Cover Area: </b>", fc_area_ha, "ha", "<br>",
+                                    "<b>Forest Cover Percent: </b>", percent_fc, "%")),color = "transparent") +
+        labs(#title = "Chaco Departments Forest Cover Over the Years",
+             x = "Year",
+             y = "Forest Cover Area (ha)",
+             color = "Department") +
+        theme_minimal() +
+        theme(legend.position = "bottom") +
+        scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+        scale_y_continuous(labels = scales::comma_format()) +
+        scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
+      fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
+      fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
+      
+      
+      
+    } else {
+      data_filtered <- py_fc_dept %>% st_drop_geometry()
+      data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
+      fc_department_plot <- 
+        ggplot(data = data_filtered, aes(x = year, y = fc_area_ha, group = nom_dpto, color = nom_dpto)) +
+        geom_line(size = 1) +
+        geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
+                                    "<b>Department: </b>", nom_dpto, "<br>",
+                                    "<b>Forest Cover Area: </b>", fc_area_ha, "ha", "<br>",
+                                    "<b>Forest Cover Percent: </b>", percent_fc, "%")),color = "transparent") +
+        labs(#title = "Chaco Departments Forest Cover Over the Years",
+             x = "Year",
+             y = "Forest Cover Area (ha)",
+             color = "Department") +
+        theme_minimal() +
+        theme(legend.position = "bottom") +
+        scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+        scale_y_continuous(labels = scales::comma_format()) +
+        scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
+      fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
+      fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
+    }
+  })
   
   
   
   
+  output$forest_cover_area_percent_plot <- renderPlotly({ 
+    
+    if (input$drill_downward > 0) {
+      data_filtered <- py_fc_dist %>% st_drop_geometry()
+      data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
+      fc_district_plot <- 
+        ggplot(data = data_filtered, aes(x = year, y = percent_fc, group = nom_dist, color = nom_dpto)) +
+        geom_line(size = 1) +
+        geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
+                                    "<b>District: </b>", nom_dist, "<br>",
+                                    "<b>Department: </b>", nom_dpto, "<br>",
+                                    "<b>Forest Cover Percent: </b>", percent_fc, "%", "<br>",
+                                    "<b>Forest Cover Area: </b>", fc_area_ha, "ha")),color = "transparent") +
+        labs(#title = "Chaco Districts Forest Cover Over the Years",
+             x = "Year",
+             y = "Forest Cover Percent (%)",
+             color = "Department") +
+        theme_minimal() +
+        theme(legend.position = "bottom") +
+        scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+        scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
+      fc_district_plot <- ggplotly(fc_district_plot, tooltip = "text")
+      fc_district_plot <- layout(fc_district_plot, hoverlabel = list(bgcolor = "white"))
+      
+      
+      
+    } else if (input$drill_upward > 0) {
+      data_filtered <- py_fc_dept %>% st_drop_geometry()
+      data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
+      fc_department_plot <- 
+        ggplot(data = data_filtered, aes(x = year, y = percent_fc, group = nom_dpto, color = nom_dpto)) +
+        geom_line(size = 1) +
+        geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
+                                    "<b>Department: </b>", nom_dpto, "<br>",
+                                    "<b>Forest Cover Percent: </b>", percent_fc, "%", "<br>",
+                                    "<b>Forest Cover Area: </b>", fc_area_ha, "ha")),color = "transparent") +
+        labs(#title = "Chaco Departments Forest Cover Over the Years",
+             x = "Year",
+             y = "Forest Cover Percent (%)",
+             color = "Department") +
+        theme_minimal() +
+        theme(legend.position = "bottom") +
+        scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+        scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
+      fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
+      fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
+      
+      
+      
+    } else {
+      data_filtered <- py_fc_dept %>% st_drop_geometry()
+      data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
+      fc_department_plot <- 
+        ggplot(data = data_filtered, aes(x = year, y = percent_fc, group = nom_dpto, color = nom_dpto)) +
+        geom_line(size = 1) +
+        geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
+                                    "<b>Department: </b>", nom_dpto, "<br>",
+                                    "<b>Forest Cover Percent: </b>", percent_fc, "%", "<br>",
+                                    "<b>Forest Cover Area: </b>", fc_area_ha, "ha")),color = "transparent") +
+        labs(#title = "Chaco Departments Forest Cover Over the Years",
+             x = "Year",
+             y = "Forest Cover Percent (%)",
+             color = "Department") +
+        theme_minimal() +
+        theme(legend.position = "bottom") +
+        scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
+        scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
+      
+      
+      fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
+      fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
+    }
+  })
   
-  
-  
+
   
   # ------------------------------------------ LUP Simulations ------------------------------------------
   
