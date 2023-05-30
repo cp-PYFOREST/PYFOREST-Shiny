@@ -1,50 +1,41 @@
 # Create the theme
 pytheme <- create_theme(
-  adminlte_color(
-    light_blue = "#2F4858" ##3c4d36
-  ),
-  adminlte_sidebar(
-    width = "350px", # Set the width of the sidebar
-    dark_bg = "#3c4d36", # Set the background color of the sidebar #4d5c47
-    dark_hover_bg = "#868f82" # Set the hover background color of the sidebar
-  ),
-  adminlte_global(
-    box_bg = "white" # Set the background color of the global elements
-  )
+  adminlte_color(light_blue = "#2F4858"), ##3c4d36
+  adminlte_sidebar(width = "350px", # Set the width of the sidebar
+                   dark_bg = "#3c4d36", # Set the background color of the sidebar 
+                   dark_hover_bg = "#868f82"), # Set the hover background color of the sidebar
+  adminlte_global(box_bg = "white") # Set the background color of the global elements
 )
 
 # ------------------------------------------ header ------------------------------------------
 # Create the header section of the dashboard
 header <- dashboardHeader(
-  title = tags$a(
-    href = "https://www.infona.gov.py/",
-    class = "navbar-brand",
-    tags$img(src = "infona_logo.png", height = "30px", style = "float: left; margin-right: 5px;"),
-    "INFONA Interactive Tool"
+  title = tags$a(href = "https://www.infona.gov.py/",
+                 class = "navbar-brand",
+                 tags$img(src = "infona_logo.png", height = "30px", style = "float: left; margin-right: 5px;"),
+                 "INFONA Interactive Tool"
   ),
-  tags$li(
-    class = "dropdown",
-    dropdownMenu(
-      type = 'messages',
-      headerText = "Share it",
-      icon = icon("share-alt"),
-      messageItem(
-        from = 'Twitter',
-        message = "",
-        icon = icon("twitter"),
-        href = "https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&text=Check%20out%20the%20repository%20for%20the%20Paraguayan%20%20Chaco%20Interactive%20Tool%20https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&hashtags=TNC%20%23RShiny"
-      ),
-      messageItem(
-        from = 'LinkedIn',
-        message = "",
-        icon = icon("linkedin"),
-        href = "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny"
-      ) # END messageItem
-    ), # END dropdownMenu
-    tags$a(
-      href = "https://github.com/cp-PYFOREST", # Replace this with the website you want to redirect to
-      tags$img(src = "pyforest_hex_sticker.png", id = "right-logo", height = "30px", style = "float: right; margin-right: 15px; margin-top: 10px;"),
-    )
+  tags$li(class = "dropdown",
+          dropdownMenu(type = 'messages',
+                       headerText = "Share it",
+                       icon = icon("share-alt"),
+                       messageItem(from = 'Twitter',
+                                   message = "",
+                                   icon = icon("twitter"),
+                                   href = "https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&text=Check%20out%20the%20repository%20for%20the%20Paraguayan%20%20Chaco%20Interactive%20Tool%20https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny&hashtags=TNC%20%23RShiny"
+                       ),
+                       messageItem(from = 'LinkedIn',
+                                   message = "",
+                                   icon = icon("linkedin"),
+                                   href = "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fgithub.com%2Fcp-PYFOREST%2FPYFOREST-Shiny"
+                       ) # END messageItem
+          ), # END dropdownMenu
+          tags$a(href = "https://github.com/cp-PYFOREST", # Replace this with the website you want to redirect to
+                 tags$img(src = "pyforest_hex_sticker.png", 
+                          id = "right-logo", 
+                          height = "30px", 
+                          style = "float: right; margin-right: 15px; margin-top: 10px;"),
+          ) # END tags$a
   ), # END tags$li
   disable = FALSE,
   titleWidth = 400
@@ -54,41 +45,37 @@ header <- dashboardHeader(
 # Create the sidebar section of the dashboard
 sidebar <- dashboardSidebar(
   
+  #sidebarMenu ----
   sidebarMenu(
-    menuItem(
-      text = "Home",
-      tabName = "home",
-      icon = icon("house"),
-      startExpanded = TRUE,
-      menuSubItem('About the app', tabName = 'about_the_app', icon = icon('circle-info')),
-      menuSubItem('Data Source', tabName = 'data_source', icon = icon('server')),
-      menuSubItem('Project Information', tabName = 'project_information', icon = icon('github'))
-    ),
-    menuItem(
-      text = "Land Use Plan Assessment",
-      tabName = "assessment",
-      icon = icon("clipboard-check"),
-      startExpanded = FALSE,
-      menuSubItem('By Political Boundary', tabName = 'political_boundary', icon = icon('earth-americas')),
-      menuSubItem('By PUT ID', tabName = 'put_id', icon = icon('draw-polygon'))
-    ),
-    menuItem(
-      text = "Deforestation and Forest Cover Statistics",
-      tabName = "deforestation_statistics",
-      icon = icon("chart-line"),
-      menuSubItem('Deforestation Statistics', tabName = 'deforestation_stats', icon = icon('chart-line')),
-      menuSubItem('Forest Cover Statistics', tabName = 'forest_cover_stats', icon = icon('chart-line'))
-    ),
-    menuItem(
-      text = "Land Use Plan Simulations",
-      tabName = 'simulations',
-      icon = icon('chart-simple')
-    ),
-    menuItem(
-      text = "Deforestation Predictions",
-      tabName = 'predictions',
-      icon = icon('globe')
-    )
+    menuItem(text = "Home",
+             tabName = "home",
+             icon = icon("house"),
+             startExpanded = TRUE,
+             menuSubItem('About the app', tabName = 'about_the_app', icon = icon('circle-info')),
+             menuSubItem('Data Source', tabName = 'data_source', icon = icon('server')),
+             menuSubItem('Project Information', tabName = 'project_information', icon = icon('github'))
+             ), # END Home menuItem
+    menuItem(text = "Land Use Plan Assessment",
+             tabName = "assessment",
+             icon = icon("clipboard-check"),
+             startExpanded = FALSE,
+             menuSubItem('By Political Boundary', tabName = 'political_boundary', icon = icon('earth-americas')),
+             menuSubItem('By PUT ID', tabName = 'put_id', icon = icon('draw-polygon'))
+             ), # END Land Use Plan Assessment menuItem
+    menuItem(text = "Deforestation and Forest Cover Statistics",
+             tabName = "deforestation_statistics",
+             icon = icon("chart-line"),
+             menuSubItem('Deforestation Statistics', tabName = 'deforestation_stats', icon = icon('chart-line')),
+             menuSubItem('Forest Cover Statistics', tabName = 'forest_cover_stats', icon = icon('chart-line'))
+             ), # END df and fc Statistics menuItem
+    menuItem(text = "Land Use Plan Simulations",
+             tabName = 'simulations',
+             icon = icon('chart-simple')
+             ), # END Land Use Plan Simulations menuItem
+    menuItem(text = "Deforestation Predictions",
+             tabName = 'predictions',
+             icon = icon('globe')
+             ) # END Deforestation Predictions menuItem
   ) # END sidebarMenu
 ) # END dashboardSidebar
 
@@ -99,6 +86,7 @@ body <- dashboardBody(
   #fluidPage(theme = shinytheme("simplex")),
   #shinythemes::themeSelector(),
   
+  #theme ----
   tags$style(HTML("
       /* Change color of active tab */
       .nav-tabs > li.active > a,
@@ -141,6 +129,7 @@ body <- dashboardBody(
   
   use_theme(pytheme),
   
+  #tabItems ----
   tabItems(
     # about the app tabItem
     tabItem(tabName = "about_the_app",
@@ -220,7 +209,7 @@ body <- dashboardBody(
                                            plotlyOutput("areaPlot", height = "400px")
                                        )
                                      )))
-                        ),
+                        ), # END Unauthorized DeforestationtabPanel 
                         tabPanel(title = "Authorized Deforestation",
                                  fluidRow(
                                    div(
@@ -244,7 +233,7 @@ body <- dashboardBody(
                                            plotlyOutput("area_authorized_Plot", height = "400px")
                                        )
                                      )))
-                        )
+                        ) # END Authorized Deforestation tabPanel 
             )
     ),
     
@@ -268,29 +257,27 @@ body <- dashboardBody(
                   
                   # button for download report
                   downloadButton("download_report", "Download Report")
-                ),
-                mainPanel(
-                  width = 8,
-                  fluidRow(
-                    column(
-                      width = 12,
-                      br(),
-                      div(
-                        style = 'overflow-x: scroll; height: auto;',
-                        # output 1 map ----
-                        leafletOutput(outputId = "map")
-                      )
-                    )
-                  )
-                  ,
-                  fluidRow(
-                    # output 2 table ----
-                    DT::dataTableOutput("table")
-                  )
-                  
-                )
-              )
-            )
+                ), # END sidebarPanel
+                mainPanel(width = 8,
+                          fluidRow(
+                            column(
+                              width = 12,
+                              br(),
+                              div(style = 'overflow-x: scroll; height: auto;',
+                                  # output 1 map ----
+                                  leafletOutput(outputId = "map")
+                              )
+                            )
+                          )
+                          ,
+                          fluidRow(
+                            # output 2 table ----
+                            DT::dataTableOutput("table")
+                          )
+                          
+                ) # END mainPanel
+              ) # END sidebarLayout
+            ) # END fluidPage
     ),
     
     # deforestation_stats tabItem ----
