@@ -183,42 +183,63 @@ body <- dashboardBody(
     ),
     
     # political boundary tabItem
-    tabItem(tabName = "political_boundary",
-            tabsetPanel(id = "deforestation_tabsetPanel",
-                        tabPanel(title = "Unauthorized Deforestation",
-                                 
-                                 fluidRow(
-                                   div(
-                                     style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
-                                     fluidRow(
-                                       column(width = 12,
-                                              tags$style(HTML(".leaflet-container {background: #ffffff;}")),
-                                              h4(tags$strong("Unauthorized Deforestation by Political Boundaries")),
-                                              actionButton("drill_up_unauthorized", "View Departments"),
-                                              actionButton("drill_down_unauthorized", "View Districts"),
-                                              selectInput("year_range_unauthorized", "Select Year Range", unique(combined_illegal_df_by_dpto$year_range)),
-                                              leafletOutput("leafdown_unauthorized", height = "350px")
-                                       ),
-                                       
-                                       box(title = tagList(tags$strong("Unauthorized Deforestation")),
-                                           width = 6,
-                                           plotlyOutput("illegalPlot", height = "400px")
-                                       ),
-                                       box(title = tagList(tags$strong("Change in Unauthorized Deforestation Over Time")),
-                                           width = 6,
-                                           plotlyOutput("areaPlot", height = "400px")
-                                       )
-                                     )))
-                        ), # END Unauthorized DeforestationtabPanel 
-                        tabPanel(title = "Authorized Deforestation",
-                                 fluidRow(
-                                   div(
-                                     style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
-                                     fluidRow(
-                                       column(width = 12,
-                                              tags$style(HTML(".leaflet-container {background: #ffffff;}")),
-                                              h4(tags$strong("Authorized Deforestation by Political Boundaries")),
-                                              actionButton("drill_up_authorized", "View Departments"),
+    # political boundary tabItem
+    tabItem(
+      tabName = "political_boundary",
+      tabsetPanel(
+        id = "deforestation_tabsetPanel",
+        tabPanel(
+          title = "Unauthorized Deforestation",
+          fluidRow(
+            div(
+              style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+              fluidRow(
+                column(
+                  width = 12,
+                  tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+                  h4(tags$strong("Unauthorized Deforestation by Political Boundaries")),
+                  actionButton("drill_up_unauthorized", "View Departments"),
+                  actionButton("drill_down_unauthorized", "View Districts"),
+                  selectInput(
+                    "year_range_unauthorized",
+                    "Select Year Range",
+                    choices = unique(combined_illegal_df_by_dpto$year_range)
+                  ),
+                  leafletOutput("leafdown_unauthorized", height = "350px")
+                )
+              )),
+              #   fluidRow(
+              #     column(
+              #       width = 6,
+              #       valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
+              #     ),
+              #     column(
+              #       width = 6,
+              #       valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
+              #     )
+              #   )
+              # ),
+              box(
+                title = tagList(tags$strong("Unauthorized Deforestation")),
+                width = 6,
+                plotlyOutput("illegalPlot", height = "400px")
+              ),
+              box(
+                title = tagList(tags$strong("Change in Unauthorized Deforestation Over Time")),
+                width = 6,
+                plotlyOutput("areaPlot", height = "400px")
+              )
+            )
+          ),
+          tabPanel(title = "Authorized Deforestation",
+                   fluidRow(
+                     div(
+                       style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+                       fluidRow(
+                         column(width = 12,
+                                tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+                                h4(tags$strong("Authorized Deforestation by Political Boundaries")),
+                                actionButton("drill_up_authorized", "View Departments"),
                                               actionButton("drill_down_authorized", "View Districts"),
                                               selectInput("year_range_authorized", "Select Year Range", unique(combined_auth_df_by_dpto$year_range)),
                                               leafletOutput("leafdown_authorized", height = "350px")

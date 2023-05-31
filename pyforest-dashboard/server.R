@@ -169,6 +169,28 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       )
   })
   
+  # # render valueBox for combined_illegal_df_by_dist ----
+  # output$unauth_prop_valuebox_dist <- renderValueBox({
+  #   total_sum_by_dist <- sum(unauth_data_reactive()$sum_df_ha)
+  #   valueBox(
+  #     "Total Sum by District",
+  #     value = total_sum_by_dist,
+  #     color = "orange",
+  #     icon = icon("bar-chart", lib = "font-awesome")
+  #   )
+  # })
+  # 
+  # # render valueBox for combined_illegal_df_by_dpt ----
+  # output$unauth_prop_valuebox_dpt <- renderValueBox({
+  #   total_sum_by_dpt <- sum(unauth_data_reactive()$sum_df_ha)
+  #   valueBox(
+  #     "Total Sum by Department",
+  #     value = total_sum_by_dpt,
+  #     color = "orange",
+  #     icon = icon("bar-chart", lib = "font-awesome")
+  #   )
+  # })
+  
   output$illegalPlot <- renderPlotly({
     data <- unauth_data_reactive()
     if (unauth_current_view() == "district") {
@@ -396,6 +418,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       )
   })
   
+  # Authorized Plot
   output$authorizedPlot <- renderPlotly({
     data <- auth_data_reactive()
     if (auth_current_view() == "district") {
