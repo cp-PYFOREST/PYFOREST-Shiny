@@ -64,6 +64,8 @@ compliance <- st_transform(compliance, 4326)
 datadir <- path.expand("~/../../capstone/pyforest")
 py_fl_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_loss.gpkg"))
 py_fl_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_loss.gpkg"))
+# Source in normalized deforestation data values 
+source(here::here("pyforest-dashboard/R/forest_loss_standardizing_for_visuals.R"))
 py_fc_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_cover.gpkg"))
 py_fc_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_cover.gpkg"))
 

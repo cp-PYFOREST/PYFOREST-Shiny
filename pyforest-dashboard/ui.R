@@ -303,27 +303,55 @@ body <- dashboardBody(
     
     # deforestation_stats tabItem ----
     tabItem(tabName = "deforestation_stats",
+            # OLD LAYOUT ----------
+            # fluidRow(
+            #   box(width = 12,
+            #       title = tags$strong("Deforestation by Political Boundaries"),
+            #       column( width = 12, actionButton("drill_up", "View Departments"),
+            #   #actionButton("drill_down", "View Districts"),), #double comma?
+            #   actionButton("drill_down", "View Districts")),
+            #   column(width = 2, selectInput("year_range", "Select a Year Range", unique(py_fl_dept$year_range)))
+            #   ),
+            #   box(width = 12,
+            #          #title = tags$strong("Deforestation by year & political boundary"),
+            #          leafletOutput("leafdown_forest_loss"),
+            #       tags$style(HTML(".leaflet-container {background: #ffffff;}"))),
+            #   box(width = 6,
+            #       title = tags$strong("Deforestation Area (ha):"),
+            #       plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot")),
+            #   box(width = 6,
+            #       title = tags$strong("Deforestation Percent (%):"),
+            #       plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot"))
+            # )
+            
+            # NEW LAYOUT ---------
+            
             fluidRow(
               box(width = 12,
                   title = tags$strong("Deforestation by Political Boundaries"),
+                  column(width = 12,
+                         print("Switch between departments and districts to observe deforestation percent and area by selected political boundary.")),
                   column( width = 12, actionButton("drill_up", "View Departments"),
-              #actionButton("drill_down", "View Districts"),), #double comma?
-              actionButton("drill_down", "View Districts")),
-              column(width = 2, selectInput("year_range", "Select a Year Range", unique(py_fl_dept$year_range)))
+                          actionButton("drill_down", "View Districts"))
+                  # column(width = 2, selectInput("year_range", "Select a Year Range", unique(py_fl_dept$year_range)))
               ),
               box(width = 12,
-                     #title = tags$strong("Deforestation by year & political boundary"),
-                     leafletOutput("leafdown_forest_loss"),
-                  tags$style(HTML(".leaflet-container {background: #ffffff;}"))),
+                  #title = tags$strong("Deforestation by year & political boundary"),
+                  column(width = 3,selectInput("year_deforestation_percent_map", "Select a Year Range", unique(forest_loss_district_std_df$year)),
+                         box(width = 12,
+                             print(tags$strong("Data Visualizations Disclaimer:")),
+                             print("All deforestation data was provided in year ranges (2000-2005, 2005-2011, 2011-2013, 2013-2015, 2015-2017, 2017-2018, 2018-2019, 2019-2020). To standardize the data, the deforestation percentage and area values within each range were divided by the corresponding number of years to obtain a per-year value.
+                               ")),
+                  ),
+                  column(width = 9, leafletOutput("leafdown_forest_loss", width = "100%", height = "550px"),
+                         tags$style(HTML(".leaflet-container {background: #ffffff;}")))),
               box(width = 6,
                   title = tags$strong("Deforestation Area (ha):"),
-                  plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot")),
+                  plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot", width = "100%", height = "400px")),
               box(width = 6,
                   title = tags$strong("Deforestation Percent (%):"),
-                  plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot"))
+                  plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot", width = "100%", height = "400px"))
             )
-            
-            
     ),
     
     # forest_cover_stats tabItem ----
