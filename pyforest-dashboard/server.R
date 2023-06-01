@@ -636,13 +636,17 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   
   # ----------------------------------------- Deforestation Statistics -----------------------------------
 
+  output$deforestation_data_disclaimer_txt <- renderText({
+    "All deforestation data was provided in year ranges 
+    (2000-2005, 2005-2011, 2011-2013, 2013-2015, 2015-2017, 2017-2018, 2018-2019, 2019-2020).
+    To standardize the data, the deforestation percentage and area values within each range were divided 
+    by the corresponding number of years to obtain a per-year value."
+  }) 
+  
   py_fl_dept <- st_transform(py_fl_dept, crs = "+proj=longlat +datum=WGS84")
   py_fl_dist <- st_transform(py_fl_dist, crs = "+proj=longlat +datum=WGS84")
   #pyforest_palette_df <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
   pyforest_palette_df <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")
-  
-  
-  # LEAFLET 
   forest_loss_std_df <- st_transform(forest_loss_std_df, crs = "+proj=longlat +datum=WGS84")
   forest_loss_district_std_df <- st_transform(forest_loss_district_std_df, crs = "+proj=longlat +datum=WGS84")
   
@@ -686,14 +690,14 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         label = ~paste0(
           "<b>Year: </b>", year,
           "<br><b>Department: </b>", nom_dpto,
-          "<br><b>Percent Deforestation: </b>", data$percent_fl_std, " %",
+          "<br><b>Deforestation Percent: </b>", data$percent_fl_std, " %",
           "<br><b>Deforestation Area: </b>", data$fl_area_ha_std, " ha"
         ) %>% lapply(HTML)
       ) %>%
       addLegend(
         pal = my_palette_dpto,
         values = data$percent_fl_std,
-        title = "Percent Deforestation ",
+        title = "Deforestation Percent",
         position = "bottomright"
       )
   })
@@ -714,7 +718,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
           "<b>Year: </b>", year,
           "<br><b>District: </b>", nom_dist,
           "<br><b>Department: </b>", nom_dpto,
-          "<br><b>Percent Deforestation: </b>", data$percent_fl_std, " %",
+          "<br><b>Deforestation Percent: </b>", data$percent_fl_std, " %",
           "<br><b>Deforestation Area: </b>", data$fl_area_ha_std, " ha"
         ) %>% lapply(HTML)
       )
@@ -736,18 +740,11 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         label = ~paste0(
           "<b>Year: </b>", year,
           "<br><b>Department: </b>", nom_dpto,
-          "<br><b>Percent Deforestation </b>", data$percent_fl_std, " %",
+          "<br><b> Deforestation Percent </b>", data$percent_fl_std, " %",
           "<br><b>Deforestation Area: </b>", data$fl_area_ha_std, " ha"
         ) %>% lapply(HTML)
       )
   })
-  
-  
-  
-  # LEAFLET END 
-
-
-  # PLOTLY START 
   
   
   output$forest_loss_area_ha_plot <- renderPlotly({
@@ -948,14 +945,14 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         label = ~paste0(
           "<b>Year: </b>", year,
           "<br><b>Department: </b>", nom_dpto,
-          "<br><b>Percent Forest Cover: </b>", data_filtered$percent_fc, " %",
+          "<br><b>Forest Cover Percent: </b>", data_filtered$percent_fc, " %",
           "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
         ) %>% lapply(HTML)
       ) %>%
       addLegend(
         pal = my_palette_dpto,
         values = data_filtered$percent_fc,
-        title = "Percent Forest Cover ",
+        title = "Forest Cover Percent",
         position = "bottomright"
       )
   })
@@ -976,7 +973,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
           "<b>Year: </b>", year,
           "<br><b>District: </b>", nom_dist,
           "<br><b>Department: </b>", nom_dpto,
-          "<br><b>Percent Forest Cover: </b>", data_filtered$percent_fc, " %",
+          "<br><b>Forest Cover Percent: </b>", data_filtered$percent_fc, " %",
           "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
         ) %>% lapply(HTML)
       )
@@ -998,7 +995,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         label = ~paste0(
           "<b>Year: </b>", year, 
           "<br><b>Department: </b>", nom_dpto,
-          "<br><b>Percent Forest Cover </b>", data_filtered$percent_fc, " %",
+          "<br><b>Forest Cover Percent </b>", data_filtered$percent_fc, " %",
           "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
         ) %>% lapply(HTML)
       )

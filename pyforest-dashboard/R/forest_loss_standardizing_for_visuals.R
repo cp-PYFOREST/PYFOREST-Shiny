@@ -1,5 +1,5 @@
 
-## STANDARDIZING FOREST LOSS DATA 
+## Normalizing FOREST LOSS DATA 
 
 
 

@@ -145,7 +145,19 @@ plot_land_use_type_stackedh <- function(dataset, name) {
     
     
   }
-  ggthemr('camouflage', layout = "plain", type = 'outer')
+  
+  #### OLD AESTHETIC CODE #####
+  # ggthemr('camouflage', layout = "plain", type = 'outer') 
+  
+  #### AESTHETICS UPDATING NEW CODE #####
+  pyforest_simulations_color <- c("#4B5F43", "#AEBD93","#F6AE2D","#F26419"   )
+plot <- plot +
+  scale_fill_manual(values = pyforest_simulations_color) +
+  scale_x_continuous(labels = scales::comma) + 
+  theme_minimal()
+ ########### END NEW 
+  
+  
   
   # Common theme, scale, and guides for both plots
   
