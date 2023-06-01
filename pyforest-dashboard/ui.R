@@ -150,6 +150,10 @@ body <- dashboardBody(
                 ),
                 tabPanel(title = "Land Use Plan Assessment",
                          fluidRow(
+                           tags$img(
+                             src = "unauth_deforestation_yr_dpt.gif",
+                             alt = "TEXT"
+                           ),
                            includeMarkdown("text/land_use_assessment.md")
                          )
                 ),
