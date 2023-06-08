@@ -39,6 +39,7 @@ library(rsconnect)
 library(fresh)
 library(DT)
 library(shinythemes)
+library(shinyBS)
 
 
 # READ IN DATA ----
@@ -64,6 +65,9 @@ compliance <- st_transform(compliance, 4326)
 datadir <- path.expand("~/../../capstone/pyforest")
 py_fl_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_loss.gpkg"))
 py_fl_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_loss.gpkg"))
+chaco_fl <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/chaco_forest_loss.gpkg"))
+chaco_fc <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/chaco_forest_cover.gpkg"))
+
 # Source in normalized deforestation data values 
 source(here::here("pyforest-dashboard/R/forest_loss_standardizing_for_visuals.R"))
 py_fc_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_cover.gpkg"))
@@ -170,3 +174,13 @@ plot <- plot +
     add_trace(showlegend = TRUE)
   
 }
+
+
+## ------------------------------------------ Land Use Plan Simulation & Deforestation Prediction Data ------------------------------------------
+source(here::here("pyforest-dashboard/R/lup_sim_deforestation_prediction_histogram_data.R"))
+
+simulation_types <- unique(combined_data$simulation)
+
+
+
+

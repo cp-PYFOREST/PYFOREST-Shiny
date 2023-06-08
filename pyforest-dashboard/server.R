@@ -1182,13 +1182,136 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
     plot_land_use_type_stackedh(input$dataset, input$name)
   })
   
-  # ------------------------------------------ XXXX ------------------------------------------
+  # ------------------------------------------ Land Use Plan Simulation & Deforestation Predictions ------------------------------------------
+  
+  # simulation_types <- unique(combined_data$simulation)
+  
+  output$lup_simulation_example <- renderUI({
+        # Display images based on the selected simulation type
+        if (input$simulation_type == "Current Forest Law") {
+          tagList(
+            tags$h4("Current Forest Law"),
+            tags$img(src = "current_forest_law_lup_example.png", width = "100%")
+          )
+        } else if (input$simulation_type == "Law Ambiguity") {
+          tagList(
+            tags$h4("Law Ambiguity"),
+            tags$img(src = "law_ambiguity_simulation_example.png", width = "100%")
+          )
+        } else if (input$simulation_type == "Prioritize Economic Development") {
+          tagList(
+            tags$h4("Prioritize Economic Development"),
+            tags$img(src = "prioritize_econ_development_lup_example.png", width = "100%")
+          )
+        } else if (input$simulation_type == "Promotes Forest Conservation") {
+          tagList(
+            tags$h4("Promotes Forest Conservation"),
+            tags$img(src = "forest_conservation_lup_example.png", width = "100%")
+          )
+        } else {
+          NULL
+          print("May only view one LUP simulation at a time.")
+        }
+      })
   
   
+  
+  
+  
+  
+  
+  #histogram_sim_pred_land_use
+  output$histogram_sim_pred_land_use <- renderPlotly({
+    # Filter the data based on the selected simulation type
+    filtered_data <- if (input$simulation_type == "All") {
+      combined_data
+    } else {
+      combined_data[combined_data$simulation == input$simulation_type, ]
+    }
+    
+    # Create the ggplot object
+    ggplot_obj <- ggplot(filtered_data, aes(x = simulation_type, y = Area, fill = LandUseTypeStatus)) +
+      geom_bar(stat = 'identity', position = 'stack', color = "black", linewidth = 0.25) +
+      scale_fill_manual(values = color_mapping_deforestation) +
+      labs(x = "Type", y = "Area", fill = "LandUseTypeStatus") +
+      theme_minimal() +
+      theme(plot.title = element_text(hjust = 0.5),
+            plot.background = element_rect(fill = "transparent"),
+            legend.position = "top") +
+      coord_flip()
+    
+    # Convert ggplot to Plotly object
+    ggplotly(ggplot_obj)
+  })
+  
+  
+  
+  output$lup_simulation_images <- renderUI({
+        # Display images based on the selected simulation type
+        if (input$simulation_type == "Current Forest Law") {
+          tagList(
+            tags$h4("Current Forest Law"),
+            tags$img(src = "current_forest_law_lup_simulation.png", width = "74%")
+          )
+        } else if (input$simulation_type == "Law Ambiguity") {
+          tagList(
+            tags$h4("Law Ambiguity"),
+            tags$img(src = "law_ambiguity_lup_simulation.png", width = "74%")
+          )
+        } else if (input$simulation_type == "Prioritize Economic Development") {
+          tagList(
+            tags$h4("Prioritize Economic Development"),
+            tags$img(src = "prioritize_cattle_production_lup_simulation.png", width = "74%")
+          )
+        } else if (input$simulation_type == "Promotes Forest Conservation") {
+          tagList(
+            tags$h4("Promotes Forest Conservation"),
+            tags$img(src = "promotes_forest_conservation_lup_simulation.png", width = "74%")
+          )
+        } else {
+          NULL
+          print("Select only one scenario to compare simulated vs predicted land use.")
+        }
+      })
+  
+  output$prediction_images <- renderUI({
+    # Display images based on the selected simulation type
+    if (input$simulation_type == "Current Forest Law") {
+      tagList(
+        tags$h4("Current Forest Law"),
+        tags$img(src = "current_forest_law_deforestation_pred.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Law Ambiguity") {
+      tagList(
+        tags$h4("Law Ambiguity"),
+        tags$img(src = "law_ambiguity_pred.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Prioritize Economic Development") {
+      tagList(
+        tags$h4("Prioritize Economic Development"),
+        #tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
+        print("Need this image.")
+      )
+    } else if (input$simulation_type == "Promotes Forest Conservation") {
+      tagList(
+        tags$h4("Promotes Forest Conservation"),
+        tags$img(src = "promotes_forest_conservation_pred.png", width = "100%")
+      )
+    } else {
+      NULL
+      print("Select only one scenario to compare simulated vs predicted land use.")
+    }
+  })
 
   
   
-  }
+  
+  
+  
+  
+  
+  
+  } # END SERVER
 
 
 
