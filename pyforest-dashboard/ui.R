@@ -135,21 +135,7 @@ body <- dashboardBody(
                   width = 6,
                   box(width = 12,
                       title = "About the dashboard",
-                      tags$strong(tags$h3("Welcome!")),
-                      br(),
-                      "Our dashboard aims to provide valuable insights of the Paraguayan Chaco region. We have conducted  geospatial analysis, land use simulations, and deforestation predictions to help stakeholders make informed decisions regarding forest management.
-                                 Through this interactive platform, you can explore the results of our research and analysis. Gain a deeper understanding of the current land use patterns, identify areas at risk of deforestation, and visualize the potential impacts of different land use scenarios.",
-                      br(),
-                      "Explore this page to gain a deeper understanding of how to navigate the app.",
-                      br(),
-                      br(),
-                      tags$h4("Langagues (Lenguajes)"),
-                      tags$h5(tags$b("Translation Instructions")),
-                      "In order to translate this web application to another language. Utlize Google Chrome to access it. On the right of the address bar, click Translate. Click on your preferred language. Chrome will then translate the web application.",
-                      br(),
-                      br(),
-                      tags$h5(tags$b("Instrucciones para traducir la applicación")),
-                      "Para traducir esta applicaciòn. Utilize la applicación en Google Chrome. A la derecha de la barra, haz clic en Traducir. Luego, elige tu idioma preferido. Chrome traducirá la aplicación web."
+                      includeMarkdown("text/about_the_dashboard.md")
                   ) 
                 ),
                 column(
@@ -162,17 +148,17 @@ body <- dashboardBody(
                                  bsCollapsePanel(
                                    title = HTML(paste0("Data Source <span class='arrow'>&#x25BE;</span>")),
                                    style = "info",
-                                   "The data used in this app is sourced from the National Forestry Institute of Paraguay (INFONA). INFONA provides land use plan shapefiles and deforestation raster files, which serve as the foundation for our analysis. To access the data used in our study, please visit our Zenodo repository [insert Zenodo link]. For the most up-to-date data, we recommend visiting INFONA’s official website [insert INFONA website link] and submitting a request for the desired information."
+                                   includeMarkdown("text/data_source.md")
                                  ),
                                  bsCollapsePanel(
                                    title = HTML(paste0("Project Information <span class='arrow'>&#x25BE;</span>")),
                                    style = "info",
-                                   "PYFOREST is an open-source project aimed at developing an interactive tool for forest conservation analysis in Paraguay. The project is built using R, Shiny, and other technologies to provide a comprehensive and user-friendly platform for exploring deforestation rates, land use plans, and potential conservation policies. For more information on the project background and to access the source code, please visit our GitHub repository [insert GitHub link]. Technical documentation for the PyForest project can be found on the Bren School of Environmental Science & Management Capstone page [insert Capstone page link]."
+                                   includeMarkdown("text/project_information.md")
                                  ),
                                  bsCollapsePanel(
                                    title = HTML(paste0("Technical Documentation <span class='arrow'>&#x25BE;</span>")),
                                    style = "info",
-                                   "Technical documentation for the PyForest project can be found on the Bren School of Environmental Science & Management Capstone page [insert Capstone page link]."
+                                   includeMarkdown("text/technical_documentation.md")
                                  )
                                )
                   )),
@@ -284,18 +270,51 @@ body <- dashboardBody(
                                    tags$h4("Deforestation Predictions"),
                                    tags$p("Deforestation Predictions with land-use type results may also be found here follwoing the current and alternate forest laws."),
                                    br(),
-                                   tags$h4("Scenarios"),
+                                   tags$h4(tags$b("Scenarios")),
+                                   br(),
                                    tags$b("Current Forest Law"),
                                    tags$p("This scenario follows the current policy and legal requirements for LUPs enforced by INFONA. It includes a 25% forest reserve, a 100-meter hedgerow buffer, a 100-meter riparian forest, and paddocks of less than 100 ha for authorized deforestation. The purpose of this scenario is to simulate the continuation of existing practices and policies without any significant changes."),
+                                   tags$img(
+                                     src = "current_forest_law_lup_example.png",
+                                     alt = "Simulated LUP following current forest law",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "LUP under Current Forest Law")
+                                   ),
                                    br(),
                                    tags$b("Promotes Forest Conservation"),
                                    tags$p("This scenario aims to enhance forest conservation efforts. It proposes increasing the forest reserve requirement to 50%, along with maintaining a 100-meter hedgerow buffer, a 100-meter riparian forest, and paddocks of less than 100 ha. The objective is to simulate the potential outcomes of a policy that prioritizes the preservation and protection of forests."),
+                                   tags$img(
+                                     src = "forest_conservation_lup_example.png",
+                                     alt = "Promotes Forest Conservation simulated LUP",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "Promotes Forest Conservation LUP")
+                                   ),
                                    br(),
-                                   tags$b("Prioritize Cattle Production"),
+                                   tags$b("Prioritize Cattle Ranching"),
                                    tags$p("This scenario aims to find a balance between cattle production and forest conservation. It proposes a 25% total forest cover, which includes the combined area of the 100-meter riparian forest and 100-meter hedgerow buffer. Any additional forest area required to reach the 25% target would be designated as forest reserve. This policy includes paddocks of less than 100 ha. The intention is to simulate potential effects of a policy goal that prioritizes land use for economic purposes, while maintaining a 25% forest cover goal."),
+                                   tags$img(
+                                     src = "prioritize_econ_development_lup_example.png",
+                                     alt = "Prioritize Cattle Ranching simulated LUP scenario",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "Proritize Cattle Ranching LUP")
+                                   ),
                                    br(),
                                    tags$b("Law Ambiguity"),
-                                   tags$p("This scenario addresses a potential ambiguity in the law's interpretation. It suggests that if a property has been deforested beyond the approved amount, an immediate reforestation of 5% of the property is required in the areas of regrowth. This is in addition to maintaining the 100-meter hedgerow buffer, the 100-meter riparian forest, and paddocks of less than 100 ha. However, some might interpret this policy as allowing them to deforest their entire property and only replant 5%. This misinterpretation could lead to substantial deforestation, undermining the policy's intent.")
+                                   tags$p("This scenario addresses a potential ambiguity in the law's interpretation. It suggests that if a property has been deforested beyond the approved amount, an immediate reforestation of 5% of the property is required in the areas of regrowth. This is in addition to maintaining the 100-meter hedgerow buffer, the 100-meter riparian forest, and paddocks of less than 100 ha. However, some might interpret this policy as allowing them to deforest their entire property and only replant 5%. This misinterpretation could lead to substantial deforestation, undermining the policy's intent."),
+                                   tags$img(
+                                     src = "law_ambiguity_simulation_example.png",
+                                     alt = "LUP under law ambiguity",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "Law Ambiguity LUP")
+                                   )
                                  )
                                )
                   )) 
@@ -324,32 +343,56 @@ body <- dashboardBody(
           title = "Unauthorized Deforestation",
           fluidRow(
             div(
-              style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+              #style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
               fluidRow(
                 column(
                   width = 12,
-                  tags$style(HTML(".leaflet-container {background: #ffffff;}")),
-                  h4(tags$strong("Unauthorized Deforestation by Political Boundaries")),
-                  actionButton("drill_up_unauthorized", "View Departments"),
-                  actionButton("drill_down_unauthorized", "View Districts"),
-                  selectInput(
-                    "year_range_unauthorized",
-                    "Select Year Range",
-                    choices = unique(combined_illegal_df_by_dpto$year_range)
+                  box(
+                    width = 12,
+                    title = "User Selection",
+                    #status = "primary",
+                    #solidHeader = TRUE,
+                    #style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+                    tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+                    #h4(tags$strong("Unauthorized Deforestation by Political Boundaries")),
+                    actionButton("drill_up_unauthorized", "View Departments"),
+                    actionButton("drill_down_unauthorized", "View Districts"),
+                    selectInput(
+                      "year_range_unauthorized",
+                      "Select Year Range",
+                      choices = unique(combined_illegal_df_by_dpto$year_range)
+                    )
                   ),
-                  leafletOutput("leafdown_unauthorized", height = "350px")
+                  
+                  # Value Boxes
+                  fluidRow(
+                    column(
+                      width = 6,
+                      valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
+                    ),
+                    column(
+                      width = 6,
+                      valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
+                    )
+                  ),
+                  box(
+                    width = 12,
+                    title = "Unauthorized Deforestation by Political Boundaries",
+                    leafletOutput("leafdown_unauthorized", height = "350px")
+                  )
                 )
-              )),
-            #   fluidRow(
-            #     column(
-            #       width = 6,
-            #       valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
-            #     ),
-            #     column(
-            #       width = 6,
-            #       valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
-            #     )
+              )
+            ),
+            # fluidRow(
+            #   column(
+            #     width = 6,
+            #     valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
+            #   ),
+            #   column(
+            #     width = 6,
+            #     valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
             #   )
+            # ),
             # ),
             box(
               title = tagList(tags$strong("Unauthorized Deforestation")),
@@ -361,8 +404,23 @@ body <- dashboardBody(
               width = 6,
               plotlyOutput("areaPlot", height = "400px")
             )
+            
+            
           )
         ),
+        
+        # fluidRow(
+        #   box(width = 12,
+        #       title = tags$strong("Deforestation by Political Boundaries"),
+        #       column(width = 12,
+        #              print(tags$strong("Switch between political boundaries by selecting departments or districts to observe deforestation statistics."))),
+        #       column(width = 12,
+        #              actionButton("drill_up", "View Departments"),
+        #              actionButton("drill_down", "View Districts"))
+        #   ),
+        
+        
+        
         tabPanel(title = "Authorized Deforestation",
                  fluidRow(
                    div(
@@ -506,67 +564,44 @@ body <- dashboardBody(
     tabItem(tabName = "sim_pred",
             # predictions content here
             fluidRow(
-              box(width = 3,
-                  title = "Select a scenario:",
-                  selectInput("simulation_type", "Simulation Type", choices = c("All", simulation_types), selected = "Current Forest Law"))
+              box(width = 12,
+                  title = tags$strong("Scenarios:"),
+                  selectInput("simulation_type", "Select one:", choices = c("All", simulation_types), selected = "Current Forest Law"))
             ),
             fluidRow(
               column(width = 4,
                      box(width = 12,
                          style = "height: 470px;",  # Adjust the height as needed
                          title = "Deforestation Predictions",
-                         "Map of prediction based on simulation selected"),
-                     box(width = 12,
-                         align = "center",
-                         title = "Land Use Plan Simulations Example",
-                         uiOutput("lup_simulation_example"))
+                         withSpinner(uiOutput("maps_predictions_by_scenario")))
               ),
               column(width = 8,
                      box(width = 12,
                          title = "Comparing Land Use Plan Simulations & Deforestation Predictions Land-Use Totals",
-                         # plotlyOutput("histogram_sim_pred_land_use")
-                         plotlyOutput("histogram_sim_pred_land_use", height = "450px", width = "100%")
+                         withSpinner(plotlyOutput("histogram_sim_pred_land_use", height = "450px", width = "100%"))  
                      ),
-                     
-                     
-                     
-                     fluidRow(
-                       
-                       box(width = 6,
-                           align = "center",
-                           title = "Comparing Results: Land Use Plan Simulations",
-                           uiOutput("lup_simulation_images") #simulation scenarios
-                       ),
-                       box(width = 6,
-                           title = "Comparing Results: Deforestation Predictions",
-                           column(
-                             width = 9,
-                             align = "center",
-                             uiOutput("prediction_images")),
-                           column(width = 3,
-                                  tags$img(src = "pred_scale.png", width = "80%")))
-                     )
-                     
                      
               )
             ),
             
-            # fluidRow(
-            # 
-            #   box(width = 6,
-            #       align = "center",
-            #       title = "Comparing Results: Land Use Plan Simulations",
-            #       uiOutput("lup_simulation_images") #simulation scenarios
-            #   ),
-            #   box(width = 6,
-            #       title = "Comparing Results: Deforestation Predictions",
-            #       column(
-            #         width = 9,
-            #         align = "center",
-            #         uiOutput("prediction_images")),
-            #   column(width = 3,
-            #          tags$img(src = "pred_scale.png", width = "80%")))
-            # ),
+            fluidRow(
+              
+              box(width = 6,
+                  style = "height: 460px;",  # Adjust the height as needed
+                  align = "center",
+                  title = "Comparing Results: Land Use Plan Simulations",
+                  withSpinner(uiOutput("lup_simulation_images")) #simulation scenarios  ######### --- UPDATE HERE ---------
+              ),
+              box(width = 6,
+                  style = "height: 461.5px;",  # Adjust the height as needed
+                  title = "Comparing Results: Deforestation Predictions",
+                  column(
+                    width = 9,
+                    align = "center",
+                    withSpinner(uiOutput("prediction_images"))), #  ######### --- UPDATE HERE ---------
+                  column(width = 3,
+                         tags$img(src = "pred_scale.png", width = "80%")))
+            ),
             
             fluidRow(
               box(width = 12,

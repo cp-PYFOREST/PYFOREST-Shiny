@@ -26,22 +26,20 @@ prediction_data <- bind_rows(
   sim5 %>% mutate(simulation = "Law Ambiguity"),
   sim25 %>% mutate(simulation = "Current Forest Law"),
   sim50 %>% mutate(simulation = "Promotes Forest Conservation"),
-  simhedges %>% mutate(simulation = "Prioritize Economic Development")) 
+  simhedges %>% mutate(simulation = "Prioritize Cattle Ranching")) 
 
 prediction_data$LandUseType <- factor(prediction_data$LandUseType, levels = c("Paddocks", "Hedgerow", "Riparian Corridor","Forest Reserve"))
 
 
-levels(prediction_data$simulation) <- c("Current Forest Law", "Promotes Forest Conservation","Prioritize Economic Development","Law Ambiguity") 
+levels(prediction_data$simulation) <- c("Current Forest Law", "Promotes Forest Conservation","Prioritize Cattle Ranching","Law Ambiguity") 
 
 #prediction_data
-
 
 
 simulation_total_area <-  prediction_data |>
   group_by(simulation, LandUseType) |>
   summarize(total_area = sum(TotalArea))
 simulation_total_area
-
 
 
 

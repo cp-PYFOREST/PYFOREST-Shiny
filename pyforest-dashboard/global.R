@@ -79,81 +79,10 @@ area_by_district_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simul
 area_pct_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_pct_by_department_land_use.rds")
 area_pct_by_district_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_pct_by_district_land_use.rds")
   
-# FUNCTIONS?----
-plot_land_use_type_stackedh <- function(dataset, name) {
-  if (dataset == 'department') {
-    data_to_plot <- area_by_department_land_use %>%
-      filter(land_use_type != 'paddocks_area' & nom_dpto == name) %>%
-      group_by(simulation, nom_dpto, land_use_type) %>%
-      arrange(-total_area_lu) %>%
-      mutate(simulation = factor(
-        simulation,
-        levels = c(
-          "50% Forest Reserve",
-          "25% Forest Reserve",
-          "5% Forest Reserve",
-          "Hedgerow incl. 25% Forest Reserve"
-        )
-      )) %>%
-      ungroup()
-    
-    plot <-
-      ggplot(data_to_plot,
-             aes(x = total_area_lu, y = simulation, fill = land_use_type)) +
-      geom_bar(
-        stat = "identity",
-        position = 'stack',
-        orientation = 'y',
-        color = "black",
-        linewidth = 0.25
-      ) +
-      labs(
-        title = paste("Total Area Conserved by Department and Simulation"),
-        x = "Total Area",
-        y = "Forest Law Simlulation"
-      ) +
-      facet_wrap(~ nom_dpto,
-                 ncol = 1,
-                 scales = "free_y",
-                 dir = 'h')
-    
-  } else if (dataset == 'district') {
-    data_to_plot <- area_by_district_land_use %>%
-      filter(land_use_type != 'paddocks_area' & nom_dist == name) %>%
-      group_by(simulation, nom_dist, land_use_type) %>%
-      arrange(-total_area_lu) %>%
-      mutate(simulation = factor(
-        simulation,
-        levels = c(
-          "50% Forest Reserve",
-          "25% Forest Reserve",
-          "5% Forest Reserve",
-          "Hedgerow incl. 25% Forest Reserve"
-        )
-      )) %>%
-      ungroup()
-    
-    plot <- ggplot(data_to_plot, aes(x = total_area_lu, y = simulation, fill = land_use_type)) +
-      geom_bar(
-        stat = "identity",
-        position = 'stack',
-        orientation = 'y',
-        color = "black",
-        linewidth = 0.25
-      ) +
-      facet_wrap(~nom_dist, ncol = 5, scales = "free_x", dir = 'h') +
-      labs(title = paste("Total Area Conserved by District and Simulation"),
-           x = "Total Area",
-           y = "Forest Law Simlulation") +
-      theme(axis.text.x = element_blank())
-    
-    
-  }}
+## ------------------------------------------ Land Use Plan Simulation & Deforestation Prediction Data ------------------------------------------
+source(here::here("pyforest-dashboard/R/lup_sim_deforestation_prediction_histogram_data.R"))
   
-  ## ------------------------------------------ Land Use Plan Simulation & Deforestation Prediction Data ------------------------------------------
-  source(here::here("pyforest-dashboard/R/lup_sim_deforestation_prediction_histogram_data.R"))
-  
-  simulation_types <- unique(combined_data$simulation)
+simulation_types <- unique(combined_data$simulation)
   
 #   plotly::ggplotly(plot +
 #                      theme(
