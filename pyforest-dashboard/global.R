@@ -30,6 +30,7 @@ library(leaflet.extras)
 
 # Interactive web apps
 library(shiny)
+library(shinyBS)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyWidgets)
@@ -64,6 +65,9 @@ compliance <- st_transform(compliance, 4326)
 datadir <- path.expand("~/../../capstone/pyforest")
 py_fl_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_loss.gpkg"))
 py_fl_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_loss.gpkg"))
+chaco_fl <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/chaco_forest_loss.gpkg"))
+chaco_fc <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/chaco_forest_cover.gpkg"))
+
 # Source in normalized deforestation data values 
 source(here::here("pyforest-dashboard/R/forest_loss_standardizing_for_visuals.R"))
 py_fc_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_cover.gpkg"))
@@ -144,29 +148,19 @@ plot_land_use_type_stackedh <- function(dataset, name) {
       theme(axis.text.x = element_blank())
     
     
-  }
+  }}
   
-  #### OLD AESTHETIC CODE #####
-  # ggthemr('camouflage', layout = "plain", type = 'outer') 
+  ## ------------------------------------------ Land Use Plan Simulation & Deforestation Prediction Data ------------------------------------------
+  source(here::here("pyforest-dashboard/R/lup_sim_deforestation_prediction_histogram_data.R"))
   
-  #### AESTHETICS UPDATING NEW CODE #####
-  pyforest_simulations_color <- c("#4B5F43", "#AEBD93","#F6AE2D","#F26419"   )
-plot <- plot +
-  scale_fill_manual(values = pyforest_simulations_color) +
-  scale_x_continuous(labels = scales::comma) + 
-  theme_minimal()
- ########### END NEW 
+  simulation_types <- unique(combined_data$simulation)
   
-  
-  
-  # Common theme, scale, and guides for both plots
-  
-  plotly::ggplotly(plot +
-                     theme(
-                       legend.position = "top",
-                       legend.direction = "horizontal",
-                       strip.background = element_blank(),
-                       strip.placement = "outside")) %>%
-    add_trace(showlegend = TRUE)
-  
-}
+#   plotly::ggplotly(plot +
+#                      theme(
+#                        legend.position = "top",
+#                        legend.direction = "horizontal",
+#                        strip.background = element_blank(),
+#                        strip.placement = "outside")) %>%
+#     add_trace(showlegend = TRUE)
+   
+

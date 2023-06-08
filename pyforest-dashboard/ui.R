@@ -1,3 +1,6 @@
+# Source
+#source("R/forest_cover_module.R")
+
 # Create the theme
 pytheme <- create_theme(
   adminlte_color(light_blue = "#2F4858"), ##3c4d36
@@ -49,33 +52,25 @@ sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem(text = "Home",
              tabName = "home",
-             icon = icon("house"),
-             startExpanded = TRUE,
-             menuSubItem('About the app', tabName = 'about_the_app', icon = icon('circle-info')),
-             menuSubItem('Data Source', tabName = 'data_source', icon = icon('server')),
-             menuSubItem('Project Information', tabName = 'project_information', icon = icon('github'))
-             ), # END Home menuItem
+             icon = icon("house")
+    ), # END Home menuItem
     menuItem(text = "Land Use Plan Assessment",
              tabName = "assessment",
              icon = icon("clipboard-check"),
              startExpanded = FALSE,
              menuSubItem('By Political Boundary', tabName = 'political_boundary', icon = icon('earth-americas')),
              menuSubItem('By PUT ID', tabName = 'put_id', icon = icon('draw-polygon'))
-             ), # END Land Use Plan Assessment menuItem
+    ), # END Land Use Plan Assessment menuItem
     menuItem(text = "Deforestation and Forest Cover Statistics",
              tabName = "deforestation_statistics",
              icon = icon("chart-line"),
              menuSubItem('Deforestation Statistics', tabName = 'deforestation_stats', icon = icon('chart-line')),
              menuSubItem('Forest Cover Statistics', tabName = 'forest_cover_stats', icon = icon('chart-line'))
-             ), # END df and fc Statistics menuItem
-    menuItem(text = "Land Use Plan Simulations",
-             tabName = 'simulations',
-             icon = icon('chart-simple')
-             ), # END Land Use Plan Simulations menuItem
-    menuItem(text = "Deforestation Predictions",
-             tabName = 'predictions',
+    ), # END df and fc Statistics menuItem
+    menuItem(text = "Simulation and Deforestation Comparisons",
+             tabName = 'sim_pred',
              icon = icon('globe')
-             ) # END Deforestation Predictions menuItem
+    ) # END Deforestation Predictions menuItem
   ) # END sidebarMenu
 ) # END dashboardSidebar
 
@@ -129,64 +124,197 @@ body <- dashboardBody(
   
   use_theme(pytheme),
   
-  #tabItems ----
+  # ------------------------------------------ Home ------------------------------------------ 
+  
   tabItems(
-    # about the app tabItem
-    tabItem(tabName = "about_the_app",
+    tabItem(tabName = "home",
             fluidPage(
-              tabsetPanel(
-                id = "dashboard_tabsetPanel",
-                tabPanel(title = "About the app",
-                         fluidRow(
-                           tags$img(
-                             class = "banner",
-                             src = "chaco.jpg",
-                             width = "90%",
-                             alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."
-                           ),
-                           title = tags$strong("About the app"),
-                           includeMarkdown("text/about_the_app.md")
-                         )
+              fluidRow(
+                width = 6,
+                column(
+                  width = 6,
+                  box(width = 12,
+                      title = "About the dashboard",
+                      tags$strong(tags$h3("Welcome!")),
+                      br(),
+                      "Our dashboard aims to provide valuable insights of the Paraguayan Chaco region. We have conducted  geospatial analysis, land use simulations, and deforestation predictions to help stakeholders make informed decisions regarding forest management.
+                                 Through this interactive platform, you can explore the results of our research and analysis. Gain a deeper understanding of the current land use patterns, identify areas at risk of deforestation, and visualize the potential impacts of different land use scenarios.",
+                      br(),
+                      "Explore this page to gain a deeper understanding of how to navigate the app.",
+                      br(),
+                      br(),
+                      tags$h4("Langagues (Lenguajes)"),
+                      tags$h5(tags$b("Translation Instructions")),
+                      "In order to translate this web application to another language. Utlize Google Chrome to access it. On the right of the address bar, click Translate. Click on your preferred language. Chrome will then translate the web application.",
+                      br(),
+                      br(),
+                      tags$h5(tags$b("Instrucciones para traducir la applicación")),
+                      "Para traducir esta applicaciòn. Utilize la applicación en Google Chrome. A la derecha de la barra, haz clic en Traducir. Luego, elige tu idioma preferido. Chrome traducirá la aplicación web."
+                  ) 
                 ),
-                tabPanel(title = "Land Use Plan Assessment",
-                         fluidRow(
-                           tags$img(
-                             src = "unauth_deforestation_yr_dpt.gif",
-                             alt = "TEXT"
-                           ),
-                           includeMarkdown("text/land_use_assessment.md")
-                         )
-                ),
-                tabPanel(title = "Deforestation and Forest Cover Statistics",
-                         fluidRow(
-                           includeMarkdown("text/df_fc_stats.md")
-                         )
-                ),
-                tabPanel(title = "Land Use Plan Simulations",
-                         fluidRow(
-                           includeMarkdown("text/land_use_simulation.md")
-                         )
-                ),
-                tabPanel(title = "Deforestation Predictions",
-                         fluidRow(
-                           includeMarkdown("text/df_prediction.md")
-                         )
+                column(
+                  width = 6,
+                  fluidRow(box(width = 12,
+                               title = "General Information",
+                               bsCollapse(
+                                 id = "collapseExample",
+                                 open = "Panel_data",
+                                 bsCollapsePanel(
+                                   title = HTML(paste0("Data Source <span class='arrow'>&#x25BE;</span>")),
+                                   style = "info",
+                                   "The data used in this app is sourced from the National Forestry Institute of Paraguay (INFONA). INFONA provides land use plan shapefiles and deforestation raster files, which serve as the foundation for our analysis. To access the data used in our study, please visit our Zenodo repository [insert Zenodo link]. For the most up-to-date data, we recommend visiting INFONA’s official website [insert INFONA website link] and submitting a request for the desired information."
+                                 ),
+                                 bsCollapsePanel(
+                                   title = HTML(paste0("Project Information <span class='arrow'>&#x25BE;</span>")),
+                                   style = "info",
+                                   "PYFOREST is an open-source project aimed at developing an interactive tool for forest conservation analysis in Paraguay. The project is built using R, Shiny, and other technologies to provide a comprehensive and user-friendly platform for exploring deforestation rates, land use plans, and potential conservation policies. For more information on the project background and to access the source code, please visit our GitHub repository [insert GitHub link]. Technical documentation for the PyForest project can be found on the Bren School of Environmental Science & Management Capstone page [insert Capstone page link]."
+                                 ),
+                                 bsCollapsePanel(
+                                   title = HTML(paste0("Technical Documentation <span class='arrow'>&#x25BE;</span>")),
+                                   style = "info",
+                                   "Technical documentation for the PyForest project can be found on the Bren School of Environmental Science & Management Capstone page [insert Capstone page link]."
+                                 )
+                               )
+                  )),
+                  
+                  fluidRow(box(width = 12,
+                               title = "Tabs Information",
+                               bsCollapse(
+                                 id = "collapseExample",
+                                 open = "Panel_data",
+                                 bsCollapsePanel(
+                                   title = HTML(paste0("Land Use Assessment <span class='arrow'>&#x25BE;</span>")),
+                                   style = "info",
+                                   tags$h3(tags$b("By Political Boundary")),
+                                   fluidRow(
+                                     tags$h4("Unauthorized Deforestation"),
+                                     tags$div(
+                                       style = "display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;",
+                                       tags$img(
+                                         src = "unauth_deforestation_yr_dpt.gif",
+                                         alt = "Unauthorized Deforestation by department and year",
+                                         style = "width: 80%; height: 80%; margin-bottom: 10px;"
+                                       ),
+                                       tags$figcaption(
+                                         style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                         "Unauthorized deforestation rates over the years by department"
+                                       ),
+                                       tags$p(
+                                         style = "margin-top: 10px;",
+                                         "This page displays a map and a table of illegal deforestation rates by political boundary (departments and districts). To view the data, select a department and a district from the drop-down menus. The map will show the illegal deforestation rates for the selected area, while the table provides additional details on the deforestation rates."
+                                       )
+                                     )
+                                   ),
+                                   
+                                   fluidRow(
+                                     tags$h4("Authorized Deforestation"),
+                                     tags$div(
+                                       style = "display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;",
+                                       tags$img(
+                                         src = "auth_deforestation_yr_dpt.gif",
+                                         alt = "Authorized Deforestation by department and year",
+                                         style = "width: 80%; height: 80%; margin-bottom: 10px;"
+                                       ),
+                                       tags$figcaption(
+                                         style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                         "Authorized deforestation rates over the years by department"
+                                       ),
+                                       tags$p(
+                                         style = "margin-top: 10px;",
+                                         "This page presents authorized deforestation rates by political boundary (departments and districts). Use the dropdown menus to select a department and a district to view the data. The map will display authorized deforestation rates for the chosen area, and the table will provide additional information on the deforestation rates."
+                                       )
+                                     )
+                                   ),
+                                   
+                                   tags$h3(tags$b("By PUT ID")),
+                                   tags$p(style = "margin-top: 10px;",
+                                          "This tab allows the users to explore properties complaince by PUT ID. Explore the map visually or search by PUT ID to view complaince in the table and map.")
+                                   
+                                   
+                                 ), # END COLLAPSE 1
+                                 bsCollapsePanel(
+                                   title = HTML(paste0("Deforestation and Forest Cover Statistics <span class='arrow'>&#x25BE;</span>")),
+                                   style = "info",
+                                   
+                                   fluidRow(
+                                     tags$h4("Deforestation Statistics"),
+                                     tags$div(
+                                       style = "display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;",
+                                       tags$img(
+                                         src = "forest_loss_yr_dpt.gif",
+                                         alt = "Deforestation gif by department and year",
+                                         style = "width: 80%; height: 80%; margin-bottom: 10px;"
+                                       ),
+                                       tags$figcaption(
+                                         style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                         "Deforestation percentage rates over the years by department"
+                                       ),
+                                       tags$p(
+                                         style = "margin-top: 10px;",
+                                         "This page shows deforestation statistics by political boundary. The plot displays deforestation by selected political boundary (department of district). Data can be filtered by selecting a specific year and plots may also be filtered by selecting on and off policial boundaries names on the right."
+                                       )
+                                     )
+                                   ),
+                                   fluidRow(
+                                     tags$h4("Forest Cover Statistics"),
+                                     tags$div(
+                                       style = "display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;",
+                                       tags$img(
+                                         src = "forest_cover_yr_dpt.gif",
+                                         alt = "Forst Cover gif by department and year",
+                                         style = "width: 80%; height: 80%; margin-bottom: 10px;"
+                                       ),
+                                       tags$figcaption(
+                                         style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                         "Forest Cover percentage rates over the years by department"
+                                       ),
+                                       tags$p(
+                                         style = "margin-top: 10px;",
+                                         "This page displays forest cover statistics by political boundary. The plot displays forest cover by selected political boundary (department of district). Data can be filtered by selecting a specific year and plots may also be filtered by selecting on and off policial boundaries names on the right."
+                                       )
+                                     )
+                                   )
+                                 ), # END COLLAPSE 2
+                                 bsCollapsePanel(
+                                   HTML(paste0("Land Use Plan Simulation & Deforestation Predictions <span class='arrow'>&#x25BE;</span>")),
+                                   style = "info",
+                                   tags$h4("Land Use Plan Simulation"),
+                                   tags$p("On this tab you can find the Land Use Plan Simulations; land-use results following the current forest law and alternate forest laws scenarios."),
+                                   br(),
+                                   tags$h4("Deforestation Predictions"),
+                                   tags$p("Deforestation Predictions with land-use type results may also be found here follwoing the current and alternate forest laws."),
+                                   br(),
+                                   tags$h4("Scenarios"),
+                                   tags$b("Current Forest Law"),
+                                   tags$p("This scenario follows the current policy and legal requirements for LUPs enforced by INFONA. It includes a 25% forest reserve, a 100-meter hedgerow buffer, a 100-meter riparian forest, and paddocks of less than 100 ha for authorized deforestation. The purpose of this scenario is to simulate the continuation of existing practices and policies without any significant changes."),
+                                   br(),
+                                   tags$b("Promotes Forest Conservation"),
+                                   tags$p("This scenario aims to enhance forest conservation efforts. It proposes increasing the forest reserve requirement to 50%, along with maintaining a 100-meter hedgerow buffer, a 100-meter riparian forest, and paddocks of less than 100 ha. The objective is to simulate the potential outcomes of a policy that prioritizes the preservation and protection of forests."),
+                                   br(),
+                                   tags$b("Prioritize Cattle Production"),
+                                   tags$p("This scenario aims to find a balance between cattle production and forest conservation. It proposes a 25% total forest cover, which includes the combined area of the 100-meter riparian forest and 100-meter hedgerow buffer. Any additional forest area required to reach the 25% target would be designated as forest reserve. This policy includes paddocks of less than 100 ha. The intention is to simulate potential effects of a policy goal that prioritizes land use for economic purposes, while maintaining a 25% forest cover goal."),
+                                   br(),
+                                   tags$b("Law Ambiguity"),
+                                   tags$p("This scenario addresses a potential ambiguity in the law's interpretation. It suggests that if a property has been deforested beyond the approved amount, an immediate reforestation of 5% of the property is required in the areas of regrowth. This is in addition to maintaining the 100-meter hedgerow buffer, the 100-meter riparian forest, and paddocks of less than 100 ha. However, some might interpret this policy as allowing them to deforest their entire property and only replant 5%. This misinterpretation could lead to substantial deforestation, undermining the policy's intent.")
+                                 )
+                               )
+                  )) 
                 )
-              ) # END tabsetPanel
-            ) # END fluidPage
-    ),
+              ),
+              
+              fluidRow(
+                tags$img(
+                  class = "banner",
+                  src = "chaco.jpg",
+                  width = "100%",
+                  alt = "A landscape photo of the Paraguayan Chaco. A river is in the foreground with trees in the background."
+                ),
+                title = tags$strong("About the dashboard"),
+                includeMarkdown("text/disclaimer.md")
+              )
+            )),
     
-    # data source tabItem
-    tabItem(tabName = "data_source",
-            includeMarkdown("text/data_source.md")
-    ),
-    
-    # project information tabItem
-    tabItem(tabName = "project_information",
-            includeMarkdown("text/project_information.md")
-    ),
-    
-    # political boundary tabItem
+    # ------------------------------------------ Land Use Plan Assessment ------------------------------------------ 
     # political boundary tabItem
     tabItem(
       tabName = "political_boundary",
@@ -212,54 +340,54 @@ body <- dashboardBody(
                   leafletOutput("leafdown_unauthorized", height = "350px")
                 )
               )),
-              #   fluidRow(
-              #     column(
-              #       width = 6,
-              #       valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
-              #     ),
-              #     column(
-              #       width = 6,
-              #       valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
-              #     )
-              #   )
-              # ),
-              box(
-                title = tagList(tags$strong("Unauthorized Deforestation")),
-                width = 6,
-                plotlyOutput("illegalPlot", height = "400px")
-              ),
-              box(
-                title = tagList(tags$strong("Change in Unauthorized Deforestation Over Time")),
-                width = 6,
-                plotlyOutput("areaPlot", height = "400px")
-              )
+            #   fluidRow(
+            #     column(
+            #       width = 6,
+            #       valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
+            #     ),
+            #     column(
+            #       width = 6,
+            #       valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
+            #     )
+            #   )
+            # ),
+            box(
+              title = tagList(tags$strong("Unauthorized Deforestation")),
+              width = 6,
+              plotlyOutput("illegalPlot", height = "400px")
+            ),
+            box(
+              title = tagList(tags$strong("Change in Unauthorized Deforestation Over Time")),
+              width = 6,
+              plotlyOutput("areaPlot", height = "400px")
             )
-          ),
-          tabPanel(title = "Authorized Deforestation",
-                   fluidRow(
-                     div(
-                       style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
-                       fluidRow(
-                         column(width = 12,
-                                tags$style(HTML(".leaflet-container {background: #ffffff;}")),
-                                h4(tags$strong("Authorized Deforestation by Political Boundaries")),
-                                actionButton("drill_up_authorized", "View Departments"),
-                                              actionButton("drill_down_authorized", "View Districts"),
-                                              selectInput("year_range_authorized", "Select Year Range", unique(combined_auth_df_by_dpto$year_range)),
-                                              leafletOutput("leafdown_authorized", height = "350px")
-                                       ),
-                                       
-                                       box(title = tagList(tags$strong("Authorized Deforestation")),
-                                           width = 6,
-                                           plotlyOutput("authorizedPlot", height = "400px")
-                                       ),
-                                       box(title = tagList(tags$strong("Change in Authorized Deforestation Over Time")),
-                                           width = 6,
-                                           plotlyOutput("area_authorized_Plot", height = "400px")
-                                       )
-                                     )))
-                        ) # END Authorized Deforestation tabPanel 
-            )
+          )
+        ),
+        tabPanel(title = "Authorized Deforestation",
+                 fluidRow(
+                   div(
+                     style = "border: 1px solid #ddd; margin-bottom: 10px; padding: 10px;",
+                     fluidRow(
+                       column(width = 12,
+                              tags$style(HTML(".leaflet-container {background: #ffffff;}")),
+                              h4(tags$strong("Authorized Deforestation by Political Boundaries")),
+                              actionButton("drill_up_authorized", "View Departments"),
+                              actionButton("drill_down_authorized", "View Districts"),
+                              selectInput("year_range_authorized", "Select Year Range", unique(combined_auth_df_by_dpto$year_range)),
+                              leafletOutput("leafdown_authorized", height = "350px")
+                       ),
+                       
+                       box(title = tagList(tags$strong("Authorized Deforestation")),
+                           width = 6,
+                           plotlyOutput("authorizedPlot", height = "400px")
+                       ),
+                       box(title = tagList(tags$strong("Change in Authorized Deforestation Over Time")),
+                           width = 6,
+                           plotlyOutput("area_authorized_Plot", height = "400px")
+                       )
+                     )))
+        ) # END Authorized Deforestation tabPanel 
+      )
     ),
     
     # put_id tabItem ----
@@ -305,43 +433,45 @@ body <- dashboardBody(
             ) # END fluidPage
     ),
     
+    # ------------------------------------------ Deforestation and Forest Cover Statistics ------------------------------------------ 
     # deforestation_stats tabItem ----
     tabItem(tabName = "deforestation_stats",
-        
-    fluidRow(
-      box(width = 12,
-          title = tags$strong("Deforestation by Political Boundaries"),
-          column(width = 12,
-                 print(tags$strong("Switch between political boundaries by selecting departments or districts to observe deforestation statistics."))),
-          column(width = 12,
-                 actionButton("drill_up", "View Departments"),
-                 actionButton("drill_down", "View Districts"))
-      ),
-      box(width = 12,
-          column(width = 3,
-                 selectInput("year_deforestation_percent_map", "Select a year", unique(forest_loss_district_std_df$year)),
-                 box(width = 12,
-                     print(tags$strong("Visualizations Disclaimer:")),
-                     HTML("<br>"),
-                     textOutput("deforestation_data_disclaimer_txt"))
-                 ),
-          column(width = 9,
-                 withSpinner(leafletOutput("leafdown_forest_loss", width = "100%", height = "550px")),
-                 tags$style(HTML(".leaflet-container {background: #ffffff;}")))
-      ),
-      box(width = 6,
-          title = tags$strong("Deforestation Area (ha):"),
-          withSpinner(plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot", width = "100%", height = "400px"))
-      ),
-      box(width = 6,
-          title = tags$strong("Deforestation Percent (%):"),
-          withSpinner(plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot", width = "100%", height = "400px"))
-      )
-    )
+            
+            fluidRow(
+              box(width = 12,
+                  title = tags$strong("Deforestation by Political Boundaries"),
+                  column(width = 12,
+                         print(tags$strong("Switch between political boundaries by selecting departments or districts to observe deforestation statistics."))),
+                  column(width = 12,
+                         actionButton("drill_up", "View Departments"),
+                         actionButton("drill_down", "View Districts"))
+              ),
+              box(width = 12,
+                  column(width = 3,
+                         selectInput("year_deforestation_percent_map", "Select a year", unique(forest_loss_district_std_df$year)),
+                         box(width = 12,
+                             print(tags$strong("Visualizations Disclaimer:")),
+                             HTML("<br>"),
+                             textOutput("deforestation_data_disclaimer_txt"))
+                  ),
+                  column(width = 9,
+                         withSpinner(leafletOutput("leafdown_forest_loss", width = "100%", height = "550px")),
+                         tags$style(HTML(".leaflet-container {background: #ffffff;}")))
+              ),
+              box(width = 6,
+                  title = tags$strong("Deforestation Area (ha):"),
+                  withSpinner(plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot", width = "100%", height = "400px"))
+              ),
+              box(width = 6,
+                  title = tags$strong("Deforestation Percent (%):"),
+                  withSpinner(plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot", width = "100%", height = "400px"))
+              )
+            )
     ),
     
     
-    
+    # tabItem(tabName = "forest_cover_stats",
+    #         forestCoverModuleUI("forest_cover_module")),
     
     # forest_cover_stats tabItem ----
     tabItem(tabName = "forest_cover_stats",
@@ -350,15 +480,15 @@ body <- dashboardBody(
                   title = tags$strong("Forest Cover by Political Boundaries"),
                   column(width = 12, actionButton("drill_upward", "View Departments"),
                          actionButton("drill_downward", "View Districts")),
-                  column(width =12, 
+                  column(width =12,
                          print(tags$strong("Switch between political boundaries by selecting departments or districts to observe forest cover statistics.")))#,
                   #column(width = 2, selectInput("years_selected_var", "Select a Year", unique(py_fc_dept$year)))
               ),
               box(
-                  width = 12,
-                  column(width = 2, selectInput("years_selected_var", "Select a Year", unique(py_fc_dept$year))),
-                  withSpinner(leafletOutput("leafdown_forest_cover")),
-                  tags$style(HTML(".leaflet-container {background: #ffffff;}"))
+                width = 12,
+                column(width = 2, selectInput("years_selected_var", "Select a Year", unique(py_fc_dept$year))),
+                withSpinner(leafletOutput("leafdown_forest_cover")),
+                tags$style(HTML(".leaflet-container {background: #ffffff;}"))
               ),
               box(width = 6,
                   title = tags$strong("Forest Cover Area (ha):"),
@@ -372,33 +502,79 @@ body <- dashboardBody(
             
     ),
     
-    # simulations tabItem ----
-    tabItem(tabName = "simulations",
-            fluidPage(
-              titlePanel("Land Use Stacked Bar Chart"),
-              
-              sidebarLayout(
-                sidebarPanel(
-                  selectInput("dataset",
-                              label = "Political Boundary:",
-                              choices = c("department", "district"),
-                              selected = "department"),
-                  
-                  uiOutput("name_selection")
-                ),
-                
-                mainPanel(
-                  plotlyOutput("landUsePlot")
-                )
-              )
-              
-            ) # END fluidPage
-    ), # END simulations tabItem
-    
-    
-    # predictions tabItem ----
-    tabItem(tabName = "predictions",
+    # ------------------------------------------ Simulation and Deforestation Comparisons ------------------------------------------ 
+    tabItem(tabName = "sim_pred",
             # predictions content here
+            fluidRow(
+              box(width = 3,
+                  title = "Select a scenario:",
+                  selectInput("simulation_type", "Simulation Type", choices = c("All", simulation_types), selected = "Current Forest Law"))
+            ),
+            fluidRow(
+              column(width = 4,
+                     box(width = 12,
+                         style = "height: 470px;",  # Adjust the height as needed
+                         title = "Deforestation Predictions",
+                         "Map of prediction based on simulation selected"),
+                     box(width = 12,
+                         align = "center",
+                         title = "Land Use Plan Simulations Example",
+                         uiOutput("lup_simulation_example"))
+              ),
+              column(width = 8,
+                     box(width = 12,
+                         title = "Comparing Land Use Plan Simulations & Deforestation Predictions Land-Use Totals",
+                         # plotlyOutput("histogram_sim_pred_land_use")
+                         plotlyOutput("histogram_sim_pred_land_use", height = "450px", width = "100%")
+                     ),
+                     
+                     
+                     
+                     fluidRow(
+                       
+                       box(width = 6,
+                           align = "center",
+                           title = "Comparing Results: Land Use Plan Simulations",
+                           uiOutput("lup_simulation_images") #simulation scenarios
+                       ),
+                       box(width = 6,
+                           title = "Comparing Results: Deforestation Predictions",
+                           column(
+                             width = 9,
+                             align = "center",
+                             uiOutput("prediction_images")),
+                           column(width = 3,
+                                  tags$img(src = "pred_scale.png", width = "80%")))
+                     )
+                     
+                     
+              )
+            ),
+            
+            # fluidRow(
+            # 
+            #   box(width = 6,
+            #       align = "center",
+            #       title = "Comparing Results: Land Use Plan Simulations",
+            #       uiOutput("lup_simulation_images") #simulation scenarios
+            #   ),
+            #   box(width = 6,
+            #       title = "Comparing Results: Deforestation Predictions",
+            #       column(
+            #         width = 9,
+            #         align = "center",
+            #         uiOutput("prediction_images")),
+            #   column(width = 3,
+            #          tags$img(src = "pred_scale.png", width = "80%")))
+            # ),
+            
+            fluidRow(
+              box(width = 12,
+                  title = "txt explaning how you compare them."
+                  
+              )
+            )
+            
     ) # END predictions tabItem
     
   ), # END tabItems

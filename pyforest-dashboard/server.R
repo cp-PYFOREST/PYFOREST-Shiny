@@ -1,4 +1,9 @@
 # server.R
+
+# Source
+#source("R/forest_cover_module.R")
+source("R/lup_sim_deforestation_prediction_histogram_data.R")
+
 # Load packages and data from global.R file
 
 server <- function(input, output, session) {
@@ -482,94 +487,6 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   })
 
   
-  
-  # ------------------------------------------ not using - alex ------------------------------------------
-    #### scratch - alex
-  # #compliance plot
-  # compliance_colors <- c("yes" = "#4b5f43", "no" = "#999999")
-  # # Group by department and calculate the count of compliance
-  # df_by_dept <- compliance_fake |>
-  #   group_by(department, compliance) |>
-  #   summarize(count = n())
-  # 
-  # output$compliance_output_plot <- renderPlot({
-  #   ggplot(df_by_dept, aes(x = department, y = count, fill = compliance)) + 
-  #     geom_bar(stat = "identity", position = "dodge") + 
-  #     labs(x = "Department", y = "Number of Properties", title = "Compliance by Department",
-  #          caption = "yes: land use plan was accurately executed/ authorized deforestation, no: land use plan was not accurately executed/unauthorized deforestation") +
-  #     scale_fill_manual(values = compliance_colors) +
-  #     theme_minimal()
-  #   
-  # })
-  # 
-  ####new
-  # 
-  # # Download button for plot
-  # output$download_compliance_plot <- downloadHandler(
-  #   filename = function() {
-  #     paste("compliance_plot_", Sys.Date(), ".png", sep = "")
-  #   },
-  #   content = function(file) {
-  #     ggsave(file, plot = output$compliance_output_plot())
-  #   })
-  
-  # # filter data table
-  # illegal_filtered_df <- reactive({
-  #   illegal_df |>
-  #     filter(department == input$nom_dpto, district == input$nom_dist)
-  # })
-  # 
-  # # Generate table based on selected dept and dist
-  # output$illegal_df_output <- renderDataTable({
-  #   illegal_filtered_df()
-  # })
-
-  # # Create a download button for table
-  # output$downloadTable <- downloadHandler(
-  #   filename = function() {
-  #     paste("compliance_data_", Sys.Date(), ".csv", sep = "")
-  #   },
-  #   content = function(file) {
-  #     write.csv(compliance_filtered_df(), file)
-  #   })
-
-# 
-#   # filter for column desired
-#    deforestation_filtered_df <- reactive({
-#      deforestation_fake |>
-#        filter(department == input$department_deforestation, district == input$district_deforestation)
-#    })
-# 
-# # Deforestation plot
-# output$deforestation_output_plot <- renderPlot({
-#   ggplot(deforestation_filtered_df(), aes(x = year, y = deforestation, color = district)) +
-#     geom_line() +
-#     facet_wrap(~department, scales = "free_y") +
-#     labs(x = "Year", y = "Deforestation (hectares loss)", title = "Deforestation by Department from 2002 to 2020") +
-#     theme_minimal()
-#   
-#   })
-  
-  # # Download button for deforestation plot
-  # output$download_deforestation_plot <- downloadHandler(
-  #   filename = function() {
-  #     paste("deforestation_plot_", Sys.Date(), ".png", sep = "")
-  #   },
-  #   content = function(file) {
-  #     ggsave(file, plot = output$deforestation_output_plot())
-  #   })
-  #
-  
-  
-  # # Deforestation tmap output
-  # output$map_output <- renderTmap({
-  #   tmap_mode("view")
-  #   tm_shape(fl_00_05) +
-  #     tm_fill(col = "darkgreen")
-  #   
-  # })
-  
-  
   # ------------------------------------------ LUP Assessment by PUT ID ------------------------------------------
   
   compliance_filter<- reactive({
@@ -889,27 +806,24 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       fl_department_plot <- ggplotly(fl_department_plot, tooltip = "text")
       fl_department_plot <- layout(fl_department_plot, hoverlabel = list(bgcolor = "white"))
     }
-  })
-  
-  
-  
-  #END PLOTLY 
-  
-  
-  
-  
-  
+  }) #END plotly
+
   # -----------------------------------------  Forest Cover Statistics -----------------------------------
+ 
+  #  # Call the forest cover module
+  # callModule(forestCoverModule, "forest_cover_module", 
+  #            py_fc_dept = py_fc_dept, 
+  #            py_fc_dist = py_fc_dist)
+  
+
   py_fc_dept <- st_transform(py_fc_dept, crs = "+proj=longlat +datum=WGS84")
   py_fc_dist <- st_transform(py_fc_dist, crs = "+proj=longlat +datum=WGS84")
   pyforest_palette_fc <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
-  
-  
 
-  
+
   filter_data <- function(data) { data %>% filter(year == input$years_selected_var) }
-  
-  
+
+
   # Create reactive data for department and district levels
   data_dept_forest_cover <- reactive({
     if (input$drill_downward == 0 && input$drill_upward == 0) {
@@ -920,7 +834,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       filter_data(py_fc_dept)
     }
   })
-  
+
   data_dist_forest_cover <- reactive({
     if (input$drill_downward > 0) {
       filter(py_fc_dist)
@@ -928,7 +842,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       filter(py_fc_dept)
     }
   })
-  
+
   output$leafdown_forest_cover <- renderLeaflet({
     data_filtered <- data_dept_forest_cover()
     my_palette_dpto <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
@@ -956,7 +870,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         position = "bottomright"
       )
   })
-  
+
   observeEvent(input$drill_downward, {
     data_filtered <- data_dist_forest_cover()
     my_palette_dist <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
@@ -978,8 +892,8 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         ) %>% lapply(HTML)
       )
   })
-  
-  
+
+
   observeEvent(input$drill_upward, {
     data_filtered <- data_dept_forest_cover()
     my_palette_dept <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
@@ -993,21 +907,21 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         opacity = 1,
         highlightOptions = highlightOptions(color = "white", weight = 2, bringToFront = TRUE),
         label = ~paste0(
-          "<b>Year: </b>", year, 
+          "<b>Year: </b>", year,
           "<br><b>Department: </b>", nom_dpto,
           "<br><b>Forest Cover Percent </b>", data_filtered$percent_fc, " %",
           "<br><b>Forest Cover Area: </b>", data_filtered$fc_area_ha, " ha"
         ) %>% lapply(HTML)
       )
   })
-  
-  
-  output$forest_cover_area_ha_plot <- renderPlotly({ 
-    
+
+
+  output$forest_cover_area_ha_plot <- renderPlotly({
+
     if (input$drill_downward > 0) {
       data_filtered <- py_fc_dist %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
-      fc_district_plot <- 
+      fc_district_plot <-
         ggplot(data = data_filtered, aes(x = year, y = fc_area_ha, group = nom_dist, color = nom_dpto)) +
         geom_line(size = 1) +
         geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
@@ -1026,13 +940,12 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_district_plot <- ggplotly(fc_district_plot, tooltip = "text")
       fc_district_plot <- layout(fc_district_plot, hoverlabel = list(bgcolor = "white"))
-      
-      
-      
+
+
     } else if (input$drill_upward > 0) {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
-      fc_department_plot <- 
+      fc_department_plot <-
         ggplot(data = data_filtered, aes(x = year, y = fc_area_ha, group = nom_dpto, color = nom_dpto)) +
         geom_line(size = 1) +
         geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
@@ -1050,13 +963,12 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
-      
-      
-      
+
+
     } else {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
-      fc_department_plot <- 
+      fc_department_plot <-
         ggplot(data = data_filtered, aes(x = year, y = fc_area_ha, group = nom_dpto, color = nom_dpto)) +
         geom_line(size = 1) +
         geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
@@ -1076,16 +988,13 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
     }
   })
-  
-  
-  
-  
-  output$forest_cover_area_percent_plot <- renderPlotly({ 
-    
+
+  output$forest_cover_area_percent_plot <- renderPlotly({
+
     if (input$drill_downward > 0) {
       data_filtered <- py_fc_dist %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
-      fc_district_plot <- 
+      fc_district_plot <-
         ggplot(data = data_filtered, aes(x = year, y = percent_fc, group = nom_dist, color = nom_dpto)) +
         geom_line(size = 1) +
         geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
@@ -1103,13 +1012,13 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_district_plot <- ggplotly(fc_district_plot, tooltip = "text")
       fc_district_plot <- layout(fc_district_plot, hoverlabel = list(bgcolor = "white"))
-      
-      
-      
+
+
+
     } else if (input$drill_upward > 0) {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
-      fc_department_plot <- 
+      fc_department_plot <-
         ggplot(data = data_filtered, aes(x = year, y = percent_fc, group = nom_dpto, color = nom_dpto)) +
         geom_line(size = 1) +
         geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
@@ -1126,13 +1035,13 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
-      
-      
-      
+
+
+
     } else {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
-      fc_department_plot <- 
+      fc_department_plot <-
         ggplot(data = data_filtered, aes(x = year, y = percent_fc, group = nom_dpto, color = nom_dpto)) +
         geom_line(size = 1) +
         geom_point(aes(text = paste("<b>Year: </b>", format(year, "%Y"), "<br>",
@@ -1147,48 +1056,164 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         theme(legend.position = "bottom") +
         scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
-      
-      
+
+
       fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
     }
   })
   
-
   
   # ------------------------------------------ LUP Simulations ------------------------------------------
   
-  # Create a dynamic UI element in the server.R file using renderUI
-  output$name_selection <- renderUI({
-    if (input$dataset == "department") {
-      selectInput("name",
-                  label = "Choose department:",
-                  choices = c("PDTE. HAYES", "BOQUERON", "ALTO PARAGUAY"))
-    } else if (input$dataset == "district") {
-      selectInput("name",
-                  label = "Choose district:",
-                  choices = c("BAHIA NEGRA", "BENJAMIN ACEVAL", "BOQUERON",
-                              "CAMPO ACEVAL", "CARMELO PERALTA", "FILADELFIA",
-                              "FUERTE OLIMPO", "GRAL JOSE MARIA BRUGUEZ",
-                              "JOSE FALCON", "LOMA PLATA", "MCAL. ESTIGARRIBIA",
-                              "NANAWA", "NUEVA ASUNCION", "PUERTO CASADO",
-                              "PUERTO PINASCO", "TTE 1RO MANUEL IRALA FERNANDEZ",
-                              "TTE. ESTEBAN MARTINEZ", "VILLA HAYES"))
+  # # Create a dynamic UI element in the server.R file using renderUI
+  # output$name_selection <- renderUI({
+  #   if (input$dataset == "department") {
+  #     selectInput("name",
+  #                 label = "Choose department:",
+  #                 choices = c("PDTE. HAYES", "BOQUERON", "ALTO PARAGUAY"))
+  #   } else if (input$dataset == "district") {
+  #     selectInput("name",
+  #                 label = "Choose district:",
+  #                 choices = c("BAHIA NEGRA", "BENJAMIN ACEVAL", "BOQUERON",
+  #                             "CAMPO ACEVAL", "CARMELO PERALTA", "FILADELFIA",
+  #                             "FUERTE OLIMPO", "GRAL JOSE MARIA BRUGUEZ",
+  #                             "JOSE FALCON", "LOMA PLATA", "MCAL. ESTIGARRIBIA",
+  #                             "NANAWA", "NUEVA ASUNCION", "PUERTO CASADO",
+  #                             "PUERTO PINASCO", "TTE 1RO MANUEL IRALA FERNANDEZ",
+  #                             "TTE. ESTEBAN MARTINEZ", "VILLA HAYES"))
+  #   }
+  # })
+  # 
+  # # Land use simulation plot
+  # output$landUsePlot <- renderPlotly({
+  #   plot_land_use_type_stackedh(input$dataset, input$name)
+  # })
+  
+  # ------------------------------------------ Land Use Plan Simulation & Deforestation Predictions ------------------------------------------
+  simulation_types <- unique(combined_data$simulation)
+  
+  output$lup_simulation_example <- renderUI({
+    # Display images based on the selected simulation type
+    if (input$simulation_type == "Current Forest Law") {
+      tagList(
+        tags$h4("Current Forest Law"),
+        tags$img(src = "current_forest_law_lup_example.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Law Ambiguity") {
+      tagList(
+        tags$h4("Law Ambiguity"),
+        tags$img(src = "law_ambiguity_simulation_example.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Prioritize Economic Development") {
+      tagList(
+        tags$h4("Prioritize Economic Development"),
+        tags$img(src = "prioritize_econ_development_lup_example.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Promotes Forest Conservation") {
+      tagList(
+        tags$h4("Promotes Forest Conservation"),
+        tags$img(src = "forest_conservation_lup_example.png", width = "100%")
+      )
+    } else {
+      NULL
+      print("May only view one LUP simulation at a time.")
     }
   })
   
-  # Land use simulation plot
-  output$landUsePlot <- renderPlotly({
-    plot_land_use_type_stackedh(input$dataset, input$name)
+  
+  #histogram_sim_pred_land_use
+  output$histogram_sim_pred_land_use <- renderPlotly({
+    # Filter the data based on the selected simulation type
+    filtered_data <- if (input$simulation_type == "All") {
+      combined_data
+    } else {
+      combined_data[combined_data$simulation == input$simulation_type, ]
+    }
+    
+    # Create the ggplot object
+    ggplot_obj <- ggplot(filtered_data, aes(x = simulation_type, y = Area, fill = LandUseTypeStatus)) +
+      geom_bar(stat = 'identity', position = 'stack', color = "NA", linewidth = 0.25) +
+      scale_fill_manual(values = color_mapping_deforestation) +
+      labs(x = "", y = "Area (ha)", fill = "Land Use Type Status") +
+      theme_minimal() +
+      theme(plot.title = element_text(hjust = 0.5),
+            plot.background = element_rect(fill = "transparent"),
+            legend.position = "top") +
+      coord_flip()
+    
+    # Convert ggplot to Plotly object
+    ggplotly(ggplot_obj)
   })
   
-  # ------------------------------------------ XXXX ------------------------------------------
   
   
-
+  output$lup_simulation_images <- renderUI({
+    # Display images based on the selected simulation type
+    if (input$simulation_type == "Current Forest Law") {
+      tagList(
+        tags$h4("Current Forest Law"),
+        tags$img(src = "current_forest_law_lup_simulation.png", width = "74%")
+      )
+    } else if (input$simulation_type == "Law Ambiguity") {
+      tagList(
+        tags$h4("Law Ambiguity"),
+        tags$img(src = "law_ambiguity_lup_simulation.png", width = "74%")
+      )
+    } else if (input$simulation_type == "Prioritize Economic Development") {
+      tagList(
+        tags$h4("Prioritize Economic Development"),
+        tags$img(src = "prioritize_cattle_production_lup_simulation.png", width = "74%")
+      )
+    } else if (input$simulation_type == "Promotes Forest Conservation") {
+      tagList(
+        tags$h4("Promotes Forest Conservation"),
+        tags$img(src = "promotes_forest_conservation_lup_simulation.png", width = "74%")
+      )
+    } else {
+      NULL
+      print("Select only one scenario to compare simulated vs predicted land use.")
+    }
+  })
+  
+  output$prediction_images <- renderUI({
+    # Display images based on the selected simulation type
+    if (input$simulation_type == "Current Forest Law") {
+      tagList(
+        tags$h4("Current Forest Law"),
+        tags$img(src = "current_forest_law_deforestation_pred.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Law Ambiguity") {
+      tagList(
+        tags$h4("Law Ambiguity"),
+        tags$img(src = "law_ambiguity_pred.png", width = "100%")
+      )
+    } else if (input$simulation_type == "Prioritize Economic Development") {
+      tagList(
+        tags$h4("Prioritize Economic Development"),
+        #tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
+        print("Need this image.")
+      )
+    } else if (input$simulation_type == "Promotes Forest Conservation") {
+      tagList(
+        tags$h4("Promotes Forest Conservation"),
+        tags$img(src = "promotes_forest_conservation_pred.png", width = "100%")
+      )
+    } else {
+      NULL
+      print("Select only one scenario to compare simulated vs predicted land use.")
+    }
+  })
   
   
-  }
+  
+  
+  
+  
+  
+  
+  
+} # END SERVER
 
 
 
