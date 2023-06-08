@@ -1093,33 +1093,35 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   # ------------------------------------------ Land Use Plan Simulation & Deforestation Predictions ------------------------------------------
   simulation_types <- unique(combined_data$simulation)
   
-  output$lup_simulation_example <- renderUI({
-    # Display images based on the selected simulation type
-    if (input$simulation_type == "Current Forest Law") {
-      tagList(
-        tags$h4("Current Forest Law"),
-        tags$img(src = "current_forest_law_lup_example.png", width = "100%")
-      )
-    } else if (input$simulation_type == "Law Ambiguity") {
-      tagList(
-        tags$h4("Law Ambiguity"),
-        tags$img(src = "law_ambiguity_simulation_example.png", width = "100%")
-      )
-    } else if (input$simulation_type == "Prioritize Economic Development") {
-      tagList(
-        tags$h4("Prioritize Economic Development"),
-        tags$img(src = "prioritize_econ_development_lup_example.png", width = "100%")
-      )
-    } else if (input$simulation_type == "Promotes Forest Conservation") {
-      tagList(
-        tags$h4("Promotes Forest Conservation"),
-        tags$img(src = "forest_conservation_lup_example.png", width = "100%")
-      )
-    } else {
-      NULL
-      print("May only view one LUP simulation at a time.")
-    }
-  })
+  # DON'T NEED MOVED TO HOME PAGE ------
+  # output$lup_simulation_example <- renderUI({
+  #   # Display images based on the selected simulation type
+  #   if (input$simulation_type == "Current Forest Law") {
+  #     tagList(
+  #       tags$h4("Current Forest Law"),
+  #       tags$img(src = "current_forest_law_lup_example.png", width = "100%")
+  #     )
+  #   } else if (input$simulation_type == "Law Ambiguity") {
+  #     tagList(
+  #       tags$h4("Law Ambiguity"),
+  #       tags$img(src = "law_ambiguity_simulation_example.png", width = "100%")
+  #     )
+  #   } else if (input$simulation_type == "Prioritize Cattle Ranching") {
+  #     tagList(
+  #       tags$h4("Prioritize Cattle Ranching"),
+  #       tags$img(src = "prioritize_econ_development_lup_example.png", width = "100%")
+  #     )
+  #   } else if (input$simulation_type == "Promotes Forest Conservation") {
+  #     tagList(
+  #       tags$h4("Promotes Forest Conservation"),
+  #       tags$img(src = "forest_conservation_lup_example.png", width = "100%")
+  #     )
+  #   } else {
+  #     NULL
+  #     print("May only view one LUP simulation at a time.")
+  #   }
+  # })
+  # END -------
   
   
   #histogram_sim_pred_land_use
@@ -1160,9 +1162,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         tags$h4("Law Ambiguity"),
         tags$img(src = "law_ambiguity_lup_simulation.png", width = "74%")
       )
-    } else if (input$simulation_type == "Prioritize Economic Development") {
+    } else if (input$simulation_type == "Prioritize Cattle Ranching") {
       tagList(
-        tags$h4("Prioritize Economic Development"),
+        tags$h4("Prioritize Cattle Ranching"),
         tags$img(src = "prioritize_cattle_production_lup_simulation.png", width = "74%")
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
@@ -1188,9 +1190,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         tags$h4("Law Ambiguity"),
         tags$img(src = "law_ambiguity_pred.png", width = "100%")
       )
-    } else if (input$simulation_type == "Prioritize Economic Development") {
+    } else if (input$simulation_type == "Prioritize Cattle Ranching") {
       tagList(
-        tags$h4("Prioritize Economic Development"),
+        tags$h4("Prioritize Cattle Ranching"),
         #tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
         print("Need this image.")
       )

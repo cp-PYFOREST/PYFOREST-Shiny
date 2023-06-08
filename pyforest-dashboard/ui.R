@@ -149,8 +149,11 @@ body <- dashboardBody(
                       br(),
                       br(),
                       tags$h5(tags$b("Instrucciones para traducir la applicación")),
-                      "Para traducir esta applicaciòn. Utilize la applicación en Google Chrome. A la derecha de la barra, haz clic en Traducir. Luego, elige tu idioma preferido. Chrome traducirá la aplicación web."
-                  ) 
+                      
+                      # UPDATES START -----------
+                      "Para traducir esta applicación, utilize la applicación en Google Chrome, a la derecha de la barra, haz clic en traducir, luego, elige Español."
+                      # UPDATES END -------------
+                      ) 
                 ),
                 column(
                   width = 6,
@@ -275,6 +278,8 @@ body <- dashboardBody(
                                      )
                                    )
                                  ), # END COLLAPSE 2
+                                 
+      # UPDATES START -------------
                                  bsCollapsePanel(
                                    HTML(paste0("Land Use Plan Simulation & Deforestation Predictions <span class='arrow'>&#x25BE;</span>")),
                                    style = "info",
@@ -284,19 +289,53 @@ body <- dashboardBody(
                                    tags$h4("Deforestation Predictions"),
                                    tags$p("Deforestation Predictions with land-use type results may also be found here follwoing the current and alternate forest laws."),
                                    br(),
-                                   tags$h4("Scenarios"),
+                                   tags$h4(tags$b("Scenarios")),
+                                   br(),
                                    tags$b("Current Forest Law"),
                                    tags$p("This scenario follows the current policy and legal requirements for LUPs enforced by INFONA. It includes a 25% forest reserve, a 100-meter hedgerow buffer, a 100-meter riparian forest, and paddocks of less than 100 ha for authorized deforestation. The purpose of this scenario is to simulate the continuation of existing practices and policies without any significant changes."),
+                                   tags$img(
+                                     src = "current_forest_law_lup_example.png",
+                                     alt = "Simulated LUP following current forest law",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "LUP under Current Forest Law")
+                                   ),
                                    br(),
                                    tags$b("Promotes Forest Conservation"),
                                    tags$p("This scenario aims to enhance forest conservation efforts. It proposes increasing the forest reserve requirement to 50%, along with maintaining a 100-meter hedgerow buffer, a 100-meter riparian forest, and paddocks of less than 100 ha. The objective is to simulate the potential outcomes of a policy that prioritizes the preservation and protection of forests."),
+                                   tags$img(
+                                     src = "forest_conservation_lup_example.png",
+                                     alt = "Promotes Forest Conservation simulated LUP",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "Promotes Forest Conservation LUP")
+                                   ),
                                    br(),
-                                   tags$b("Prioritize Cattle Production"),
+                                   tags$b("Prioritize Cattle Ranching"),
                                    tags$p("This scenario aims to find a balance between cattle production and forest conservation. It proposes a 25% total forest cover, which includes the combined area of the 100-meter riparian forest and 100-meter hedgerow buffer. Any additional forest area required to reach the 25% target would be designated as forest reserve. This policy includes paddocks of less than 100 ha. The intention is to simulate potential effects of a policy goal that prioritizes land use for economic purposes, while maintaining a 25% forest cover goal."),
+                                   tags$img(
+                                     src = "prioritize_econ_development_lup_example.png",
+                                     alt = "Prioritize Cattle Ranching simulated LUP scenario",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "Proritize Cattle Ranching LUP")
+                                   ),
                                    br(),
                                    tags$b("Law Ambiguity"),
-                                   tags$p("This scenario addresses a potential ambiguity in the law's interpretation. It suggests that if a property has been deforested beyond the approved amount, an immediate reforestation of 5% of the property is required in the areas of regrowth. This is in addition to maintaining the 100-meter hedgerow buffer, the 100-meter riparian forest, and paddocks of less than 100 ha. However, some might interpret this policy as allowing them to deforest their entire property and only replant 5%. This misinterpretation could lead to substantial deforestation, undermining the policy's intent.")
-                                 )
+                                   tags$p("This scenario addresses a potential ambiguity in the law's interpretation. It suggests that if a property has been deforested beyond the approved amount, an immediate reforestation of 5% of the property is required in the areas of regrowth. This is in addition to maintaining the 100-meter hedgerow buffer, the 100-meter riparian forest, and paddocks of less than 100 ha. However, some might interpret this policy as allowing them to deforest their entire property and only replant 5%. This misinterpretation could lead to substantial deforestation, undermining the policy's intent."),
+                                   tags$img(
+                                     src = "law_ambiguity_simulation_example.png",
+                                     alt = "LUP under law ambiguity",
+                                     style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
+                                     tags$figcaption( 
+                                       style = "text-align: center; font-style: italic; margin-bottom: 10px;",
+                                       "Law Ambiguity LUP")
+                                   )
+      # UPDATES END ----------------
+                                   )
                                )
                   )) 
                 )
@@ -506,20 +545,23 @@ body <- dashboardBody(
     tabItem(tabName = "sim_pred",
             # predictions content here
             fluidRow(
-              box(width = 3,
-                  title = "Select a scenario:",
-                  selectInput("simulation_type", "Simulation Type", choices = c("All", simulation_types), selected = "Current Forest Law"))
+              
+# UPDATES HERE -----
+              box(width = 12,
+                  title = tags$strong("Scenarios:"),
+                  selectInput("simulation_type", "Select one:", choices = c("All", simulation_types), selected = "Current Forest Law"))
             ),
+# UPDATES END -----
             fluidRow(
               column(width = 4,
                      box(width = 12,
                          style = "height: 470px;",  # Adjust the height as needed
                          title = "Deforestation Predictions",
-                         "Map of prediction based on simulation selected"),
-                     box(width = 12,
-                         align = "center",
-                         title = "Land Use Plan Simulations Example",
-                         uiOutput("lup_simulation_example"))
+                         "Map of prediction based on simulation selected") #,
+                     # box(width = 12,
+                     #     align = "center",
+                     #     title = "Land Use Plan Simulations Example",
+                     #     uiOutput("lup_simulation_example"))
               ),
               column(width = 8,
                      box(width = 12,
@@ -529,24 +571,24 @@ body <- dashboardBody(
                      ),
                      
                      
-                     
-                     fluidRow(
-                       
-                       box(width = 6,
-                           align = "center",
-                           title = "Comparing Results: Land Use Plan Simulations",
-                           uiOutput("lup_simulation_images") #simulation scenarios
-                       ),
-                       box(width = 6,
-                           title = "Comparing Results: Deforestation Predictions",
-                           column(
-                             width = 9,
-                             align = "center",
-                             uiOutput("prediction_images")),
-                           column(width = 3,
-                                  tags$img(src = "pred_scale.png", width = "80%")))
-                     )
-                     
+# MOVING THIS --------                     
+                     # fluidRow(
+                     #   
+                     #   box(width = 6,
+                     #       align = "center",
+                     #       title = "Comparing Results: Land Use Plan Simulations",
+                     #       uiOutput("lup_simulation_images") #simulation scenarios
+                     #   ),
+                     #   box(width = 6,
+                     #       title = "Comparing Results: Deforestation Predictions",
+                     #       column(
+                     #         width = 9,
+                     #         align = "center",
+                     #         uiOutput("prediction_images")),
+                     #       column(width = 3,
+                     #              tags$img(src = "pred_scale.png", width = "80%")))
+                     # )
+# END MOVING THIS ------                    
                      
               )
             ),
@@ -568,10 +610,32 @@ body <- dashboardBody(
             #          tags$img(src = "pred_scale.png", width = "80%")))
             # ),
             
+
+# UPDATE MOVED HERE ---------
+fluidRow(
+  
+  box(width = 6,
+      style = "height: 460px;",  # Adjust the height as needed
+      align = "center",
+      title = "Comparing Results: Land Use Plan Simulations",
+      uiOutput("lup_simulation_images") #simulation scenarios
+  ),
+  box(width = 6,
+      style = "height: 461.5px;",  # Adjust the height as needed
+      title = "Comparing Results: Deforestation Predictions",
+      column(
+        width = 9,
+        align = "center",
+        uiOutput("prediction_images")),
+      column(width = 3,
+             tags$img(src = "pred_scale.png", width = "80%")))
+),
+
+# END UPDATE -------------
+        
             fluidRow(
               box(width = 12,
                   title = "txt explaning how you compare them."
-                  
               )
             )
             
