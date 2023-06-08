@@ -294,15 +294,15 @@ body <- dashboardBody(
                                        "Promotes Forest Conservation LUP")
                                    ),
                                    br(),
-                                   tags$b("Prioritize Cattle Ranching"),
+                                   tags$b("Prioritize Cattle Production"),
                                    tags$p("This scenario aims to find a balance between cattle production and forest conservation. It proposes a 25% total forest cover, which includes the combined area of the 100-meter riparian forest and 100-meter hedgerow buffer. Any additional forest area required to reach the 25% target would be designated as forest reserve. This policy includes paddocks of less than 100 ha. The intention is to simulate potential effects of a policy goal that prioritizes land use for economic purposes, while maintaining a 25% forest cover goal."),
                                    tags$img(
                                      src = "prioritize_econ_development_lup_example.png",
-                                     alt = "Prioritize Cattle Ranching simulated LUP scenario",
+                                     alt = "Prioritize Cattle Production simulated LUP scenario",
                                      style = "display: block; margin: 0 auto; width: 80%; height: 80%; margin-bottom: 10px;",
                                      tags$figcaption( 
                                        style = "text-align: center; font-style: italic; margin-bottom: 10px;",
-                                       "Proritize Cattle Ranching LUP")
+                                       "Proritize Cattle Production LUP")
                                    ),
                                    br(),
                                    tags$b("Law Ambiguity"),

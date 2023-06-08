@@ -1112,9 +1112,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         #tags$img(src = "map.png", width = "100%"),
         print("Need this image.")
       )
-    } else if (input$simulation_type == "Prioritize Cattle Ranching") {
+    } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        tags$h4("Prioritize Cattle Ranching"),
+        tags$h4("Prioritize Cattle Production"),
         #tags$img(src = "map.png", width = "100%")
         print("Need this image.")
       )
@@ -1170,9 +1170,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         tags$h4("Law Ambiguity"),
         tags$img(src = "law_ambiguity_lup_simulation.png", width = "74%")
       )
-    } else if (input$simulation_type == "Prioritize Cattle Ranching") {
+    } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        tags$h4("Prioritize Cattle Ranching"),
+        tags$h4("Prioritize Cattle Production"),
         tags$img(src = "prioritize_cattle_production_lup_simulation.png", width = "74%")
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
@@ -1198,9 +1198,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         tags$h4("Law Ambiguity"),
         tags$img(src = "law_ambiguity_pred.png", width = "100%")
       )
-    } else if (input$simulation_type == "Prioritize Cattle Ranching") {
+    } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        tags$h4("Prioritize Cattle Ranching"),
+        tags$h4("Prioritize Cattle Production"),
         #tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
         print("Need this image.")
       )
