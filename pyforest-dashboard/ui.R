@@ -557,7 +557,7 @@ body <- dashboardBody(
                      box(width = 12,
                          style = "height: 470px;",  # Adjust the height as needed
                          title = "Deforestation Predictions",
-                         "Map of prediction based on simulation selected") #,
+                         withSpinner(uiOutput("maps_predictions_by_scenario"))) #, ######### --- UPDATE HERE ---------
                      # box(width = 12,
                      #     align = "center",
                      #     title = "Land Use Plan Simulations Example",
@@ -567,7 +567,7 @@ body <- dashboardBody(
                      box(width = 12,
                          title = "Comparing Land Use Plan Simulations & Deforestation Predictions Land-Use Totals",
                          # plotlyOutput("histogram_sim_pred_land_use")
-                         plotlyOutput("histogram_sim_pred_land_use", height = "450px", width = "100%")
+                         withSpinner(plotlyOutput("histogram_sim_pred_land_use", height = "450px", width = "100%"))  ######### --- UPDATE HERE ---------
                      ),
                      
                      
@@ -618,7 +618,7 @@ fluidRow(
       style = "height: 460px;",  # Adjust the height as needed
       align = "center",
       title = "Comparing Results: Land Use Plan Simulations",
-      uiOutput("lup_simulation_images") #simulation scenarios
+      withSpinner(uiOutput("lup_simulation_images")) #simulation scenarios  ######### --- UPDATE HERE ---------
   ),
   box(width = 6,
       style = "height: 461.5px;",  # Adjust the height as needed
@@ -626,7 +626,7 @@ fluidRow(
       column(
         width = 9,
         align = "center",
-        uiOutput("prediction_images")),
+        withSpinner(uiOutput("prediction_images"))), #  ######### --- UPDATE HERE ---------
       column(width = 3,
              tags$img(src = "pred_scale.png", width = "80%")))
 ),

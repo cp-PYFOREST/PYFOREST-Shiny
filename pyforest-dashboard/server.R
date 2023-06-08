@@ -1124,6 +1124,52 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   # END -------
   
   
+  # NEW ADDING PREDICTION MAPS -------
+  
+  output$maps_predictions_by_scenario <- renderUI({
+    # Display images based on the selected simulation type
+    if (input$simulation_type == "Current Forest Law") {
+      tagList(
+        tags$h4("Current Forest Law"),
+        #tags$img(src = "map.png", width = "100%")
+        print("Need this image.")
+      )
+    } else if (input$simulation_type == "Law Ambiguity") {
+      tagList(
+        tags$h4("Law Ambiguity"),
+        #tags$img(src = "map.png", width = "100%"),
+        print("Need this image.")
+      )
+    } else if (input$simulation_type == "Prioritize Cattle Ranching") {
+      tagList(
+        tags$h4("Prioritize Cattle Ranching"),
+        #tags$img(src = "map.png", width = "100%")
+        print("Need this image.")
+      )
+    } else if (input$simulation_type == "Promotes Forest Conservation") {
+      tagList(
+        tags$h4("Promotes Forest Conservation"),
+        #tags$img(src = "map.png", width = "100%"),
+        print("Need this image.")
+      )
+    } else {
+      NULL
+      print("Select only one scenario to view prediction map.")
+    }
+  })
+  
+  
+  
+  # END ADDING PREDICTION MAPS 
+  
+  
+  
+  
+  
+  
+  
+  
+  
   #histogram_sim_pred_land_use
   output$histogram_sim_pred_land_use <- renderPlotly({
     # Filter the data based on the selected simulation type
