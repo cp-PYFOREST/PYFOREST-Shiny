@@ -8,13 +8,13 @@
 
 server <- function(input, output, session) {
   
-
+  
   pyforest_palette <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")
   
-    
+  
   # ------------------------------------------ LUP Assessment Unauthorized ------------------------------------------
-combined_illegal_df_by_dist <- st_transform(combined_illegal_df_by_dist, crs = "+proj=longlat +datum=WGS84")
-combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
+  combined_illegal_df_by_dist <- st_transform(combined_illegal_df_by_dist, crs = "+proj=longlat +datum=WGS84")
+  combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
   
   unauth_current_view <- reactiveVal("department")  # Initialize as "department" by default
   
@@ -455,11 +455,11 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
     }
     p <- ggplotly(p, tooltip = "text")
     p <- layout(p, hoverlabel = list(bgcolor = "white"))  #tooltip background to white
-
-
+    
+    
     return(p)
   })
-
+  
   output$area_authorized_Plot <- renderPlotly({
     if (auth_current_view() == "department")  {
       combined_auth_df_by_dpto$year_range <- factor(combined_auth_df_by_dpto$year_range, levels = rev(unique(as.character(combined_auth_df_by_dpto$year_range))))
@@ -483,11 +483,11 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
               axis.text = element_text(size = 5),  # Adjust the font size of axis labels
               panel.spacing = unit(1, "lines"),  # Adjust the spacing between facets
               strip.text = element_text(size = 8))
-
+      
     }
     ggplotly(p)
   })
-
+  
   
   # ------------------------------------------ LUP Assessment by PUT ID ------------------------------------------
   
@@ -554,7 +554,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
   
   
   # ----------------------------------------- Deforestation Statistics -----------------------------------
-
+  
   output$deforestation_data_disclaimer_txt <- renderText({
     "All deforestation data was provided in year ranges 
     (2000-2005, 2005-2011, 2011-2013, 2013-2015, 2015-2017, 2017-2018, 2018-2019, 2019-2020).
@@ -809,23 +809,23 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       fl_department_plot <- layout(fl_department_plot, hoverlabel = list(bgcolor = "white"))
     }
   }) #END plotly
-
+  
   # -----------------------------------------  Forest Cover Statistics -----------------------------------
- 
+  
   #  # Call the forest cover module
   # callModule(forestCoverModule, "forest_cover_module", 
   #            py_fc_dept = py_fc_dept, 
   #            py_fc_dist = py_fc_dist)
   
-
+  
   py_fc_dept <- st_transform(py_fc_dept, crs = "+proj=longlat +datum=WGS84")
   py_fc_dist <- st_transform(py_fc_dist, crs = "+proj=longlat +datum=WGS84")
   pyforest_palette_fc <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
-
-
+  
+  
   filter_data <- function(data) { data %>% filter(year == input$years_selected_var) }
-
-
+  
+  
   # Create reactive data for department and district levels
   data_dept_forest_cover <- reactive({
     if (input$drill_downward == 0 && input$drill_upward == 0) {
@@ -836,7 +836,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       filter_data(py_fc_dept)
     }
   })
-
+  
   data_dist_forest_cover <- reactive({
     if (input$drill_downward > 0) {
       filter(py_fc_dist)
@@ -844,7 +844,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       filter(py_fc_dept)
     }
   })
-
+  
   output$leafdown_forest_cover <- renderLeaflet({
     data_filtered <- data_dept_forest_cover()
     my_palette_dpto <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
@@ -872,7 +872,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         position = "bottomright"
       )
   })
-
+  
   observeEvent(input$drill_downward, {
     data_filtered <- data_dist_forest_cover()
     my_palette_dist <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
@@ -894,8 +894,8 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         ) %>% lapply(HTML)
       )
   })
-
-
+  
+  
   observeEvent(input$drill_upward, {
     data_filtered <- data_dept_forest_cover()
     my_palette_dept <- colorNumeric(palette = pyforest_palette_fc, domain = data_filtered$percent_fc)
@@ -916,10 +916,10 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         ) %>% lapply(HTML)
       )
   })
-
-
+  
+  
   output$forest_cover_area_ha_plot <- renderPlotly({
-
+    
     if (input$drill_downward > 0) {
       data_filtered <- py_fc_dist %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
@@ -932,9 +932,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
                                     "<b>Forest Cover Area: </b>", fc_area_ha, "ha", "<br>",
                                     "<b>Forest Cover Percent: </b>", percent_fc, "%")),color = "transparent") +
         labs(#title = "Forest Cover Over the Years by Department",
-             x = "Year",
-             y = "Forest Cover Area (ha)",
-             color = "Department") +
+          x = "Year",
+          y = "Forest Cover Area (ha)",
+          color = "Department") +
         theme_minimal() +
         theme(legend.position = "bottom") +
         scale_y_continuous(labels = scales::comma_format()) +
@@ -942,8 +942,8 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_district_plot <- ggplotly(fc_district_plot, tooltip = "text")
       fc_district_plot <- layout(fc_district_plot, hoverlabel = list(bgcolor = "white"))
-
-
+      
+      
     } else if (input$drill_upward > 0) {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
@@ -955,9 +955,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
                                     "<b>Forest Cover Area: </b>", fc_area_ha, "ha", "<br>",
                                     "<b>Forest Cover Percent: </b>", percent_fc, "%")),color = "transparent") +
         labs(#title = "Chaco Departments Forest Cover Over the Years",
-             x = "Year",
-             y = "Forest Cover Area (ha)",
-             color = "Department") +
+          x = "Year",
+          y = "Forest Cover Area (ha)",
+          color = "Department") +
         theme_minimal() +
         theme(legend.position = "bottom") +
         scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
@@ -965,8 +965,8 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
-
-
+      
+      
     } else {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
@@ -978,9 +978,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
                                     "<b>Forest Cover Area: </b>", fc_area_ha, "ha", "<br>",
                                     "<b>Forest Cover Percent: </b>", percent_fc, "%")),color = "transparent") +
         labs(#title = "Chaco Departments Forest Cover Over the Years",
-             x = "Year",
-             y = "Forest Cover Area (ha)",
-             color = "Department") +
+          x = "Year",
+          y = "Forest Cover Area (ha)",
+          color = "Department") +
         theme_minimal() +
         theme(legend.position = "bottom") +
         scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
@@ -990,9 +990,9 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
     }
   })
-
+  
   output$forest_cover_area_percent_plot <- renderPlotly({
-
+    
     if (input$drill_downward > 0) {
       data_filtered <- py_fc_dist %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
@@ -1005,18 +1005,18 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
                                     "<b>Forest Cover Percent: </b>", percent_fc, "%", "<br>",
                                     "<b>Forest Cover Area: </b>", fc_area_ha, "ha")),color = "transparent") +
         labs(#title = "Chaco Districts Forest Cover Over the Years",
-             x = "Year",
-             y = "Forest Cover Percent (%)",
-             color = "Department") +
+          x = "Year",
+          y = "Forest Cover Percent (%)",
+          color = "Department") +
         theme_minimal() +
         theme(legend.position = "bottom") +
         scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_district_plot <- ggplotly(fc_district_plot, tooltip = "text")
       fc_district_plot <- layout(fc_district_plot, hoverlabel = list(bgcolor = "white"))
-
-
-
+      
+      
+      
     } else if (input$drill_upward > 0) {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
@@ -1028,18 +1028,18 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
                                     "<b>Forest Cover Percent: </b>", percent_fc, "%", "<br>",
                                     "<b>Forest Cover Area: </b>", fc_area_ha, "ha")),color = "transparent") +
         labs(#title = "Chaco Departments Forest Cover Over the Years",
-             x = "Year",
-             y = "Forest Cover Percent (%)",
-             color = "Department") +
+          x = "Year",
+          y = "Forest Cover Percent (%)",
+          color = "Department") +
         theme_minimal() +
         theme(legend.position = "bottom") +
         scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
       fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
-
-
-
+      
+      
+      
     } else {
       data_filtered <- py_fc_dept %>% st_drop_geometry()
       data_filtered$year <- as.Date(paste(data_filtered$year, "-01-01", sep = ""))
@@ -1051,21 +1051,21 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
                                     "<b>Forest Cover Percent: </b>", percent_fc, "%", "<br>",
                                     "<b>Forest Cover Area: </b>", fc_area_ha, "ha")),color = "transparent") +
         labs(#title = "Chaco Departments Forest Cover Over the Years",
-             x = "Year",
-             y = "Forest Cover Percent (%)",
-             color = "Department") +
+          x = "Year",
+          y = "Forest Cover Percent (%)",
+          color = "Department") +
         theme_minimal() +
         theme(legend.position = "bottom") +
         scale_x_date(date_breaks = "2 years", date_labels = "%Y") +
         scale_color_manual(values = c("#4B5F43", "#AEBD93", "#F26419"))
-
-
+      
+      
       fc_department_plot <- ggplotly(fc_department_plot, tooltip = "text")
       fc_department_plot <- layout(fc_department_plot, hoverlabel = list(bgcolor = "white"))
     }
   })
   
-
+  
   # ------------------------------------------ Land Use Plan Simulation & Deforestation Predictions ------------------------------------------
   #simulation_types <- unique(combined_data$simulation)
   
@@ -1102,27 +1102,49 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
     # Display images based on the selected simulation type
     if (input$simulation_type == "Current Forest Law") {
       tagList(
-        tags$h4("Current Forest Law"),
-        #tags$img(src = "map.png", width = "100%")
-        print("Need this image.")
+        #tags$h4("Current Forest Law"),
+        div(
+          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+          tags$img(
+            src = "Predicted_Deforestation_Patterns_Under_Current_Law.png",
+            width = "100%",
+            style = "max-height: 100%; max-width: 100%; object-fit: contain;"
+          )
+        )
       )
     } else if (input$simulation_type == "Law Ambiguity") {
       tagList(
-        tags$h4("Law Ambiguity"),
-        #tags$img(src = "map.png", width = "100%"),
-        print("Need this image.")
+        #tags$h4("Law Ambiguity"),
+        div(
+          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+          tags$img(
+            src = "Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png", 
+            width = "100%",
+            style = "max-height: 100%; max-width: 100%; object-fit: cover;"
+          )
+        )
       )
     } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        tags$h4("Prioritize Cattle Production"),
-        #tags$img(src = "map.png", width = "100%")
-        print("Need this image.")
+        #tags$h4("Prioritize Cattle Production"),
+        div(
+          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+          tags$img(src = "Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png", 
+                   width = "100%",
+                   style = "max-height: 100%; max-width: 100%; object-fit: cover;"
+          )
+        )
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
       tagList(
-        tags$h4("Promotes Forest Conservation"),
-        #tags$img(src = "map.png", width = "100%"),
-        print("Need this image.")
+        #tags$h4("Promotes Forest Conservation"),
+        div(
+          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+          tags$img(src = "Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png", 
+                   width = "100%",
+                   style = "max-height: 100%; max-width: 100%; object-fit: cover;"
+          )
+        )
       )
     } else {
       NULL
@@ -1162,22 +1184,22 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
     # Display images based on the selected simulation type
     if (input$simulation_type == "Current Forest Law") {
       tagList(
-        tags$h4("Current Forest Law"),
+        #tags$h4("Current Forest Law"),
         tags$img(src = "current_forest_law_lup_simulation.png", width = "74%")
       )
     } else if (input$simulation_type == "Law Ambiguity") {
       tagList(
-        tags$h4("Law Ambiguity"),
+        #tags$h4("Law Ambiguity"),
         tags$img(src = "law_ambiguity_lup_simulation.png", width = "74%")
       )
     } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        tags$h4("Prioritize Cattle Production"),
+        #tags$h4("Prioritize Cattle Production"),
         tags$img(src = "prioritize_cattle_production_lup_simulation.png", width = "74%")
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
       tagList(
-        tags$h4("Promotes Forest Conservation"),
+        #tags$h4("Promotes Forest Conservation"),
         tags$img(src = "promotes_forest_conservation_lup_simulation.png", width = "74%")
       )
     } else {
@@ -1190,12 +1212,12 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
     # Display images based on the selected simulation type
     if (input$simulation_type == "Current Forest Law") {
       tagList(
-        tags$h4("Current Forest Law"),
+        #tags$h4("Current Forest Law"),
         tags$img(src = "current_forest_law_deforestation_pred.png", width = "100%")
       )
     } else if (input$simulation_type == "Law Ambiguity") {
       tagList(
-        tags$h4("Law Ambiguity"),
+        #tags$h4("Law Ambiguity"),
         tags$img(src = "law_ambiguity_pred.png", width = "100%")
       )
     } else if (input$simulation_type == "Prioritize Cattle Production") {
@@ -1206,7 +1228,7 @@ combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = 
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
       tagList(
-        tags$h4("Promotes Forest Conservation"),
+        #tags$h4("Promotes Forest Conservation"),
         tags$img(src = "promotes_forest_conservation_pred.png", width = "100%")
       )
     } else {

@@ -383,17 +383,7 @@ body <- dashboardBody(
                 )
               )
             ),
-            # fluidRow(
-            #   column(
-            #     width = 6,
-            #     valueBoxOutput("unauth_prop_valuebox_dist")  # Output for the district value box
-            #   ),
-            #   column(
-            #     width = 6,
-            #     valueBoxOutput("unauth_prop_valuebox_dpt")  # Output for the department value box
-            #   )
-            # ),
-            # ),
+            
             box(
               title = tagList(tags$strong("Unauthorized Deforestation")),
               width = 6,
@@ -408,18 +398,6 @@ body <- dashboardBody(
             
           )
         ),
-        
-        # fluidRow(
-        #   box(width = 12,
-        #       title = tags$strong("Deforestation by Political Boundaries"),
-        #       column(width = 12,
-        #              print(tags$strong("Switch between political boundaries by selecting departments or districts to observe deforestation statistics."))),
-        #       column(width = 12,
-        #              actionButton("drill_up", "View Departments"),
-        #              actionButton("drill_down", "View Districts"))
-        #   ),
-        
-        
         
         tabPanel(title = "Authorized Deforestation",
                  fluidRow(
@@ -569,11 +547,19 @@ body <- dashboardBody(
                   selectInput("simulation_type", "Select one:", choices = c("All", simulation_types), selected = "Current Forest Law"))
             ),
             fluidRow(
-              column(width = 4,
-                     box(width = 12,
-                         style = "height: 470px;",  # Adjust the height as needed
-                         title = "Deforestation Predictions",
-                         withSpinner(uiOutput("maps_predictions_by_scenario")))
+              column(
+                width = 4,
+                box(
+                  width = 12,
+                  style = "height: 550px; display: flex; align-items: center; justify-content: center;",  # Adjust the height as needed
+                  title = "Deforestation Predictions",
+                  withSpinner(
+                    div(
+                      style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+                      uiOutput("maps_predictions_by_scenario")
+                    )
+                  )
+                )
               ),
               column(width = 8,
                      box(width = 12,
@@ -590,7 +576,7 @@ body <- dashboardBody(
                   style = "height: 460px;",  # Adjust the height as needed
                   align = "center",
                   title = "Comparing Results: Land Use Plan Simulations",
-                  withSpinner(uiOutput("lup_simulation_images")) #simulation scenarios  ######### --- UPDATE HERE ---------
+                  withSpinner(uiOutput("lup_simulation_images")) #simulation scenarios  
               ),
               box(width = 6,
                   style = "height: 461.5px;",  # Adjust the height as needed
@@ -598,7 +584,7 @@ body <- dashboardBody(
                   column(
                     width = 9,
                     align = "center",
-                    withSpinner(uiOutput("prediction_images"))), #  ######### --- UPDATE HERE ---------
+                    withSpinner(uiOutput("prediction_images"))), 
                   column(width = 3,
                          tags$img(src = "pred_scale.png", width = "80%")))
             ),
