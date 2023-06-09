@@ -336,7 +336,7 @@ body <- dashboardBody(
     # ------------------------------------------ Land Use Plan Assessment ------------------------------------------ 
     # political boundary tabItem
     tabItem(
-      tabName = "political_boundary",
+       tabName = "political_boundary",
       tabsetPanel(
         id = "deforestation_tabsetPanel",
         tabPanel(
@@ -363,7 +363,7 @@ body <- dashboardBody(
                       choices = unique(combined_illegal_df_by_dpto$year_range)
                     )
                   ),
-                  
+
                   # Value Boxes
                   fluidRow(
                     column(
@@ -383,7 +383,7 @@ body <- dashboardBody(
                 )
               )
             ),
-            
+
             box(
               title = tagList(tags$strong("Unauthorized Deforestation")),
               width = 6,
@@ -394,11 +394,11 @@ body <- dashboardBody(
               width = 6,
               plotlyOutput("areaPlot", height = "400px")
             )
-            
-            
+
+
           )
         ),
-        
+
         tabPanel(title = "Authorized Deforestation",
                  fluidRow(
                    div(
@@ -412,7 +412,7 @@ body <- dashboardBody(
                               selectInput("year_range_authorized", "Select Year Range", unique(combined_auth_df_by_dpto$year_range)),
                               leafletOutput("leafdown_authorized", height = "350px")
                        ),
-                       
+
                        box(title = tagList(tags$strong("Authorized Deforestation")),
                            width = 6,
                            plotlyOutput("authorizedPlot", height = "400px")
@@ -422,7 +422,7 @@ body <- dashboardBody(
                            plotlyOutput("area_authorized_Plot", height = "400px")
                        )
                      )))
-        ) # END Authorized Deforestation tabPanel 
+        ) # END Authorized Deforestation tabPanel
       )
     ),
     

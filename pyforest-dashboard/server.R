@@ -15,23 +15,23 @@ server <- function(input, output, session) {
   # ------------------------------------------ LUP Assessment Unauthorized ------------------------------------------
   combined_illegal_df_by_dist <- st_transform(combined_illegal_df_by_dist, crs = "+proj=longlat +datum=WGS84")
   combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
-  
+
   unauth_current_view <- reactiveVal("department")  # Initialize as "department" by default
-  
+
   observeEvent(input$drill_down_unauthorized, {
     unauth_current_view("district")  # Set the current view to "district"
   })
-  
+
   observeEvent(input$drill_up_unauthorized, {
     unauth_current_view("department")  # Set the current view to "department"
   })
-  
+
   # Function to filter data by year range
   unauth_filter_data <- function(data) {
     data %>% filter(year_range == input$year_range_unauthorized) %>%
       mutate(normalized_value = normalized_value * 10000)  # Multiply by 10,000
   }
-  
+
   unauth_data_reactive <- reactive({
     if (unauth_current_view() == "district") {
       unauth_filter_data(combined_illegal_df_by_dist)
@@ -39,16 +39,16 @@ server <- function(input, output, session) {
       unauth_filter_data(combined_illegal_df_by_dpto)
     }
   })
-  
+
   # Define the fixed range for departments
   unauth_fixed_range_dpto <- c(0, 160)
   # Define the fixed range for districts
   unauth_fixed_range_dist <- c(0, 70)
-  
+
   output$leafdown_unauthorized <- renderLeaflet({
     data <- unauth_data_reactive()
     max_sum_df_ha <- max(data$sum_df_ha)  # Get the maximum value of sum_df_ha
-    
+
     if(unauth_current_view() == "district") {
       my_palette <- colorNumeric(palette = pyforest_palette,
                                  domain = unauth_fixed_range_dist,
@@ -62,13 +62,13 @@ server <- function(input, output, session) {
       legend_values = unauth_fixed_range_dpto
       legend_layerId = "department-legend"
     }
-    
+
     selected_range <- reactive({
       data <- unauth_data_reactive()
       range_text <- paste0("Approximately ", round(min(data$normalized_value)), "-", round(max(data$normalized_value)), " hectares")
       range_text
     })
-    
+
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
@@ -99,17 +99,17 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-  
+
   observeEvent(input$drill_down_unauthorized, {
     data <- unauth_data_reactive()
-    
+
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = unauth_fixed_range_dist,
                                na.color = "transparent")
     legend_values = unauth_fixed_range_dist
     legend_layerId = "district-legend"
-    
-    leafletProxy("leafdown_unauthorized") %>% 
+
+    leafletProxy("leafdown_unauthorized") %>%
       clearShapes() %>%
       removeControl("department-legend") %>%
       addPolygons(
@@ -136,17 +136,17 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-  
+
   observeEvent(input$drill_up_unauthorized, {
     data <- unauth_data_reactive()
-    
+
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = unauth_fixed_range_dpto,
                                na.color = "transparent")
     legend_values = unauth_fixed_range_dpto
     legend_layerId = "department-legend"
-    
-    leafletProxy("leafdown_unauthorized") %>% 
+
+    leafletProxy("leafdown_unauthorized") %>%
       clearShapes() %>%
       removeControl("district-legend") %>%
       addPolygons(
@@ -173,7 +173,7 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-  
+
   # render valueBox for combined_illegal_df_by_dist ----
   output$unauth_prop_valuebox_dist <- renderValueBox({
     filtered_data <- unauth_data_reactive()
@@ -185,7 +185,7 @@ server <- function(input, output, session) {
       icon = icon("thumbs-down", lib = "font-awesome")
     )
   })
-  
+
   output$unauth_prop_valuebox_dpt <- renderValueBox({
     filtered_data <- unauth_data_reactive()
     total_sum_by_dpt <- sum(filtered_data$sum_df_ha)
@@ -196,8 +196,8 @@ server <- function(input, output, session) {
       icon = icon("thumbs-down", lib = "font-awesome")
     )
   })
-  
-  
+
+
   output$illegalPlot <- renderPlotly({
     data <- unauth_data_reactive()
     if (unauth_current_view() == "district") {
@@ -229,11 +229,11 @@ server <- function(input, output, session) {
     }
     p <- ggplotly(p, tooltip = "text")
     p <- layout(p, hoverlabel = list(bgcolor = "white"))  #tooltip background to white
-    
-    
+
+
     return(p)
   })
-  
+
   output$areaPlot <- renderPlotly({
     if (unauth_current_view() == "department")  {
       combined_illegal_df_by_dpto$year_range <- factor(combined_illegal_df_by_dpto$year_range, levels = rev(unique(as.character(combined_illegal_df_by_dpto$year_range))))
@@ -257,32 +257,32 @@ server <- function(input, output, session) {
               axis.text = element_text(size = 5),  # Adjust the font size of axis labels
               panel.spacing = unit(1, "lines"),  # Adjust the spacing between facets
               strip.text = element_text(size = 8))
-      
+
     }
     ggplotly(p)
   })
-  
+
   # ------------------------------------------ LUP Assessment Authorized ------------------------------------------
-  
+
   combined_auth_df_by_dist <- st_transform(combined_auth_df_by_dist, crs = "+proj=longlat +datum=WGS84")
   combined_auth_df_by_dpto  <- st_transform(combined_auth_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
-  
+
   auth_current_view <- reactiveVal("department")  # Initialize as "department" by default
-  
+
   observeEvent(input$drill_down_authorized, {
     auth_current_view("district")  # Set the current view to "district"
   })
-  
+
   observeEvent(input$drill_up_authorized, {
     auth_current_view("department")  # Set the current view to "department"
   })
-  
+
   # Function to filter data by year range
   auth_filter_data <- function(data) {
     data %>% filter(year_range == input$year_range_authorized) %>%
       mutate(normalized_value = normalized_value * 10000)  # Multiply by 10,000
   }
-  
+
   auth_data_reactive <- reactive({
     if (auth_current_view() == "district") {
       auth_filter_data(combined_auth_df_by_dist)
@@ -290,16 +290,16 @@ server <- function(input, output, session) {
       auth_filter_data(combined_auth_df_by_dpto)
     }
   })
-  
+
   # Define the fixed range for departments
   fixed_range_dpto_auth <- c(0, 500)
   # Define the fixed range for districts
   fixed_range_dist_auth <- c(0, 240)
-  
+
   output$leafdown_authorized <- renderLeaflet({
     data <- auth_data_reactive()
     max_sum_df_ha <- max(data$sum_df_ha)  # Get the maximum value of sum_df_ha
-    
+
     if(auth_current_view() == "district") {
       my_palette <- colorNumeric(palette = pyforest_palette,
                                  domain = fixed_range_dist_auth,
@@ -313,13 +313,13 @@ server <- function(input, output, session) {
       legend_values = fixed_range_dpto_auth
       legend_layerId = "department-legend"
     }
-    
+
     selected_range <- reactive({
       data <- auth_data_reactive()
       range_text <- paste0("Approximately ", round(min(data$normalized_value)), "-", round(max(data$normalized_value)), " hectares")
       range_text
     })
-    
+
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
@@ -350,17 +350,17 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-  
+
   observeEvent(input$drill_down_authorized, {
     data <- auth_data_reactive()
-    
+
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = fixed_range_dist_auth,
                                na.color = "transparent")
     legend_values = fixed_range_dist_auth
     legend_layerId = "district-legend"
-    
-    leafletProxy("leafdown") %>% 
+
+    leafletProxy("leafdown") %>%
       clearShapes() %>%
       removeControl("department-legend") %>%
       addPolygons(
@@ -387,17 +387,17 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-  
+
   observeEvent(input$drill_up_authorized, {
     data <- auth_data_reactive()
-    
+
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = fixed_range_dpto_auth,
                                na.color = "transparent")
     legend_values = fixed_range_dpto_auth
     legend_layerId = "department-legend"
-    
-    leafletProxy("leafdown") %>% 
+
+    leafletProxy("leafdown") %>%
       clearShapes() %>%
       removeControl("district-legend") %>%
       addPolygons(
@@ -424,7 +424,7 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-  
+
   # Authorized Plot
   output$authorizedPlot <- renderPlotly({
     data <- auth_data_reactive()
@@ -455,11 +455,11 @@ server <- function(input, output, session) {
     }
     p <- ggplotly(p, tooltip = "text")
     p <- layout(p, hoverlabel = list(bgcolor = "white"))  #tooltip background to white
-    
-    
+
+
     return(p)
   })
-  
+
   output$area_authorized_Plot <- renderPlotly({
     if (auth_current_view() == "department")  {
       combined_auth_df_by_dpto$year_range <- factor(combined_auth_df_by_dpto$year_range, levels = rev(unique(as.character(combined_auth_df_by_dpto$year_range))))
@@ -483,7 +483,7 @@ server <- function(input, output, session) {
               axis.text = element_text(size = 5),  # Adjust the font size of axis labels
               panel.spacing = unit(1, "lines"),  # Adjust the spacing between facets
               strip.text = element_text(size = 8))
-      
+
     }
     ggplotly(p)
   })

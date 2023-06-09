@@ -63,15 +63,21 @@ library(shinythemes)
 
 #local data
 # Unauthorized deforestation
-combined_illegal_df_by_dist <- readr::read_rds(here::here("pyforest-dashboard", "data", "combined_illegal_df_by_dist.rds"))
+combined_illegal_df_by_dist <- st_read("data/combined_illegal_df_by_dist.gpkg")
 combined_illegal_df_by_dist$normalized_value <- combined_illegal_df_by_dist$sum_df_ha / combined_illegal_df_by_dist$total_area_ha
-combined_illegal_df_by_dpto <- readr::read_rds(here::here("pyforest-dashboard", "data", "combined_illegal_df_by_dpto.rds"))
+
+combined_illegal_df_by_dpto <- st_read("data/combined_illegal_df_by_dpto.gpkg")
 combined_illegal_df_by_dpto$normalized_value <- combined_illegal_df_by_dpto$sum_df_ha / combined_illegal_df_by_dpto$total_area_ha
 
+# combined_illegal_df_by_dist <- readr::read_rds(here::here("pyforest-dashboard", "data", "combined_illegal_df_by_dist.rds"))
+# combined_illegal_df_by_dist$normalized_value <- combined_illegal_df_by_dist$sum_df_ha / combined_illegal_df_by_dist$total_area_ha
+# combined_illegal_df_by_dpto <- readr::read_rds(here::here("pyforest-dashboard", "data", "combined_illegal_df_by_dpto.rds"))
+# combined_illegal_df_by_dpto$normalized_value <- combined_illegal_df_by_dpto$sum_df_ha / combined_illegal_df_by_dpto$total_area_ha
+
 # Authorized deforestation
-combined_auth_df_by_dist <- readr::read_rds(here::here("pyforest-dashboard", "data", "combined_auth_df_by_dist.rds"))
+combined_auth_df_by_dist <- st_read("data/combined_auth_df_by_dist.gpkg")
 combined_auth_df_by_dist$normalized_value <- combined_auth_df_by_dist$sum_df_ha / combined_auth_df_by_dist$total_area_ha
-combined_auth_df_by_dpto <- readr::read_rds(here::here("pyforest-dashboard", "data", "combined_auth_df_by_dpto.rds"))
+combined_auth_df_by_dpto <- st_read("data/combined_auth_df_by_dpto.gpkg")
 combined_auth_df_by_dpto$normalized_value <- combined_auth_df_by_dpto$sum_df_ha / combined_auth_df_by_dpto$total_area_ha
 
 ## ------------------------------------------ land use assessment sub tab ------------------------------------------
