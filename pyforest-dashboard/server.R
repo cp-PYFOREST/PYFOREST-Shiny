@@ -1222,9 +1222,8 @@ server <- function(input, output, session) {
       )
     } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        tags$h4("Prioritize Cattle Production"),
-        #tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
-        print("Need this image.")
+        #tags$h4("Prioritize Cattle Production"),
+        tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
       tagList(
