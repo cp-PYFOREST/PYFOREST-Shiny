@@ -68,17 +68,45 @@ py_fl_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_res
 chaco_fl <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/chaco_forest_loss.gpkg"))
 chaco_fc <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/chaco_forest_cover.gpkg"))
 
+# NEW FILE PATHS FOR DATA -------------
+
+# py_fl_dept <- read_sf(here("data/department_forest_loss.gpkg"))
+# py_fl_dist <- read_sf(here("data/district_forest_loss.gpkg"))
+# chaco_fl <- read_sf(here("data/chaco_forest_loss.gpkg"))
+# chaco_fc <- read_sf(here("data/chaco_forest_cover.gpkg"))
+
+# END FILE PATH FOR DATA -------------
+
 # Source in normalized deforestation data values 
+
+
 source(here::here("pyforest-dashboard/R/forest_loss_standardizing_for_visuals.R"))
 py_fc_dept <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/department_forest_cover.gpkg"))
 py_fc_dist <- read_sf(file.path(datadir, "lup_assessment_data/fc_fl_analysis_results/district_forest_cover.gpkg"))
+
+# NEW FILE PATHS FOR DATA -------------
+
+# source(here::here("pyforest-dashboard/R/forest_loss_standardizing_for_visuals.R")) # STAYS SAME
+# py_fc_dept <- read_sf(here("data/department_forest_cover.gpkg"))
+# py_fc_dist <- read_sf(here("data/district_forest_cover.gpkg"))
+
+# END FILE PATH FOR DATA -------------
+
 
 ## ------------------------------------------ land use simulation data ------------------------------------------
 area_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_department_land_use.rds")
 area_by_district_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_by_district_land_use.rds")
 area_pct_by_department_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_pct_by_department_land_use.rds")
 area_pct_by_district_land_use <- read_rds("~/../../capstone/pyforest/shinydata/simulation/bar_plot_datasets/area_pct_by_district_land_use.rds")
-  
+
+# NEW FILE PATHS FOR DATA -----
+
+# DON'T NEED ANY MORE ---
+
+
+# END FILE PATH FOR DATA -----
+
+
 # FUNCTIONS?----
 plot_land_use_type_stackedh <- function(dataset, name) {
   if (dataset == 'department') {
@@ -151,7 +179,8 @@ plot_land_use_type_stackedh <- function(dataset, name) {
   }}
   
   ## ------------------------------------------ Land Use Plan Simulation & Deforestation Prediction Data ------------------------------------------
-  source(here::here("pyforest-dashboard/R/lup_sim_deforestation_prediction_histogram_data.R"))
+# IN FILE UPDATED FILE PATHS ---------  
+source(here::here("pyforest-dashboard/R/lup_sim_deforestation_prediction_histogram_data.R"))
   
   simulation_types <- unique(combined_data$simulation)
   

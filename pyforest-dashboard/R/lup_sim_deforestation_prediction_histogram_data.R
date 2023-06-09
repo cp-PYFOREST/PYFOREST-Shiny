@@ -20,6 +20,16 @@ sim50 <- read_csv(file.path(datadir, "ml_data/output/predictions-log-lut-areas/s
 simhedges <- read_csv(file.path(datadir, "ml_data/output/predictions-log-lut-areas/sim-hedges-log-lut-area-hectares.csv"))
 
 
+# UPDATE FILE PATHS ---------
+
+# sim5 <- read_csv(here("data/sim-5-log-lut-area-hectares.csv"))
+# sim25 <- read_csv(here("data/sim-25-log-lut-area-hectares.csv"))
+# sim50 <- read_csv(here(datadir, "data/sim-50-log-lut-area-hectares.csv"))
+# simhedges <- read_csv(here(datadir, "data/sim-hedges-log-lut-area-hectares.csv"))
+
+
+# END UPDATE FILE PATHS ----
+
 
 # Combine the data frames
 prediction_data <- bind_rows(
