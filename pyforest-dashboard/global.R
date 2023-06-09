@@ -9,6 +9,7 @@ library(terra)
 library(exactextractr)
 library(units)
 library(forcats)
+library(here)
 
 # Data visualization
 library(ggplot2)
@@ -57,9 +58,32 @@ combined_auth_df_by_dist$normalized_value <- combined_auth_df_by_dist$sum_df_ha 
 combined_auth_df_by_dpto <- read_rds("~/../../capstone/pyforest/lup_assessment_data/compliance_results/combined_auth_df_by_dpto.rds")
 combined_auth_df_by_dpto$normalized_value <- combined_auth_df_by_dpto$sum_df_ha / combined_auth_df_by_dpto$total_area_ha
 
+# NEW FILE PATHS ----
+
+# Unauthorized deforestation
+# combined_illegal_df_by_dist <- read_rds(here("data/combined_illegal_df_by_dist.rds"))
+# combined_illegal_df_by_dist$normalized_value <- combined_illegal_df_by_dist$sum_df_ha / combined_illegal_df_by_dist$total_area_ha
+# combined_illegal_df_by_dpto <- read_rds(here("data/combined_illegal_df_by_dpto.rds"))
+# combined_illegal_df_by_dpto$normalized_value <- combined_illegal_df_by_dpto$sum_df_ha / combined_illegal_df_by_dpto$total_area_ha
+# 
+# Authorized deforestation
+# combined_auth_df_by_dist <- read_rds(here("data/combined_auth_df_by_dist.rds"))
+# combined_auth_df_by_dist$normalized_value <- combined_auth_df_by_dist$sum_df_ha / combined_auth_df_by_dist$total_area_ha
+# combined_auth_df_by_dpto <- read_rds(here("data/combined_auth_df_by_dpto.rds"))
+# combined_auth_df_by_dpto$normalized_value <- combined_auth_df_by_dpto$sum_df_ha / combined_auth_df_by_dpto$total_area_ha
+
+# END -----
+
 ## ------------------------------------------ land use assessment sub tab ------------------------------------------
 compliance <- st_read("~/../../capstone/pyforest/shinydata/lup_assessment/compliance_updated.gpkg")
 compliance <- st_transform(compliance, 4326)
+
+# NEW FILE PATHS FOR DATA -------------
+
+#compliance <- st_read(here("data/compliance_updated.gpkg"))
+
+
+# END FILE PATH FOR DATA -------------
 
 ## ------------------------------------------ deforestation and forest cover statistics data ------------------------------------------
 datadir <- path.expand("~/../../capstone/pyforest")
