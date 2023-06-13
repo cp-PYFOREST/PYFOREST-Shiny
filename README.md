@@ -26,7 +26,7 @@ Informing Forest Conservation Regulations in Paraguay
 
 <h2 align="center">
 
-<img src="[https://github.com/cp-PYFOREST/.github/blob/main/img/obj3-prediction-map25.png](https://github.com/cp-PYFOREST/.github/blob/main/img/shiny-home.png)" alt="RShiny Homepage">
+<img src="https://github.com/cp-PYFOREST/.github/blob/main/img/shiny-home.png" alt="RShiny Homepage">
 
 </h2>
 
