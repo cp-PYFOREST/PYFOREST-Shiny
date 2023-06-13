@@ -59,10 +59,34 @@ To run the app locally, follow these steps:
 
 The **Home** page of the RShiny dashboard is designed to provide the user with all the necessary information about the dashboard's purpose, functionality, and features. The home page also contains sections dedicated to general and tab information. These sections cover essential aspects such as the data source, project information, and further assistance or guidance to help navigate and make the most out of the various tabs within the dashboard.
 
+</h2>
+
+<h2 align="center">
+
+<img src="https://github.com/cp-PYFOREST/.github/blob/main/img/shiny-assesment.png" alt="Land Use Assessment">
+
+</h2>
+
 The **Land Use Plan Assessment** page includes two subsections. The first sub-section enables users to access information based on political boundaries, while the second sub-section allows information retrieval by property ID. Within the political boundary section, users can explore maps, plots, and data specific to each department and district. They have the option to choose between unauthorized or authorized deforestation tabs and select different years to analyze land use patterns over time. In the property ID section, users have access to a map displaying all properties included in the assessment. Users can easily identify the compliance status of each property and view the amount of unauthorized deforestation associated with them. Additionally, a data table is available for searching and exploring this information.
+
+</h2>
+
+<h2 align="center">
+
+<img src="https://github.com/cp-PYFOREST/.github/blob/main/img/shiny-deforestation.png" alt="Deforestation Tab">
+
+</h2>
 
 
 The **Deforestation and Forest Cover Statistics** page has two sub-sections: one for deforestation statistics and the other for forest cover statistics. These sections offer visual aids like maps and plots to understand the spatial distribution of deforestation and forest cover in the study area. Users can also visualize the data based on political boundaries and explore different years for temporal analysis.
+
+</h2>
+
+<h2 align="center">
+
+<img src="https://github.com/cp-PYFOREST/.github/blob/main/img/shiny-ml.png" alt="Simulations and Predictions Tab">
+
+</h2>
 
 The **Simulations and Prediction Comparisons** page offers users the ability to compare results between Objectives 2 and 3. The user can compare statistics of total forest conserved per land use type from the LUP simulations and deforestation predictions. The user can also explore a map of pixel-wise probability of deforestation based on LUPs generated in the land use simulations.
 
