@@ -24,9 +24,14 @@ Informing Forest Conservation Regulations in Paraguay
 
 </h2>
 
+<h2 align="center">
+
+<img src="[https://github.com/cp-PYFOREST/.github/blob/main/img/obj3-prediction-map25.png](https://github.com/cp-PYFOREST/.github/blob/main/img/shiny-home.png)" alt="RShiny Homepage">
+
+</h2>
 
 
-- The Paraguayan Chaco Deforestation analyzer is an R Shiny app designed to help policymakers, researchers, and stakeholders explore deforestation patterns in the undeveloped region of the Paraguayan Chaco. 
+- To make our results accessible to policymakers and the general public, we have developed an RShiny dashboard that provides an interactive platform for exploring the data and visualizations generated from Objectives 1-3. The dashboard is designed to be user-friendly and intuitive, ensuring that stakeholders with varying technical expertise can easily understand the impacts of forest policies on the Paraguayan Chaco. 
 
 Features
 - Visualize historical deforestation rates and land use plan (LUP) compliance statistics. 
@@ -51,13 +56,15 @@ To run the app locally, follow these steps:
 5. Run the app in RStudio: shiny::runApp()
 
 ### Usage
-Historical Deforestation: Explore historical deforestation rates and LUP compliance statistics in the Paraguayan Chaco.
 
-Impact of LUP Laws: Assess the effects of current and alternative LUP laws on forest conservation in the region.
+The **Home** page of the RShiny dashboard is designed to provide the user with all the necessary information about the dashboard's purpose, functionality, and features. The home page also contains sections dedicated to general and tab information. These sections cover essential aspects such as the data source, project information, and further assistance or guidance to help navigate and make the most out of the various tabs within the dashboard.
 
-Predictive Deforestation Model: Examine Predictions of future deforestation patterns under various scenarios.
+The **Land Use Plan Assessment** page includes two subsections. The first sub-section enables users to access information based on political boundaries, while the second sub-section allows information retrieval by property ID. Within the political boundary section, users can explore maps, plots, and data specific to each department and district. They have the option to choose between unauthorized or authorized deforestation tabs and select different years to analyze land use patterns over time. In the property ID section, users have access to a map displaying all properties included in the assessment. Users can easily identify the compliance status of each property and view the amount of unauthorized deforestation associated with them. Additionally, a data table is available for searching and exploring this information.
 
-Gain valuable insights to support informed decision-making for sustainable land use and forest conservation policies.
+
+The **Deforestation and Forest Cover Statistics** page has two sub-sections: one for deforestation statistics and the other for forest cover statistics. These sections offer visual aids like maps and plots to understand the spatial distribution of deforestation and forest cover in the study area. Users can also visualize the data based on political boundaries and explore different years for temporal analysis.
+
+The **Simulations and Prediction Comparisons** page offers users the ability to compare results between Objectives 2 and 3. The user can compare statistics of total forest conserved per land use type from the LUP simulations and deforestation predictions. The user can also explore a map of pixel-wise probability of deforestation based on LUPs generated in the land use simulations.
 
 ### Contributing
 If you would like to contribute to the project, please follow these steps:
