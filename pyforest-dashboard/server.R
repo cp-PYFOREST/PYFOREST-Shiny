@@ -1,9 +1,5 @@
 # server.R
 
-# Source
-#source("R/forest_cover_module.R")
-#source("R/lup_sim_deforestation_prediction_histogram_data.R")
-
 # Load packages and data from global.R file
 
 server <- function(input, output, session) {
@@ -11,27 +7,26 @@ server <- function(input, output, session) {
   
   pyforest_palette <- c("#4B5F43", "#AEBD93", "#F6AE2D", "#F26419")
   
-  
   # ------------------------------------------ LUP Assessment Unauthorized ------------------------------------------
   combined_illegal_df_by_dist <- st_transform(combined_illegal_df_by_dist, crs = "+proj=longlat +datum=WGS84")
   combined_illegal_df_by_dpto  <- st_transform(combined_illegal_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
-
+  
   unauth_current_view <- reactiveVal("department")  # Initialize as "department" by default
-
+  
   observeEvent(input$drill_down_unauthorized, {
     unauth_current_view("district")  # Set the current view to "district"
   })
-
+  
   observeEvent(input$drill_up_unauthorized, {
     unauth_current_view("department")  # Set the current view to "department"
   })
-
+  
   # Function to filter data by year range
   unauth_filter_data <- function(data) {
-    data %>% filter(year_range == input$year_range_unauthorized) %>%
+    data %>% filter(year_range == as.character(input$year_range_unauthorized)) %>%
       mutate(normalized_value = normalized_value * 10000)  # Multiply by 10,000
   }
-
+  
   unauth_data_reactive <- reactive({
     if (unauth_current_view() == "district") {
       unauth_filter_data(combined_illegal_df_by_dist)
@@ -39,16 +34,16 @@ server <- function(input, output, session) {
       unauth_filter_data(combined_illegal_df_by_dpto)
     }
   })
-
+  
   # Define the fixed range for departments
   unauth_fixed_range_dpto <- c(0, 160)
   # Define the fixed range for districts
   unauth_fixed_range_dist <- c(0, 70)
-
+  
   output$leafdown_unauthorized <- renderLeaflet({
     data <- unauth_data_reactive()
     max_sum_df_ha <- max(data$sum_df_ha)  # Get the maximum value of sum_df_ha
-
+    
     if(unauth_current_view() == "district") {
       my_palette <- colorNumeric(palette = pyforest_palette,
                                  domain = unauth_fixed_range_dist,
@@ -62,13 +57,13 @@ server <- function(input, output, session) {
       legend_values = unauth_fixed_range_dpto
       legend_layerId = "department-legend"
     }
-
+    
     selected_range <- reactive({
       data <- unauth_data_reactive()
       range_text <- paste0("Approximately ", round(min(data$normalized_value)), "-", round(max(data$normalized_value)), " hectares")
       range_text
     })
-
+    
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
@@ -99,16 +94,16 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-
+  
   observeEvent(input$drill_down_unauthorized, {
     data <- unauth_data_reactive()
-
+    
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = unauth_fixed_range_dist,
                                na.color = "transparent")
     legend_values = unauth_fixed_range_dist
     legend_layerId = "district-legend"
-
+    
     leafletProxy("leafdown_unauthorized") %>%
       clearShapes() %>%
       removeControl("department-legend") %>%
@@ -136,16 +131,16 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-
+  
   observeEvent(input$drill_up_unauthorized, {
     data <- unauth_data_reactive()
-
+    
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = unauth_fixed_range_dpto,
                                na.color = "transparent")
     legend_values = unauth_fixed_range_dpto
     legend_layerId = "department-legend"
-
+    
     leafletProxy("leafdown_unauthorized") %>%
       clearShapes() %>%
       removeControl("district-legend") %>%
@@ -173,31 +168,47 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-
-  # render valueBox for combined_illegal_df_by_dist ----
-  output$unauth_prop_valuebox_dist <- renderValueBox({
+  
+  # Total Area Value Box
+  output$total_area_valuebox <- renderValueBox({
     filtered_data <- unauth_data_reactive()
-    total_sum_by_dist <- sum(filtered_data$sum_df_ha)
+    total_sum <- sum(filtered_data$total_area_ha) 
+    formatted_sum_2 <- format(total_sum, big.mark = ",")
     valueBox(
-      "Total Sum by District",
-      value = total_sum_by_dist,
+      "Total Bosque Area (ha)",
+      value = formatted_sum_2,
+      color = "green",
+      icon = icon("tree", lib = "font-awesome")
+    )
+  })
+  
+  # Unauthorized df Value Box
+  output$unauth_prop_valuebox <- renderValueBox({
+    filtered_data <- unauth_data_reactive()
+    total_sum <- sum(filtered_data$sum_df_ha) 
+    formatted_sum <- format(total_sum, big.mark = ",")
+    valueBox(
+      "Total Unauthorized Deforestation (ha)",
+      value = formatted_sum,
       color = "orange",
       icon = icon("thumbs-down", lib = "font-awesome")
     )
   })
-
-  output$unauth_prop_valuebox_dpt <- renderValueBox({
+  
+  # Number of Illegal Properties Value Box
+  output$num_illegal_valuebox <- renderValueBox({
     filtered_data <- unauth_data_reactive()
-    total_sum_by_dpt <- sum(filtered_data$sum_df_ha)
+    total_sum <- sum(filtered_data$num_illegal_props) 
+    formatted_sum_3 <- format(total_sum, big.mark = ",")
     valueBox(
-      "Total Sum by Department",
-      value = total_sum_by_dpt,
-      color = "orange",
-      icon = icon("thumbs-down", lib = "font-awesome")
+      "Number of Illegal Properties",
+      value = formatted_sum_3,
+      color = "yellow",
+      icon = icon("circle-exclamation", lib = "font-awesome")
     )
   })
-
-
+  
+  
   output$illegalPlot <- renderPlotly({
     data <- unauth_data_reactive()
     if (unauth_current_view() == "district") {
@@ -229,11 +240,11 @@ server <- function(input, output, session) {
     }
     p <- ggplotly(p, tooltip = "text")
     p <- layout(p, hoverlabel = list(bgcolor = "white"))  #tooltip background to white
-
-
+    
+    
     return(p)
   })
-
+  
   output$areaPlot <- renderPlotly({
     if (unauth_current_view() == "department")  {
       combined_illegal_df_by_dpto$year_range <- factor(combined_illegal_df_by_dpto$year_range, levels = rev(unique(as.character(combined_illegal_df_by_dpto$year_range))))
@@ -257,32 +268,32 @@ server <- function(input, output, session) {
               axis.text = element_text(size = 5),  # Adjust the font size of axis labels
               panel.spacing = unit(1, "lines"),  # Adjust the spacing between facets
               strip.text = element_text(size = 8))
-
+      
     }
     ggplotly(p)
   })
-
+  
   # ------------------------------------------ LUP Assessment Authorized ------------------------------------------
-
+  
   combined_auth_df_by_dist <- st_transform(combined_auth_df_by_dist, crs = "+proj=longlat +datum=WGS84")
   combined_auth_df_by_dpto  <- st_transform(combined_auth_df_by_dpto, crs = "+proj=longlat +datum=WGS84")
-
+  
   auth_current_view <- reactiveVal("department")  # Initialize as "department" by default
-
+  
   observeEvent(input$drill_down_authorized, {
     auth_current_view("district")  # Set the current view to "district"
   })
-
+  
   observeEvent(input$drill_up_authorized, {
     auth_current_view("department")  # Set the current view to "department"
   })
-
+  
   # Function to filter data by year range
   auth_filter_data <- function(data) {
-    data %>% filter(year_range == input$year_range_authorized) %>%
+    data %>% filter(year_range == as.character(input$year_range_authorized)) %>%
       mutate(normalized_value = normalized_value * 10000)  # Multiply by 10,000
   }
-
+  
   auth_data_reactive <- reactive({
     if (auth_current_view() == "district") {
       auth_filter_data(combined_auth_df_by_dist)
@@ -290,16 +301,16 @@ server <- function(input, output, session) {
       auth_filter_data(combined_auth_df_by_dpto)
     }
   })
-
+  
   # Define the fixed range for departments
   fixed_range_dpto_auth <- c(0, 500)
   # Define the fixed range for districts
   fixed_range_dist_auth <- c(0, 240)
-
+  
   output$leafdown_authorized <- renderLeaflet({
     data <- auth_data_reactive()
     max_sum_df_ha <- max(data$sum_df_ha)  # Get the maximum value of sum_df_ha
-
+    
     if(auth_current_view() == "district") {
       my_palette <- colorNumeric(palette = pyforest_palette,
                                  domain = fixed_range_dist_auth,
@@ -313,13 +324,13 @@ server <- function(input, output, session) {
       legend_values = fixed_range_dpto_auth
       legend_layerId = "department-legend"
     }
-
+    
     selected_range <- reactive({
       data <- auth_data_reactive()
       range_text <- paste0("Approximately ", round(min(data$normalized_value)), "-", round(max(data$normalized_value)), " hectares")
       range_text
     })
-
+    
     leaflet() %>%
       addProviderTiles("CartoDB.Positron") %>%
       addPolygons(
@@ -350,16 +361,16 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-
+  
   observeEvent(input$drill_down_authorized, {
     data <- auth_data_reactive()
-
+    
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = fixed_range_dist_auth,
                                na.color = "transparent")
     legend_values = fixed_range_dist_auth
     legend_layerId = "district-legend"
-
+    
     leafletProxy("leafdown") %>%
       clearShapes() %>%
       removeControl("department-legend") %>%
@@ -387,16 +398,16 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-
+  
   observeEvent(input$drill_up_authorized, {
     data <- auth_data_reactive()
-
+    
     my_palette <- colorNumeric(palette = pyforest_palette,
                                domain = fixed_range_dpto_auth,
                                na.color = "transparent")
     legend_values = fixed_range_dpto_auth
     legend_layerId = "department-legend"
-
+    
     leafletProxy("leafdown") %>%
       clearShapes() %>%
       removeControl("district-legend") %>%
@@ -424,7 +435,48 @@ server <- function(input, output, session) {
         layerId = legend_layerId
       )
   })
-
+  
+  
+  
+  # Total Area Authorized Value Box
+  output$total_auth_area_valuebox <- renderValueBox({
+    filtered_data <- auth_data_reactive()
+    total_sum <- sum(filtered_data$total_area_ha) 
+    formatted_sum_4 <- format(total_sum, big.mark = ",")
+    valueBox(
+      "Total Authorized Area to be Deforested (ha)",
+      value = formatted_sum_4,
+      color = "orange",
+      icon = icon("cow", lib = "font-awesome")
+    )
+  })
+  
+  # Authorized df Value Box
+  output$auth_prop_valuebox <- renderValueBox({
+    filtered_data <- auth_data_reactive()
+    total_sum <- sum(filtered_data$sum_df_ha) 
+    formatted_sum_5 <- format(total_sum, big.mark = ",")
+    valueBox(
+      "Total Authorized Deforestation (ha)",
+      value = formatted_sum_5,
+      color = "green",
+      icon = icon("thumbs-up", lib = "font-awesome")
+    )
+  })
+  
+  # Remaining Area Authorized Area
+  output$remaining_area_valuebox <- renderValueBox({
+    filtered_data <- auth_data_reactive()
+    total_sum <- sum(filtered_data$sum_remaining_df_area_ha) 
+    formatted_sum_6 <- format(total_sum, big.mark = ",")
+    valueBox(
+      "Remaining Authorized Area to be Deforested (ha)",
+      value = formatted_sum_6,
+      color = "yellow",
+      icon = icon("circle-exclamation", lib = "font-awesome")
+    )
+  })
+  
   # Authorized Plot
   output$authorizedPlot <- renderPlotly({
     data <- auth_data_reactive()
@@ -455,11 +507,11 @@ server <- function(input, output, session) {
     }
     p <- ggplotly(p, tooltip = "text")
     p <- layout(p, hoverlabel = list(bgcolor = "white"))  #tooltip background to white
-
-
+    
+    
     return(p)
   })
-
+  
   output$area_authorized_Plot <- renderPlotly({
     if (auth_current_view() == "department")  {
       combined_auth_df_by_dpto$year_range <- factor(combined_auth_df_by_dpto$year_range, levels = rev(unique(as.character(combined_auth_df_by_dpto$year_range))))
@@ -483,7 +535,7 @@ server <- function(input, output, session) {
               axis.text = element_text(size = 5),  # Adjust the font size of axis labels
               panel.spacing = unit(1, "lines"),  # Adjust the spacing between facets
               strip.text = element_text(size = 8))
-
+      
     }
     ggplotly(p)
   })
@@ -1233,6 +1285,55 @@ server <- function(input, output, session) {
     } else {
       NULL
       print("Select only one scenario to compare simulated vs predicted land use.")
+    }
+  })
+  
+  
+  
+  output$images <- renderUI({
+    # Switch images based on the selected image type and simulation type
+    if (input$imageType == "Simulation") {
+      if (input$simulation_type == "Current Forest Law") {
+        tagList(
+          tags$img(src = "current_forest_law_lup_simulation.png", width = "35%")
+        )
+      } else if (input$simulation_type == "Law Ambiguity") {
+        tagList(
+          tags$img(src = "law_ambiguity_lup_simulation.png", width = "45%")
+        )
+      } else if (input$simulation_type == "Prioritize Cattle Production") {
+        tagList(
+          tags$img(src = "prioritize_cattle_production_lup_simulation.png", width = "100%")
+        )
+      } else if (input$simulation_type == "Promotes Forest Conservation") {
+        tagList(
+          tags$img(src = "promotes_forest_conservation_lup_simulation.png", width = "100%")
+        )
+      } else {
+        NULL
+        print("Select only one scenario to compare simulated vs predicted land use.")
+      }
+    } else if (input$imageType == "Prediction") {
+      if (input$simulation_type == "Current Forest Law") {
+        tagList(
+          tags$img(src = "current_forest_law_deforestation_pred.png", width = "45%")
+        )
+      } else if (input$simulation_type == "Law Ambiguity") {
+        tagList(
+          tags$img(src = "law_ambiguity_pred.png", width = "100%")
+        )
+      } else if (input$simulation_type == "Prioritize Cattle Production") {
+        tagList(
+          tags$img(src = "prioritize_cattle_production_deforestation_pred.png", width = "100%")
+        )
+      } else if (input$simulation_type == "Promotes Forest Conservation") {
+        tagList(
+          tags$img(src = "promotes_forest_conservation_pred.png", width = "100%")
+        )
+      } else {
+        NULL
+        print("Select only one scenario to compare simulated vs predicted land use.")
+      }
     }
   })
   

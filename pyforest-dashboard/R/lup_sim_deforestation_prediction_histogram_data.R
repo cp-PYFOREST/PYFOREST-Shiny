@@ -20,10 +20,10 @@ library(flextable)
 # simhedges <- read_csv(file.path(datadir, "ml_data/output/predictions-log-lut-areas/sim-hedges-log-lut-area-hectares.csv"))
 
 #local data
-sim5 <- read_csv(here::here("pyforest-dashboard", "data", "sim-5-log-lut-area-hectares.csv"))
-sim25 <- read_csv(here::here("pyforest-dashboard", "data", "sim-25-log-lut-area-hectares.csv"))
-sim50 <- read_csv(here::here("pyforest-dashboard", "data", "sim-50-log-lut-area-hectares.csv"))
-simhedges <- read_csv(here::here("pyforest-dashboard", "data", "sim-hedges-log-lut-area-hectares.csv"))
+sim5 <- read_csv("data/sim-5-log-lut-area-hectares.csv")
+sim25 <- read_csv("data/sim-25-log-lut-area-hectares.csv")
+sim50 <- read_csv("data/sim-50-log-lut-area-hectares.csv")
+simhedges <- read_csv("data/sim-hedges-log-lut-area-hectares.csv")
 
 
 
