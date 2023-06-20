@@ -42,7 +42,7 @@ library(rsconnect)
 library(fresh)
 library(DT)
 library(shinythemes)
-library(shiny.slider)
+# library(shiny.slider) #Didn't load (?)
 
 
 # READ IN DATA ----

@@ -184,7 +184,9 @@ body <- dashboardBody(
                         bsCollapsePanel(
                           title = HTML(paste0("Land Use Plan Assessment <span class='arrow'>&#x25BE;</span>")),
                           style = "info",
-                          tags$h3(tags$b("By Political Boundary")),
+                          fluidRow(
+                            tags$h3(tags$b("By Political Boundary"))
+                            ),
                           fluidRow(
                             tags$h4("Unauthorized Deforestation"),
                             tags$div(
@@ -225,7 +227,9 @@ body <- dashboardBody(
                                      )
                                    ),
                                    
-                                   tags$h3(tags$b("By PUT ID")),
+                                   fluidRow(
+                                     tags$h3(tags$b("By PUT ID"))
+                                            ),
                                    tags$p(style = "margin-top: 10px;",
                                           "This tab allows the users to explore properties complaince by PUT ID. Explore the map visually or search by PUT ID to view complaince in the table and map.")
                                    
@@ -571,12 +575,11 @@ tabItem(tabName = "put_id",
               box(width = 12,
                   title = tags$strong("Deforestation by Political Boundary"),
                   column(width = 12,
-                         print(tags$strong("Switch between political boundaries by selecting departments or districts to observe deforestation statistics."))),
-                  column(width = 12,
                          actionButton("drill_up", "View Departments"),
                          actionButton("drill_down", "View Districts"))
               ),
               box(width = 12,
+                  collapsible = TRUE,
                   column(width = 3,
                          selectInput("year_deforestation_percent_map", "Select a year", unique(forest_loss_district_std_df$year)),
                          box(width = 12,
@@ -592,6 +595,7 @@ tabItem(tabName = "put_id",
                          tags$style(HTML(".leaflet-container {background: #ffffff;}")))
               ),
               box(width = 6,
+                  collapsible = TRUE,
                   title = tags$strong("Deforestation Area (ha):"),
                   withSpinner(plotly::plotlyOutput(outputId = "forest_loss_area_ha_plot", 
                                                    width = "100%", 
@@ -599,6 +603,7 @@ tabItem(tabName = "put_id",
                               color = "#4B5F43")
               ),
               box(width = 6,
+                  collapsible = TRUE,
                   title = tags$strong("Deforestation Percent (%):"),
                   withSpinner(plotly::plotlyOutput(outputId = "forest_loss_area_percent_plot", 
                                                    width = "100%", 
@@ -618,24 +623,26 @@ tabItem(tabName = "put_id",
               box(width = 12,
                   title = tags$strong("Forest Cover by Political Boundaries"),
                   column(width = 12, actionButton("drill_upward", "View Departments"),
-                         actionButton("drill_downward", "View Districts")),
-                  column(width =12,
-                         print(tags$strong("Switch between political boundaries by selecting departments or districts to observe forest cover statistics.")))#,
+                         actionButton("drill_downward", "View Districts")) 
+                 #,
                   #column(width = 2, selectInput("years_selected_var", "Select a Year", unique(py_fc_dept$year)))
               ),
               box(
                 width = 12,
+                collapsible = TRUE,
                 column(width = 2, selectInput("years_selected_var", "Select a Year", unique(py_fc_dept$year))),
                 withSpinner(leafletOutput("leafdown_forest_cover"),
                             color = "#4B5F43"),
                 tags$style(HTML(".leaflet-container {background: #ffffff;}"))
               ),
               box(width = 6,
+                  collapsible = TRUE,
                   title = tags$strong("Forest Cover Area (ha):"),
                   withSpinner(plotly::plotlyOutput(outputId = "forest_cover_area_ha_plot"),
                               color = "#4B5F43")
               ),
               box(width = 6,
+                  collapsible = TRUE,
                   title = tags$strong("Forest Cover Percent (%):"),
                   withSpinner(plotly::plotlyOutput(outputId = "forest_cover_area_percent_plot"),
                               color = "#4B5F43")
@@ -657,6 +664,7 @@ tabItem(tabName = "put_id",
                 width = 4,
                 box(
                   width = 12,
+                  collapsible = TRUE,
                   style = "height: 550px; display: flex; align-items: center; justify-content: center;",  # Adjust the height as needed
                   title = "Deforestation Predictions",
                   withSpinner(
@@ -669,6 +677,7 @@ tabItem(tabName = "put_id",
               ),
               column(width = 8,
                      box(width = 12,
+                         collapsible = TRUE,
                          title = "Comparison of Deforestation and Areas under Different Policy Scenarios by Land Use Types",
                          withSpinner(plotlyOutput("histogram_sim_pred_land_use", 
                                                   height = "525px", 
@@ -683,6 +692,7 @@ tabItem(tabName = "put_id",
             fluidRow(
 
               box(width = 6,
+                  collapsible = TRUE,
                   style = "height: 460px;",  # Adjust the height as needed
                   align = "center",
                   title = "Land Use Plan Simulations",
@@ -690,6 +700,7 @@ tabItem(tabName = "put_id",
                               color = "#4B5F43") #simulation scenarios
               ),
               box(width = 6,
+                  collapsible = TRUE,
                   style = "height: 460px;",  # Adjust the height as needed
                   title = "Deforestation Predictions",
                   column(
@@ -703,8 +714,9 @@ tabItem(tabName = "put_id",
             
             fluidRow(
               box(width = 12,
-                  title = "text explaning how you compare results."
-
+                  collapsible = TRUE,
+                  title = "Comparing Simulations & Predictions",
+                  includeMarkdown("text/pred_sim.md")
               )
             )
             

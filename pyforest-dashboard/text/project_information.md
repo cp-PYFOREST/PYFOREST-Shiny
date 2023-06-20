@@ -1,2 +1,1 @@
-Technical documentation for the PyForest project can be found on the Bren School of Environmental Science & Management Capstone page https://bren.ucsb.edu/projects/informing-forest-conservation-regulations-paraguay.
-
+PYFOREST is an open-source project aimed at developing an interactive tool for forest conservation analysis in Paraguay. The project is built using R, Shiny, and other technologies to provide a comprehensive and user-friendly platform for exploring deforestation rates, land use plans, and potential conservation policies. For more information on the project background and to access the source code, please visit our [GitHub repository](https://github.com/cp-PYFOREST). 
