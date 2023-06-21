@@ -5,7 +5,9 @@ account: hendatasrl
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9275632
-bundleId: 7326646
+bundleId: 7367125
 url: https://hendatasrl.shinyapps.io/pyforest-dashboard/
-when: 1686349009.60165
-lastSyncTime: 1686349009.60168
+when: 1687272194.96148
+lastSyncTime: 1687272194.96149
+asMultiple: FALSE
+asStatic: FALSE

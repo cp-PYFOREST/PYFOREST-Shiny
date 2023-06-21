@@ -672,7 +672,8 @@ tabItem(tabName = "put_id",
                       style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
                       uiOutput("maps_predictions_by_scenario")
                     )
-                  )
+                  ),
+                  downloadButton("downloadBtn", "Download Image") # Add download button
                 )
               ),
               column(width = 8,

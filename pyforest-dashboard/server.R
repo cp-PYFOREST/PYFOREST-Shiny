@@ -595,12 +595,13 @@ server <- function(input, output, session) {
     content = function(file) {
       tempReport <- file.path(tempdir(), "report.Rmd")
       file.copy("report.Rmd", tempReport, overwrite = TRUE)
-      
+
       rmarkdown::render(tempReport, output_file = file,
                         params = list(data = compliance_filter(),
                                       map = compliance_map(),
                                       table = compliance_table()))
     }
+    
   ) # END PUT ID
   
   
