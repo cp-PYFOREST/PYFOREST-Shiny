@@ -1111,38 +1111,8 @@ server <- function(input, output, session) {
   
   
   # ------------------------------------------ Land Use Plan Simulation & Deforestation Predictions ------------------------------------------
-  #simulation_types <- unique(combined_data$simulation)
-  
-  # output$lup_simulation_example <- renderUI({
-  #   # Display images based on the selected simulation type
-  #   if (input$simulation_type == "Current Forest Law") {
-  #     tagList(
-  #       tags$h4("Current Forest Law"),
-  #       tags$img(src = "current_forest_law_lup_example.png", width = "100%")
-  #     )
-  #   } else if (input$simulation_type == "Law Ambiguity") {
-  #     tagList(
-  #       tags$h4("Law Ambiguity"),
-  #       tags$img(src = "law_ambiguity_simulation_example.png", width = "100%")
-  #     )
-  #   } else if (input$simulation_type == "Prioritize Economic Development") {
-  #     tagList(
-  #       tags$h4("Prioritize Economic Development"),
-  #       tags$img(src = "prioritize_econ_development_lup_example.png", width = "100%")
-  #     )
-  #   } else if (input$simulation_type == "Promotes Forest Conservation") {
-  #     tagList(
-  #       tags$h4("Promotes Forest Conservation"),
-  #       tags$img(src = "forest_conservation_lup_example.png", width = "100%")
-  #     )
-  #   } else {
-  #     NULL
-  #     print("May only view one LUP simulation at a time.")
-  #   }
-  # })
   
   # prediction maps
-  
   output$maps_predictions_by_scenario <- renderUI({
     # Display images based on the selected simulation type
     if (input$simulation_type == "Current Forest Law") {
@@ -1216,92 +1186,7 @@ server <- function(input, output, session) {
       )
     }
   })
-  
-  
-  # output$maps_predictions_by_scenario <- renderUI({
-  # # Display images based on the selected simulation type
-  #   if (input$simulation_type == "Current Forest Law") {
-  #     
-  #     
-  #     tags$script(HTML('
-  #   $(document).ready(function() {
-  #     $("#larger_image_link").attr("href", getLargerImageLink());
-  #   });
-  #   
-  #   function getLargerImageLink() {
-  #     // Get the selected simulation type
-  #     var selectedSimulationType = $("#simulation_type").val();
-  #     
-  #     // Generate and return the link for the larger image based on the selected simulation type
-  #     if (selectedSimulationType === "Current Forest Law") {
-  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Current_Law.png?raw=true";  // Default simulation type
-  #     } else if (selectedSimulationType === "Law Ambiguity") {
-  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png?raw=true";
-  #     } else if (selectedSimulationType === "Prioritize Cattle Production") {
-  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png?raw=true";
-  #     } else if (selectedSimulationType === "Promotes Forest Conservation") {
-  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png?raw=true";
-  #     } else {
-  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Current_Law.png?raw=true";
-  #     }
-  #   }
-  # '))
-  #     
-  #     
-  #     
-  #     tagList(
-  #       #tags$h4("Current Forest Law"),
-  #       div(
-  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-  #         tags$img(
-  #           src = "Predicted_Deforestation_Patterns_Under_Current_Law.png",
-  #           width = "100%",
-  #           style = "max-height: 100%; max-width: 100%; object-fit: contain;"
-  #         )
-  #       )
-  #     )
-  #   } else if (input$simulation_type == "Law Ambiguity") {
-  #     tagList(
-  #       #tags$h4("Law Ambiguity"),
-  #       div(
-  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-  #         tags$img(
-  #           src = "Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png", 
-  #           width = "100%",
-  #           style = "max-height: 100%; max-width: 100%; object-fit: cover;"
-  #         )
-  #       )
-  #     )
-  #   } else if (input$simulation_type == "Prioritize Cattle Production") {
-  #     tagList(
-  #       #tags$h4("Prioritize Cattle Production"),
-  #       div(
-  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-  #         tags$img(src = "Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png", 
-  #                  width = "100%",
-  #                  style = "max-height: 100%; max-width: 100%; object-fit: cover;"
-  #         )
-  #       )
-  #     )
-  #   } else if (input$simulation_type == "Promotes Forest Conservation") {
-  #     tagList(
-  #       #tags$h4("Promotes Forest Conservation"),
-  #       div(
-  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-  #         tags$img(src = "Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png", 
-  #                  width = "100%",
-  #                  style = "max-height: 100%; max-width: 100%; object-fit: cover;"
-  #         )
-  #       )
-  #     )
-  #   } else {
-  #     NULL
-  #     print("Select only one scenario to view prediction map.")
-  #   }
-  # })
-  
-  
-  
+ 
   #histogram_sim_pred_land_use
   output$histogram_sim_pred_land_use <- renderPlotly({
     # Filter the data based on the selected simulation type
@@ -1326,8 +1211,7 @@ server <- function(input, output, session) {
     ggplotly(ggplot_obj)
   })
   
-  
-  
+  # simulation images 
   output$lup_simulation_images <- renderUI({
     # Display images based on the selected simulation type
     if (input$simulation_type == "Current Forest Law") {

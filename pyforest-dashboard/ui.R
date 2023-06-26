@@ -672,7 +672,7 @@ body <- dashboardBody(
                                                   height = "525px", 
                                                   width = "100%"),
                                      color = "#4B5F43"),
-                         tags$p("Riparian Corridor Deforestation is insignificant, Non-deforested Riparian Corridor remains relatively constant.")
+                         tags$p("Note: The riparian corridor deforestation is insignificant, non-deforested riparian corridor remains relatively constant.")
                      ),
                      
               )
@@ -686,12 +686,12 @@ body <- dashboardBody(
                   align = "center",
                   title = "Land Use Plan Simulations",
                   withSpinner(uiOutput("lup_simulation_images"),
-                              color = "#4B5F43") #simulation scenarios
+                              color = "#4B5F43") 
               ),
               box(width = 6,
                   collapsible = TRUE,
-                  style = "display: flex; align-items: center; justify-content: center;",  # Adjust the height as needed
-                  #style = "height: 400px;",  # Adjust the height as needed
+                  style = "display: flex; align-items: center; justify-content: center;",  
+                  #style = "height: 400px;", 
                   title = tagList(tags$strong("Deforestation Predictions")),
                   column(
                     width = 9,
