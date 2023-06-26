@@ -436,12 +436,10 @@ server <- function(input, output, session) {
       )
   })
   
-  
-  
   # Total Area Authorized Value Box
   output$total_auth_area_valuebox <- renderValueBox({
     filtered_data <- auth_data_reactive()
-    total_sum <- sum(filtered_data$total_area_ha) 
+    total_sum <- sum(filtered_data$sum_lut_area_ha) 
     formatted_sum_4 <- format(total_sum, big.mark = ",")
     valueBox(
       "Total Authorized Area to be Deforested (ha)",
@@ -864,13 +862,6 @@ server <- function(input, output, session) {
   }) #END plotly
   
   # -----------------------------------------  Forest Cover Statistics -----------------------------------
-  
-  #  # Call the forest cover module
-  # callModule(forestCoverModule, "forest_cover_module", 
-  #            py_fc_dept = py_fc_dept, 
-  #            py_fc_dist = py_fc_dist)
-  
-  
   py_fc_dept <- st_transform(py_fc_dept, crs = "+proj=longlat +datum=WGS84")
   py_fc_dist <- st_transform(py_fc_dist, crs = "+proj=longlat +datum=WGS84")
   pyforest_palette_fc <- c("#F26419", "#F6AE2D", "#AEBD93", "#4B5F43")
@@ -1151,59 +1142,163 @@ server <- function(input, output, session) {
   # })
   
   # prediction maps
+  
   output$maps_predictions_by_scenario <- renderUI({
     # Display images based on the selected simulation type
     if (input$simulation_type == "Current Forest Law") {
       tagList(
-        #tags$h4("Current Forest Law"),
-        div(
-          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-          tags$img(
-            src = "Predicted_Deforestation_Patterns_Under_Current_Law.png",
-            width = "100%",
-            style = "max-height: 100%; max-width: 100%; object-fit: contain;"
-          )
+        tags$script(HTML('
+        $(document).ready(function() {
+          $("#larger_image_link").attr("href", "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Current_Law.png?raw=true");
+        });
+      ')),
+      div(
+        style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+        tags$img(
+          src = "Predicted_Deforestation_Patterns_Under_Current_Law.png",
+          width = "100%",
+          style = "max-height: 100%; max-width: 100%; object-fit: contain;"
         )
+      )
       )
     } else if (input$simulation_type == "Law Ambiguity") {
       tagList(
-        #tags$h4("Law Ambiguity"),
-        div(
-          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-          tags$img(
-            src = "Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png", 
-            width = "100%",
-            style = "max-height: 100%; max-width: 100%; object-fit: cover;"
-          )
+        tags$script(HTML('
+        $(document).ready(function() {
+          $("#larger_image_link").attr("href", "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png?raw=true");
+        });
+      ')),
+      div(
+        style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+        tags$img(
+          src = "Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png",
+          width = "100%",
+          style = "max-height: 100%; max-width: 100%; object-fit: cover;"
         )
+      )
       )
     } else if (input$simulation_type == "Prioritize Cattle Production") {
       tagList(
-        #tags$h4("Prioritize Cattle Production"),
-        div(
-          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-          tags$img(src = "Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png", 
-                   width = "100%",
-                   style = "max-height: 100%; max-width: 100%; object-fit: cover;"
-          )
+        tags$script(HTML('
+        $(document).ready(function() {
+          $("#larger_image_link").attr("href", "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png?raw=true");
+        });
+      ')),
+      div(
+        style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+        tags$img(
+          src = "Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png",
+          width = "100%",
+          style = "max-height: 100%; max-width: 100%; object-fit: cover;"
         )
+      )
       )
     } else if (input$simulation_type == "Promotes Forest Conservation") {
       tagList(
-        #tags$h4("Promotes Forest Conservation"),
-        div(
-          style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
-          tags$img(src = "Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png", 
-                   width = "100%",
-                   style = "max-height: 100%; max-width: 100%; object-fit: cover;"
-          )
+        tags$script(HTML('
+        $(document).ready(function() {
+          $("#larger_image_link").attr("href", "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png?raw=true");
+        });
+      ')),
+      div(
+        style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+        tags$img(
+          src = "Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png",
+          width = "100%",
+          style = "max-height: 100%; max-width: 100%; object-fit: cover;"
         )
       )
+      )
     } else {
-      NULL
-      print("Select only one scenario to view prediction map.")
+      tagList(
+        NULL,
+        print("Select only one scenario to view prediction map.")
+      )
     }
   })
+  
+  
+  # output$maps_predictions_by_scenario <- renderUI({
+  # # Display images based on the selected simulation type
+  #   if (input$simulation_type == "Current Forest Law") {
+  #     
+  #     
+  #     tags$script(HTML('
+  #   $(document).ready(function() {
+  #     $("#larger_image_link").attr("href", getLargerImageLink());
+  #   });
+  #   
+  #   function getLargerImageLink() {
+  #     // Get the selected simulation type
+  #     var selectedSimulationType = $("#simulation_type").val();
+  #     
+  #     // Generate and return the link for the larger image based on the selected simulation type
+  #     if (selectedSimulationType === "Current Forest Law") {
+  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Current_Law.png?raw=true";  // Default simulation type
+  #     } else if (selectedSimulationType === "Law Ambiguity") {
+  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png?raw=true";
+  #     } else if (selectedSimulationType === "Prioritize Cattle Production") {
+  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png?raw=true";
+  #     } else if (selectedSimulationType === "Promotes Forest Conservation") {
+  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png?raw=true";
+  #     } else {
+  #       return "https://github.com/cp-PYFOREST/PYFOREST-Shiny/blob/main/pyforest-dashboard/www/Predicted_Deforestation_Patterns_Under_Current_Law.png?raw=true";
+  #     }
+  #   }
+  # '))
+  #     
+  #     
+  #     
+  #     tagList(
+  #       #tags$h4("Current Forest Law"),
+  #       div(
+  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+  #         tags$img(
+  #           src = "Predicted_Deforestation_Patterns_Under_Current_Law.png",
+  #           width = "100%",
+  #           style = "max-height: 100%; max-width: 100%; object-fit: contain;"
+  #         )
+  #       )
+  #     )
+  #   } else if (input$simulation_type == "Law Ambiguity") {
+  #     tagList(
+  #       #tags$h4("Law Ambiguity"),
+  #       div(
+  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+  #         tags$img(
+  #           src = "Predicted_Deforestation_Patterns_Under_Law_Ambiguity.png", 
+  #           width = "100%",
+  #           style = "max-height: 100%; max-width: 100%; object-fit: cover;"
+  #         )
+  #       )
+  #     )
+  #   } else if (input$simulation_type == "Prioritize Cattle Production") {
+  #     tagList(
+  #       #tags$h4("Prioritize Cattle Production"),
+  #       div(
+  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+  #         tags$img(src = "Predicted_Deforestation_Patterns_Under_Prioritize_Cattle_Production.png", 
+  #                  width = "100%",
+  #                  style = "max-height: 100%; max-width: 100%; object-fit: cover;"
+  #         )
+  #       )
+  #     )
+  #   } else if (input$simulation_type == "Promotes Forest Conservation") {
+  #     tagList(
+  #       #tags$h4("Promotes Forest Conservation"),
+  #       div(
+  #         style = "max-height: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center;",
+  #         tags$img(src = "Predicted_Deforestation_Patterns_Under_Promotes_Forest_Conservation.png", 
+  #                  width = "100%",
+  #                  style = "max-height: 100%; max-width: 100%; object-fit: cover;"
+  #         )
+  #       )
+  #     )
+  #   } else {
+  #     NULL
+  #     print("Select only one scenario to view prediction map.")
+  #   }
+  # })
   
   
   
